@@ -113,7 +113,7 @@ export default function SousTraitantsPage() {
       </div>
 
       {/* KPIs */}
-      <div style={{ display:'grid', gridTemplateColumns:'repeat(3,1fr)', gap:'12px', marginBottom:'22px' }}>
+      <div className="kpi-grid" style={{ marginBottom:'22px' }}>
         <div className="kpi-card">
           <div className="kpi-label">Sous-traitants</div>
           <div className="kpi-value">{list.length}</div>

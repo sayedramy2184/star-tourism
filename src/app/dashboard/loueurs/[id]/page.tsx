@@ -44,7 +44,7 @@ export default async function LoueurDetailPage({ params }: { params: { id: strin
         </Link>
       </div>
 
-      <div style={{ display:'grid', gridTemplateColumns:'1fr 320px', gap:'20px' }}>
+      <div className="detail-grid">
         {/* ── PRINCIPAL ── */}
         <div>
           {/* En-tête loueur */}

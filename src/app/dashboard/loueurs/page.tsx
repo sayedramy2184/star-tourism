@@ -37,7 +37,7 @@ export default async function LoueursPage() {
       </div>
 
       {/* KPIs */}
-      <div style={{ display:'grid', gridTemplateColumns:'repeat(3,1fr)', gap:'12px', marginBottom:'22px' }}>
+      <div className="kpi-grid" style={{ marginBottom:'22px' }}>
         {[
           { label:'Loueurs',        value: rows.length, color:'#16130e' },
           { label:'Véhicules loués', value: rows.reduce((s,r)=>s+r.nbVehicules,0), color:'#1e3f70' },

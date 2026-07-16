@@ -127,7 +127,7 @@ export default function ChauffeursPage() {
       </div>
 
       {/* KPIs */}
-      <div style={{ display:'grid', gridTemplateColumns:'repeat(4,1fr)', gap:'12px', marginBottom:'22px' }}>
+      <div className="kpi-grid" style={{ marginBottom:'22px' }}>
         {[
           { label:'Total',       value: chauffeurs.length, color:'#16130e' },
           { label:'Disponibles', value: dispo,   color:'#1e5e3a' },

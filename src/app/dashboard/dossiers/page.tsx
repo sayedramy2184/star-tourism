@@ -56,7 +56,7 @@ export default function DossiersPage() {
     <div>
 
       {/* KPIs */}
-      <div style={{ display:'grid', gridTemplateColumns:'repeat(4,1fr)', gap:'12px', marginBottom:'24px' }}>
+      <div className="kpi-grid" style={{ marginBottom:'24px' }}>
         {[
           { label:'Dossiers actifs', value: total,                   sub:'Ce mois',    color:'#16130e' },
           { label:'En cours',        value: en_cours,                sub:'Aujourd\'hui', color:'#9a7a28' },

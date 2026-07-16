@@ -117,7 +117,7 @@ export default async function ChauffeurDetailPage({ params }: { params: { id: st
         </Link>
       </div>
 
-      <div style={{ display:'grid', gridTemplateColumns:'1fr 300px', gap:'20px' }}>
+      <div className="detail-grid">
 
         {/* ── COLONNE PRINCIPALE ── */}
         <div>

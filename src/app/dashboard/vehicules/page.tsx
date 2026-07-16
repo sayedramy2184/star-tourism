@@ -207,7 +207,7 @@ export default function VehiculesPage() {
       </div>
 
       {/* KPIs */}
-      <div style={{ display:'grid', gridTemplateColumns:'repeat(4,1fr)', gap:'12px', marginBottom:'22px' }}>
+      <div className="kpi-grid" style={{ marginBottom:'22px' }}>
         {[
           { label:'Flotte totale',      value: vehicules.length, color:'#16130e' },
           { label:'Véhicules loués',    value: loues,   color:'#1e3f70' },

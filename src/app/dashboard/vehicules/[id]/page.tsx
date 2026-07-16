@@ -98,7 +98,7 @@ export default async function VehiculeDetailPage({ params }: { params: { id: str
         </Link>
       </div>
 
-      <div style={{ display:'grid', gridTemplateColumns:'1fr 300px', gap:'20px' }}>
+      <div className="detail-grid">
 
         {/* ── PRINCIPAL ── */}
         <div>
@@ -145,7 +145,7 @@ export default async function VehiculeDetailPage({ params }: { params: { id: str
               </div>
 
               {/* Meta grid */}
-              <div style={{ display:'grid', gridTemplateColumns:'repeat(4,1fr)', gap:'0', borderTop:'1.5px solid #d8d2c8' }}>
+              <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fit,minmax(120px,1fr))', gap:'0', borderTop:'1.5px solid #d8d2c8' }}>
                 {[
                   { label:'Contrôle tech.', val: v.ct_date ? format(parseISO(v.ct_date),'MM/yyyy') : '—', alert: ct },
                   { label:'Assurance',      val: v.assurance_date ? format(parseISO(v.assurance_date),'MM/yyyy') : '—', alert: ass },
@@ -174,7 +174,7 @@ export default async function VehiculeDetailPage({ params }: { params: { id: str
               </span>
             </div>
             <div style={{ padding:'16px 20px' }}>
-              <div style={{ display:'grid', gridTemplateColumns:'repeat(3,1fr)', gap:'14px' }}>
+              <div className="kpi-grid">
                 {[
                   ...(estLoue ? [
                     { label:'Loueur / Bailleur', val: v.loueur_id
