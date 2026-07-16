@@ -23,8 +23,19 @@ function fmt(n: number) {
   return new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' }).format(n)
 }
 
-export default function PaiementsPanel({ loueurId, initial }: { loueurId: string; initial: Paiement[] }) {
+const CONF = {
+  loueur:         { url: '/api/paiements-loueur',         idField: 'loueur_id' },
+  sous_traitant:  { url: '/api/paiements-sous-traitant',  idField: 'sous_traitant_id' },
+} as const
+
+export default function PaiementsPanel({ kind = 'loueur', entityId, initial, onChange }: {
+  kind?: 'loueur' | 'sous_traitant'
+  entityId: string
+  initial: Paiement[]
+  onChange?: (list: Paiement[]) => void
+}) {
   const router = useRouter()
+  const conf = CONF[kind]
   const [list, setList]     = useState<Paiement[]>(initial)
   const [open, setOpen]     = useState(false)
   const [saving, setSaving] = useState(false)
@@ -38,13 +49,14 @@ export default function PaiementsPanel({ loueurId, initial }: { loueurId: string
     if (!montant || montant <= 0) return toast.error('Montant invalide')
     setSaving(true)
     try {
-      const res = await fetch('/api/paiements-loueur', {
+      const res = await fetch(conf.url, {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ loueur_id: loueurId, ...form, montant }),
+        body: JSON.stringify({ [conf.idField]: entityId, ...form, montant }),
       })
       const json = await res.json()
       if (!res.ok) throw new Error(json.error ?? 'Erreur')
-      setList(prev => [json.data, ...prev])
+      const next = [json.data, ...list]
+      setList(next); onChange?.(next)
       setOpen(false)
       setForm({ montant: '', date_paiement: new Date().toISOString().slice(0, 10), moyen: 'virement', note: '' })
       toast.success('Paiement enregistré')
@@ -55,8 +67,8 @@ export default function PaiementsPanel({ loueurId, initial }: { loueurId: string
 
   async function remove(id: string) {
     if (!confirm('Supprimer ce paiement ?')) return
-    const res = await fetch(`/api/paiements-loueur/${id}`, { method: 'DELETE' })
-    if (res.ok) { setList(prev => prev.filter(p => p.id !== id)); toast.success('Paiement supprimé'); router.refresh() }
+    const res = await fetch(`${conf.url}/${id}`, { method: 'DELETE' })
+    if (res.ok) { const next = list.filter(p => p.id !== id); setList(next); onChange?.(next); toast.success('Paiement supprimé'); router.refresh() }
     else toast.error('Erreur')
   }
 

@@ -163,7 +163,7 @@ export default async function LoueurDetailPage({ params }: { params: { id: strin
           </div>
 
           {/* Paiements */}
-          <PaiementsPanel loueurId={loueur.id} initial={(paiements ?? []) as any} />
+          <PaiementsPanel kind="loueur" entityId={loueur.id} initial={(paiements ?? []) as any} />
         </div>
       </div>
     </div>

@@ -1,0 +1,11 @@
+import { createClient } from '@/lib/supabase/server'
+import { NextRequest, NextResponse } from 'next/server'
+
+export const dynamic = 'force-dynamic'
+
+export async function DELETE(_req: NextRequest, { params }: { params: { id: string } }) {
+  const supabase = createClient()
+  const { error } = await supabase.from('paiements_sous_traitant').delete().eq('id', params.id)
+  if (error) return NextResponse.json({ error: error.message }, { status: 500 })
+  return NextResponse.json({ success: true })
+}

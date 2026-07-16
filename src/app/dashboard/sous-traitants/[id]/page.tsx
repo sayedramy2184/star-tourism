@@ -7,6 +7,7 @@ import { format } from 'date-fns'
 import { fr } from 'date-fns/locale'
 import toast from 'react-hot-toast'
 import { ArrowLeft, Phone, Mail, CheckCircle, Clock, Euro, TrendingUp, X } from 'lucide-react'
+import PaiementsPanel from '@/components/loueurs/PaiementsPanel'
 
 interface SousTraitant {
   id: string; societe: string; contact_nom: string | null
@@ -114,6 +115,7 @@ export default function SousTraitantDetailPage() {
 
   const [st,          setSt]          = useState<SousTraitant | null>(null)
   const [prestations, setPrestations] = useState<Prestation[]>([])
+  const [paiements,   setPaiements]   = useState<any[]>([])
   const [loading,     setLoading]     = useState(true)
   const [modalP,      setModalP]      = useState<Prestation | null>(null)
   const [filtre,      setFiltre]      = useState<'tous' | 'a_payer' | 'paye'>('tous')
@@ -122,14 +124,17 @@ export default function SousTraitantDetailPage() {
 
   async function load() {
     setLoading(true)
-    const [stRes, pRes] = await Promise.all([
+    const [stRes, pRes, payRes] = await Promise.all([
       fetch(`/api/sous-traitants/${id}`),
       fetch(`/api/sous-traitants/${id}/prestations`),
+      fetch(`/api/paiements-sous-traitant?sous_traitant_id=${id}`),
     ])
     const { data: stData } = await stRes.json()
     const { data: pData  } = await pRes.json()
+    const { data: payData } = await payRes.json()
     setSt(stData)
     setPrestations(pData ?? [])
+    setPaiements(payData ?? [])
     setLoading(false)
   }
 
@@ -152,10 +157,10 @@ export default function SousTraitantDetailPage() {
   }
 
   const filtered   = prestations.filter(p => filtre === 'tous' || p.st_paiement_statut === filtre)
-  const totalCout  = prestations.reduce((s, p) => s + (p.st_cout_ht ?? 0), 0)
+  const totalCout  = prestations.reduce((s, p) => s + (p.st_cout_ht ?? 0), 0)   // décompte : ce qu'on lui doit
   const totalMarge = prestations.reduce((s, p) => s + (p.st_marge_ht ?? 0), 0)
-  const totalPaye  = prestations.filter(p => p.st_paiement_statut === 'paye').reduce((s, p) => s + (p.st_cout_ht ?? 0), 0)
-  const totalDu    = prestations.filter(p => p.st_paiement_statut === 'a_payer').reduce((s, p) => s + (p.st_cout_ht ?? 0), 0)
+  const totalVerse = paiements.reduce((s, p) => s + Number(p.montant ?? 0), 0)  // versements libres
+  const solde      = Math.round((totalCout - totalVerse) * 100) / 100           // reste à payer
 
   if (loading) return <div style={{ padding:'40px', color:'#8a8478' }}>Chargement…</div>
   if (!st)     return <div style={{ padding:'40px', color:'#9e2a2a' }}>Sous-traitant introuvable</div>
@@ -226,9 +231,14 @@ export default function SousTraitantDetailPage() {
         </div>
         <div className="kpi-card">
           <div className="kpi-label">Reste à payer</div>
-          <div className="kpi-value" style={{ color: totalDu > 0 ? '#9e2a2a' : '#1e5e3a', fontSize:'18px' }}>{fmt(totalDu)}</div>
-          <div className="kpi-sub" style={{ color:'#1e5e3a' }}>Payé : {fmt(totalPaye)}</div>
+          <div className="kpi-value" style={{ color: solde > 0 ? '#9e2a2a' : '#1e5e3a', fontSize:'18px' }}>{fmt(Math.max(0, solde))}</div>
+          <div className="kpi-sub" style={{ color:'#1e5e3a' }}>Versé : {fmt(totalVerse)}</div>
         </div>
+      </div>
+
+      {/* Décompte & versements */}
+      <div style={{ marginBottom:'20px', maxWidth:'520px' }}>
+        <PaiementsPanel kind="sous_traitant" entityId={id} initial={paiements} onChange={setPaiements} />
       </div>
 
       {/* Filtres */}
