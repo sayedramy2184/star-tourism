@@ -1,4 +1,4 @@
-import type { Metadata } from 'next'
+import type { Metadata, Viewport } from 'next'
 import { DM_Sans, Cormorant_Garamond, JetBrains_Mono } from 'next/font/google'
 import './globals.css'
 
@@ -26,6 +26,15 @@ const jetbrains = JetBrains_Mono({
 
 export const metadata: Metadata = {
   title: 'Star Tourism Services Drive',
+}
+
+// Bloque le zoom / pincement sur mobile (comportement "application")
+// et évite le zoom automatique iOS au focus des champs.
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
 }
 
 export default function RootLayout({
