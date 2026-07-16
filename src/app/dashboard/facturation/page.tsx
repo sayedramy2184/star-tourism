@@ -175,7 +175,55 @@ export default function FacturationPage() {
       </div>
 
       {/* Table */}
-      <div className="table-container">
+      {/* Liste mobile (cartes) */}
+      <div className="md:hidden" style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+        {loading ? (
+          <div style={{ padding: '40px', textAlign: 'center', color: '#8a8478', fontSize: '12px' }}>Chargement…</div>
+        ) : sp.total === 0 ? (
+          <div style={{ padding: '40px', textAlign: 'center', color: '#8a8478', fontSize: '12px' }}>{factures.length === 0 ? 'Aucune facture — générez-en une depuis un dossier.' : 'Aucun résultat.'}</div>
+        ) : sp.pageItems.map((f: any) => {
+          const overdue = isOverdue(f); const st = STATUTS[overdue ? 'en_retard' : f.statut] ?? STATUTS.brouillon
+          return (
+            <div key={f.id} style={{ background: '#fff', border: '1.5px solid #b8b0a4', boxShadow: '0 1px 4px rgba(0,0,0,0.06)', padding: '12px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '8px' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '6px', minWidth: 0 }}>
+                  <span style={{ fontFamily: 'JetBrains Mono,monospace', fontSize: '13px', color: '#9a7a28', fontWeight: 600 }}>{f.numero}</span>
+                  {f.type === 'avoir' && <span style={{ fontSize: '8px', fontWeight: 700, textTransform: 'uppercase', color: '#4a2a6e', background: '#f0ebfa', border: '1px solid rgba(74,42,110,0.2)', padding: '1px 5px' }}>Avoir</span>}
+                </div>
+                <select value={f.statut} onChange={e => changeStatut(f.id, e.target.value)} style={{ fontSize: '10px', fontWeight: 700, padding: '3px 6px', cursor: 'pointer', color: st.color, background: st.bg, border: `1px solid ${st.color}33`, outline: 'none' }}>
+                  {STATUT_ORDER.map(s => <option key={s} value={s} style={{ background: '#fff', color: '#16130e' }}>{STATUTS[s].label}</option>)}
+                </select>
+              </div>
+              <div style={{ fontWeight: 600, color: '#16130e', fontSize: '14px', marginTop: '6px' }}>{f.client?.nom ?? '—'}</div>
+              <div style={{ display: 'flex', justifyContent: 'space-between', gap: '8px', marginTop: '6px', alignItems: 'flex-end' }}>
+                <div className="mono" style={{ fontSize: '10px', color: '#5a564e' }}>
+                  {f.dossier && <div>Dossier {f.dossier.numero}</div>}
+                  <div>Émis {fmtDate(f.date_emission)}</div>
+                  <div style={{ color: overdue ? '#9e2a2a' : '#5a564e', fontWeight: overdue ? 700 : 400 }}>Échéance {fmtDate(f.date_echeance)}</div>
+                </div>
+                <div style={{ textAlign: 'right' }}>
+                  <div style={{ fontFamily: 'JetBrains Mono,monospace', fontSize: '14px', fontWeight: 700 }}>{fmt(f.montant_ttc)}</div>
+                  {paye(f) > 0 && f.statut !== 'annulee' && (
+                    <div style={{ fontFamily: 'JetBrains Mono,monospace', fontSize: '9px', color: (f.montant_ttc - paye(f)) <= 0 ? '#1e5e3a' : '#7a5c10' }}>{(f.montant_ttc - paye(f)) <= 0 ? '✓ Réglée' : `Reste ${fmt(f.montant_ttc - paye(f))}`}</div>
+                  )}
+                </div>
+              </div>
+              <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap', marginTop: '10px', paddingTop: '10px', borderTop: '1px solid #ede9e2' }}>
+                <a href={`/api/factures/${f.id}/pdf`} target="_blank" rel="noreferrer" className="btn-ghost" style={{ padding: '4px 10px', fontSize: '10px', textDecoration: 'none' }}><ExternalLink size={11} /> PDF</a>
+                {f.type !== 'avoir' && f.statut === 'brouillon' && <FactureFormModal editId={f.id} onDone={load} />}
+                {f.type !== 'avoir' && f.statut !== 'annulee' && <PaiementModal factureId={f.id} numero={f.numero} montantTtc={f.montant_ttc} dejaPaye={paye(f)} onDone={load} />}
+                {f.type !== 'avoir' && f.statut !== 'brouillon' && f.statut !== 'annulee' && (
+                  <button onClick={() => creerAvoir(f.id, f.numero)} style={{ display: 'inline-flex', alignItems: 'center', gap: '3px', background: 'none', border: '1.5px solid rgba(74,42,110,0.3)', padding: '4px 8px', cursor: 'pointer', color: '#4a2a6e', fontSize: '10px' }}><FileMinus2 size={11} /> Avoir</button>
+                )}
+                {f.statut === 'brouillon' && <button onClick={() => supprimer(f.id, f.numero)} style={{ background: 'none', border: '1.5px solid rgba(158,42,42,0.3)', padding: '4px 8px', cursor: 'pointer', color: '#9e2a2a' }}><Trash2 size={11} /></button>}
+              </div>
+            </div>
+          )
+        })}
+      </div>
+
+      {/* Table (desktop) */}
+      <div className="table-container hidden md:block">
         <table style={{ width: '100%', borderCollapse: 'collapse' }}>
           <thead className="table-head">
             <tr>
