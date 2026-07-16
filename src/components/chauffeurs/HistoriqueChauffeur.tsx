@@ -110,8 +110,36 @@ export default function HistoriqueChauffeur({ items }: { items: HistoItem[] }) {
         )}
       </div>
 
-      {/* Tableau */}
-      <div className="table-container">
+      {/* Liste mobile (cartes) */}
+      <div className="md:hidden" style={{ display:'flex', flexDirection:'column', gap:'10px' }}>
+        {filtered.length === 0 ? (
+          <div style={{ padding:'30px', textAlign:'center', color:'#8a8478', fontSize:'12px' }}>{items.length === 0 ? 'Aucune prestation pour ce chauffeur' : 'Aucune prestation ne correspond aux filtres'}</div>
+        ) : filtered.map(i => {
+          const s = STATUTS[i.statut] ?? { label: i.statut, color: '#8a8478' }
+          const card = (
+            <>
+              <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', gap:'8px' }}>
+                <div style={{ display:'flex', alignItems:'center', gap:'8px', minWidth:0 }}>
+                  <span className={i.kind === 'mad' ? 'pill-mad' : 'pill-transfer'}>{i.kind === 'mad' ? 'MAD' : 'Transfert'}</span>
+                  <span className="mono" style={{ fontSize:'11px' }}>{i.jourSemaine ? `${i.jourSemaine} ` : ''}{format(parseISO(i.date),'dd/MM/yy',{locale:fr})}{i.heure ? ` · ${i.heure}` : ''}</span>
+                </div>
+                <span style={{ fontSize:'10px', fontWeight:700, color:s.color }}>{s.label}</span>
+              </div>
+              <div style={{ fontWeight:600, fontSize:'13px', marginTop:'6px' }}>{i.clientNom}</div>
+              <div className="mono" style={{ fontSize:'9px', color:'#9a7a28' }}>{i.dossierNumero}</div>
+              {i.details && <div style={{ fontSize:'11px', color:'#5a564e', marginTop:'4px', whiteSpace:'pre-line' }}>{i.details}</div>}
+              <div className="mono" style={{ fontSize:'12px', color:'#9a7a28', marginTop:'6px', textAlign:'right' }}>{i.tarif ? fmt(i.tarif) : '—'}</div>
+            </>
+          )
+          const boxStyle = { display:'block', background:'#fff', border:'1.5px solid #b8b0a4', boxShadow:'0 1px 4px rgba(0,0,0,0.06)', padding:'12px', textDecoration:'none', color:'inherit' as const }
+          return i.dossierId
+            ? <Link key={i.id} href={`/dashboard/dossiers/${i.dossierId}`} style={boxStyle}>{card}</Link>
+            : <div key={i.id} style={boxStyle}>{card}</div>
+        })}
+      </div>
+
+      {/* Tableau (desktop) */}
+      <div className="table-container hidden md:block">
         <table style={{ width:'100%', borderCollapse:'collapse' }}>
           <thead className="table-head">
             <tr>

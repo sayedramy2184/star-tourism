@@ -247,7 +247,40 @@ export default function SousTraitantDetailPage() {
       </div>
 
       {/* Table prestations */}
-      <div className="table-container">
+      {/* Liste mobile (cartes) */}
+      <div className="md:hidden" style={{ display:'flex', flexDirection:'column', gap:'10px' }}>
+        {filtered.length === 0 ? (
+          <div style={{ padding:'30px', textAlign:'center', color:'#8a8478', fontSize:'12px' }}>Aucune prestation</div>
+        ) : filtered.map(p => {
+          const isPaye = p.st_paiement_statut === 'paye'; const marge = p.st_marge_ht ?? 0
+          return (
+            <div key={p.id} style={{ background:'#fff', border:'1.5px solid #b8b0a4', boxShadow:'0 1px 4px rgba(0,0,0,0.06)', padding:'12px' }}>
+              <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', gap:'8px' }}>
+                <div style={{ display:'flex', alignItems:'center', gap:'8px', minWidth:0 }}>
+                  <span style={{ fontSize:'9px', fontWeight:700, padding:'2px 8px', background: p.type==='mad' ? '#fdf3dc' : '#e8eef8', color: p.type==='mad' ? '#7a5c10' : '#1e3f70' }}>{p.type === 'mad' ? 'MAD' : 'Transfert'}</span>
+                  <Link href={`/dashboard/dossiers/${p.dossier.id}`} style={{ fontFamily:'JetBrains Mono,monospace', fontSize:'11px', color:'#9a7a28', textDecoration:'none', fontWeight:600 }}>{p.dossier.numero}</Link>
+                  <span className="mono" style={{ fontSize:'10px', color:'#8a8478' }}>{format(new Date(p.date_debut), 'dd/MM/yy', { locale: fr })}</span>
+                </div>
+                <button onClick={() => setModalP(p)} style={{ flexShrink:0, display:'inline-flex', alignItems:'center', gap:'5px', padding:'4px 10px', fontSize:'10px', fontWeight:700, cursor:'pointer', background: isPaye ? '#eaf4ee' : '#fdf3dc', border:`1.5px solid ${isPaye ? 'rgba(30,94,58,0.3)' : 'rgba(122,92,16,0.3)'}`, color: isPaye ? '#1e5e3a' : '#7a5c10' }}>
+                  {isPaye ? <CheckCircle size={11}/> : <Clock size={11}/>}{isPaye ? 'Payé' : 'À payer'}
+                </button>
+              </div>
+              <div style={{ fontWeight:600, fontSize:'13px', marginTop:'6px' }}>{p.dossier.client.nom}</div>
+              <div style={{ fontSize:'11px', color:'#5a564e', marginTop:'2px' }}>
+                {p.st_chauffeur_nom ?? '—'}{p.st_vehicule_marque ? ` · ${p.st_vehicule_marque} ${p.st_vehicule_modele}` : ''}
+              </div>
+              <div style={{ display:'flex', justifyContent:'space-between', gap:'8px', marginTop:'8px', paddingTop:'8px', borderTop:'1px solid #ede9e2' }}>
+                <div><div style={{ fontSize:'8px', textTransform:'uppercase', letterSpacing:'1px', color:'#8a8478' }}>Prix client</div><div className="mono" style={{ fontSize:'11px', color:'#9a7a28' }}>{fmt(p.montant_ht)}</div></div>
+                <div><div style={{ fontSize:'8px', textTransform:'uppercase', letterSpacing:'1px', color:'#8a8478' }}>Coût ST</div><div className="mono" style={{ fontSize:'11px', fontWeight:600 }}>{fmt(p.st_cout_ht)}</div></div>
+                <div style={{ textAlign:'right' }}><div style={{ fontSize:'8px', textTransform:'uppercase', letterSpacing:'1px', color:'#8a8478' }}>Marge</div><div className="mono" style={{ fontSize:'12px', fontWeight:700, color: marge > 0 ? '#1e5e3a' : '#9e2a2a' }}>{fmt(marge)}</div></div>
+              </div>
+            </div>
+          )
+        })}
+      </div>
+
+      {/* Table (desktop) */}
+      <div className="table-container hidden md:block">
         <table style={{ width:'100%', borderCollapse:'collapse' }}>
           <thead className="table-head">
             <tr>

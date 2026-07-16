@@ -65,7 +65,30 @@ export default async function LoueurDetailPage({ params }: { params: { id: strin
             <span style={{ fontFamily:'JetBrains Mono,monospace', fontSize:'11px', color:'#8a8478' }}>{vehs.length} véhicule{vehs.length > 1 ? 's' : ''}</span>
           </div>
 
-          <div className="table-container">
+          {/* Liste mobile (cartes) */}
+          <div className="md:hidden" style={{ display:'flex', flexDirection:'column', gap:'10px' }}>
+            {vehs.length === 0 ? (
+              <div style={{ padding:'30px', textAlign:'center', color:'#8a8478', fontSize:'12px' }}>Aucun véhicule rattaché à ce loueur.</div>
+            ) : vehs.map(({ v, c }) => (
+              <Link key={v.id} href={`/dashboard/vehicules/${v.id}`} style={{ display:'block', background:'#fff', border:'1.5px solid #b8b0a4', boxShadow:'0 1px 4px rgba(0,0,0,0.06)', padding:'12px', textDecoration:'none', color:'inherit' }}>
+                <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', gap:'8px' }}>
+                  <div style={{ minWidth:0 }}>
+                    <div style={{ fontFamily:'Cormorant Garamond,serif', fontSize:'15px', fontWeight:500, color:'#16130e' }}>{v.marque} {v.modele}</div>
+                    <div className="mono" style={{ fontSize:'9px', color:'#8a8478' }}>{v.immatriculation}</div>
+                  </div>
+                  <span style={{ flexShrink:0, fontSize:'9px', fontWeight:700, textTransform:'uppercase', color: c.actif ? '#1e5e3a' : '#8a8478' }}>{c.actif ? '● En cours' : 'Terminé'}</span>
+                </div>
+                <div style={{ display:'flex', justifyContent:'space-between', gap:'8px', marginTop:'8px', paddingTop:'8px', borderTop:'1px solid #ede9e2' }}>
+                  <div><div style={{ fontSize:'8px', textTransform:'uppercase', letterSpacing:'1px', color:'#8a8478' }}>Loyer</div><div className="mono" style={{ fontSize:'11px', color:'#9a7a28' }}>{v.loyer_ht ? `${fmt(v.loyer_ht)}${PERIODE_SUFFIX[v.loyer_periode] ?? '/mois'}` : '—'}</div></div>
+                  <div><div style={{ fontSize:'8px', textTransform:'uppercase', letterSpacing:'1px', color:'#8a8478' }}>Depuis</div><div style={{ fontSize:'11px', color:'#5a564e' }}>{c.debut ? format(parseISO(c.debut),'dd/MM/yy',{locale:fr}) : '—'} · {c.joursCourus || 0}j</div></div>
+                  <div style={{ textAlign:'right' }}><div style={{ fontSize:'8px', textTransform:'uppercase', letterSpacing:'1px', color:'#8a8478' }}>Coût couru</div><div className="mono" style={{ fontSize:'12px', fontWeight:700, color:'#9a7a28' }}>{fmt(c.coutCouru)}</div></div>
+                </div>
+              </Link>
+            ))}
+          </div>
+
+          {/* Table (desktop) */}
+          <div className="table-container hidden md:block">
             <table style={{ width:'100%', borderCollapse:'collapse' }}>
               <thead className="table-head">
                 <tr>

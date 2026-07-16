@@ -91,7 +91,30 @@ export default async function ClientDetailPage({ params }: { params: { id: strin
             <span className="section-title">Dossiers ({D.length})</span>
             <Link href="/dashboard/dossiers/nouveau" className="btn-ghost" style={{ padding: '5px 12px', fontSize: '11px', textDecoration: 'none' }}>+ Nouveau dossier</Link>
           </div>
-          <div className="table-container">
+          {/* Liste mobile (cartes) */}
+          <div className="md:hidden" style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+            {D.length === 0 ? (
+              <div style={{ padding: '30px', textAlign: 'center', color: '#8a8478', fontSize: '12px' }}>Aucun dossier pour ce client</div>
+            ) : D.map((d: any) => {
+              const st = DOSSIER_STATUTS[d.statut] ?? DOSSIER_STATUTS.en_attente
+              return (
+                <Link key={d.id} href={`/dashboard/dossiers/${d.id}`} style={{ display: 'block', background: '#fff', border: '1.5px solid #b8b0a4', boxShadow: '0 1px 4px rgba(0,0,0,0.06)', padding: '12px', textDecoration: 'none', color: 'inherit' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '8px' }}>
+                    <span style={{ fontFamily: 'JetBrains Mono,monospace', fontSize: '11px', color: '#9a7a28' }}>{d.numero}</span>
+                    <span style={{ fontSize: '10px', fontWeight: 700, padding: '2px 8px', color: st.color, background: st.bg }}>{st.label}</span>
+                  </div>
+                  <div className="mono" style={{ fontSize: '11px', color: '#5a564e', marginTop: '6px' }}>{fmtDate(d.date_debut)} → {fmtDate(d.date_fin)}</div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '6px', fontSize: '11px' }}>
+                    <span style={{ color: '#8a8478' }}>{d.prestations?.length ?? 0} prestation{(d.prestations?.length ?? 0) > 1 ? 's' : ''}</span>
+                    <span className="mono" style={{ fontWeight: 700 }}>{fmt(d.montant_ht)}</span>
+                  </div>
+                </Link>
+              )
+            })}
+          </div>
+
+          {/* Table (desktop) */}
+          <div className="table-container hidden md:block">
             <table style={{ width: '100%', borderCollapse: 'collapse' }}>
               <thead className="table-head">
                 <tr>{['N°', 'Période', 'Prestations', 'Montant HT', 'Statut', ''].map((h, i) => (
