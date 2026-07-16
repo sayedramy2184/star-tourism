@@ -223,6 +223,8 @@ body {
    styles inline `gridTemplateColumns` (un style inline l'emporterait sur ces règles). */
 
 .detail-grid { display:grid; grid-template-columns: 1fr 300px; gap:20px; }
+/* min-width:0 : sans ça, une colonne au contenu large (tableau, grille) empêche le rétrécissement et déborde sur mobile */
+.detail-grid > * { min-width: 0; }
 @media (max-width: 900px) { .detail-grid { grid-template-columns: 1fr; } }
 
 .form-grid-2 { display:grid; grid-template-columns: 1fr 1fr; gap:12px; }

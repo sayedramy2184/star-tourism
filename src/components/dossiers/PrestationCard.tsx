@@ -288,7 +288,7 @@ export default function PrestationCard({ p, dossierId, passagers = [] }: { p: an
 
       {/* Body */}
       <div style={{ padding:'14px 16px' }}>
-        <div style={{ display:'grid', gridTemplateColumns:'repeat(4,1fr)', gap:'12px', marginBottom:'12px' }}>
+        <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fit,minmax(140px,1fr))', gap:'12px', marginBottom:'12px' }}>
           {p.type === 'transfert' && <>
             <div>
               <div style={{ fontSize:'8px', fontWeight:600, letterSpacing:'2px', textTransform:'uppercase', color:'#8a8478', marginBottom:'3px' }}>Départ</div>
