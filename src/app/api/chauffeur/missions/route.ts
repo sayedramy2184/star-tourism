@@ -29,7 +29,9 @@ export async function GET(req: NextRequest) {
       vehicule:vehicules(marque, modele, immatriculation),
       prestation:prestations(
         id, adresse_depart, heure_debut_journee, heure_fin_journee, modele_souhaite, statut, passager_ids,
-        dossier:dossiers(numero, valide_at, client:clients(nom, telephone), passagers(id, nom, nationalite))
+        notes, nb_passagers, nb_bagages,
+        dossier:dossiers(numero, valide_at, notes, client:clients(nom, telephone),
+          passagers(id, nom, nationalite, telephone, nb_bagages))
       )
     `)
     .eq('chauffeur_id', chauffeur.id)
@@ -42,8 +44,10 @@ export async function GET(req: NextRequest) {
     .from('prestations')
     .select(`
       id, date_debut, heure_depart, adresse_depart, adresse_arrivee, modele_souhaite, statut, passager_ids,
+      notes, nb_passagers, nb_bagages, vol_numero, vol_heure, vol_ville, vol_terminal, vol_arrivee,
       vehicule:vehicules(marque, modele, immatriculation),
-      dossier:dossiers(numero, valide_at, client:clients(nom, telephone), passagers(id, nom, nationalite))
+      dossier:dossiers(numero, valide_at, notes, client:clients(nom, telephone),
+        passagers(id, nom, nationalite, telephone, nb_bagages))
     `)
     .eq('chauffeur_id', chauffeur.id)
     .eq('type', 'transfert')
