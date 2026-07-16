@@ -45,7 +45,7 @@ export default async function ChauffeurDetailPage({ params }: { params: { id: st
     .select(`
       id, date, jour_semaine, tarif_ht, statut, note,
       prestation:prestations(
-        id, type, date_debut, date_fin,
+        id, type, statut, date_debut, date_fin,
         dossier:dossiers(id, numero, client:clients(nom))
       )
     `)
@@ -83,8 +83,9 @@ export default async function ChauffeurDetailPage({ params }: { params: { id: st
 
   // Stats
   const nbMissions   = (jours?.length ?? 0) + (transferts?.length ?? 0)
-  const caTotal      = (jours?.reduce((s: number, j: any) => s + (j.tarif_ht ?? 0), 0) ?? 0) +
-                       (transferts?.reduce((s: number, t: any) => s + (t.tarif_fixe_ht ?? 0), 0) ?? 0)
+  // CA généré = exclut les prestations annulées
+  const caTotal      = (jours?.filter((j: any) => j.statut !== 'annule' && j.prestation?.statut !== 'annule').reduce((s: number, j: any) => s + (j.tarif_ht ?? 0), 0) ?? 0) +
+                       (transferts?.filter((t: any) => t.statut !== 'annule').reduce((s: number, t: any) => s + (t.tarif_fixe_ht ?? 0), 0) ?? 0)
 
   // Historique normalisé pour le composant client (filtres)
   const histoItems: HistoItem[] = [

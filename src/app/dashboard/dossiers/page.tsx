@@ -50,7 +50,10 @@ export default function DossiersPage() {
 
   const total    = dossiers?.length ?? 0
   const en_cours = dossiers?.filter(d => d.statut === 'en_cours').length ?? 0
-  const ca_total = dossiers?.reduce((s, d) => s + (d.montant_ht ?? 0), 0) ?? 0
+  // CA = somme des prestations NON annulées (exclut statut 'annule')
+  const caDossier = (d: any) =>
+    (d.prestations ?? []).filter((p: any) => p.statut !== 'annule').reduce((a: number, p: any) => a + (p.montant_ht ?? 0), 0)
+  const ca_total = dossiers?.reduce((s, d) => s + caDossier(d), 0) ?? 0
 
   return (
     <div>

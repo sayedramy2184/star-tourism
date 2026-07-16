@@ -73,7 +73,7 @@ export default async function VehiculeDetailPage({ params }: { params: { id: str
     .select(`
       id, date, jour_semaine, tarif_ht, statut,
       chauffeur:chauffeurs(id, nom, prenom),
-      prestation:prestations(id, dossier:dossiers(id, numero, client:clients(nom)))
+      prestation:prestations(id, statut, dossier:dossiers(id, numero, client:clients(nom)))
     `)
     .eq('vehicule_id', params.id)
     .order('date', { ascending: false })
@@ -86,8 +86,9 @@ export default async function VehiculeDetailPage({ params }: { params: { id: str
   const ass    = docStatus(v.assurance_date)
   const contrat = docStatus(v.contrat_fin)
   const nbMissions = (prestations?.length ?? 0) + (jours?.length ?? 0)
-  const caTotal = (prestations?.reduce((s: number, p: any) => s + (p.montant_ht ?? 0), 0) ?? 0) +
-                  (jours?.reduce((s: number, j: any) => s + (j.tarif_ht ?? 0), 0) ?? 0)
+  // CA généré = exclut les prestations annulées (et les jours d'une MAD annulée)
+  const caTotal = (prestations?.filter((p: any) => p.statut !== 'annule').reduce((s: number, p: any) => s + (p.montant_ht ?? 0), 0) ?? 0) +
+                  (jours?.filter((j: any) => j.statut !== 'annule' && j.prestation?.statut !== 'annule').reduce((s: number, j: any) => s + (j.tarif_ht ?? 0), 0) ?? 0)
 
   return (
     <div>

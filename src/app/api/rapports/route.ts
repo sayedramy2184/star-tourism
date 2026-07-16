@@ -31,7 +31,7 @@ export async function GET(req: NextRequest) {
       id, date_debut, montant_ht, statut,
       client:clients(id, nom),
       prestations(
-        type, chauffeur_id, sous_traitant_id, st_cout_ht, st_marge_ht, montant_ht,
+        type, statut, chauffeur_id, sous_traitant_id, st_cout_ht, st_marge_ht, montant_ht,
         chauffeur:chauffeurs(id, nom, prenom),
         jours:jours_mad(chauffeur_id, chauffeur:chauffeurs(id, nom, prenom))
       )
@@ -62,7 +62,10 @@ export async function GET(req: NextRequest) {
   const parMois = new Map<string, number>() // 'YYYY-MM' -> ca ht
 
   for (const d of D) {
-    const ht = (d as any).montant_ht ?? 0
+    // CA = prestations NON annulées (exclut statut 'annule')
+    const ht = ((d as any).prestations ?? [])
+      .filter((p: any) => p.statut !== 'annule')
+      .reduce((a: number, p: any) => a + (p.montant_ht ?? 0), 0)
     caDossiersHt += ht
     const client = Array.isArray((d as any).client) ? (d as any).client[0] : (d as any).client
     if (client) {
@@ -74,6 +77,7 @@ export async function GET(req: NextRequest) {
     if (mois) parMois.set(mois, (parMois.get(mois) ?? 0) + ht)
 
     for (const p of ((d as any).prestations ?? [])) {
+      if (p.statut === 'annule') continue   // ignorer les prestations annulées
       if (p.type === 'mad') nbMad++; else nbTransfert++
       if (p.sous_traitant_id) {
         nbSousTraitees++

@@ -27,12 +27,14 @@ export default async function ClientDetailPage({ params }: { params: { id: strin
 
   const { data: dossiers } = await supabase
     .from('dossiers')
-    .select('id, numero, date_debut, date_fin, statut, montant_ht, nb_jours, prestations(id)')
+    .select('id, numero, date_debut, date_fin, statut, montant_ht, nb_jours, prestations(id, statut, montant_ht)')
     .eq('client_id', params.id)
     .order('date_debut', { ascending: false })
 
   const D = dossiers ?? []
-  const caTotal = D.reduce((s, d) => s + (d.montant_ht ?? 0), 0)
+  // CA = prestations NON annulées
+  const caTotal = D.reduce((s: number, d: any) =>
+    s + (d.prestations ?? []).filter((p: any) => p.statut !== 'annule').reduce((a: number, p: any) => a + (p.montant_ht ?? 0), 0), 0)
   const ville = [c.code_postal, c.ville].filter(Boolean).join(' ')
 
   return (
