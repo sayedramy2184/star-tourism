@@ -213,7 +213,55 @@ export default async function VehiculeDetailPage({ params }: { params: { id: str
             </span>
           </div>
 
-          <div className="table-container">
+          {/* Liste mobile (cartes) */}
+          <div className="md:hidden" style={{ display:'flex', flexDirection:'column', gap:'10px' }}>
+            {nbMissions === 0 ? (
+              <div style={{ padding:'30px', textAlign:'center', color:'#8a8478', fontSize:'12px' }}>Aucune mission pour ce véhicule</div>
+            ) : (
+              <>
+                {prestations?.map((p: any) => (
+                  <div key={`mp-${p.id}`} style={{ background:'#fff', border:'1.5px solid #b8b0a4', boxShadow:'0 1px 4px rgba(0,0,0,0.06)', padding:'12px' }}>
+                    <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', gap:'8px' }}>
+                      <div style={{ display:'flex', alignItems:'center', gap:'8px', minWidth:0 }}>
+                        <span className={p.type === 'mad' ? 'pill-mad' : 'pill-transfer'}>{p.type === 'mad' ? 'MAD' : 'Transfert'}</span>
+                        <span className="mono" style={{ fontSize:'11px' }}>{format(new Date(p.date_debut),'dd/MM/yy',{locale:fr})}</span>
+                      </div>
+                      <span style={{ fontSize:'10px', fontWeight:700, color: p.statut === 'termine' ? '#8a8478' : p.statut === 'confirme' ? '#1e5e3a' : '#1e3f70' }}>{p.statut}</span>
+                    </div>
+                    <div style={{ fontWeight:600, fontSize:'13px', marginTop:'6px' }}>{p.dossier?.client?.nom ?? '—'}</div>
+                    <div className="mono" style={{ fontSize:'9px', color:'#9a7a28' }}>{p.dossier?.numero}</div>
+                    {(p.adresse_depart || p.adresse_arrivee) && (
+                      <div style={{ fontSize:'11px', color:'#5a564e', marginTop:'4px' }}>{p.adresse_depart}{p.adresse_arrivee ? ` → ${p.adresse_arrivee}` : ''}</div>
+                    )}
+                    <div style={{ display:'flex', justifyContent:'space-between', gap:'8px', marginTop:'6px', fontSize:'11px' }}>
+                      <span style={{ color:'#5a564e' }}>{p.chauffeur ? `${p.chauffeur.prenom} ${p.chauffeur.nom}` : '—'}</span>
+                      <span className="mono" style={{ color:'#9a7a28' }}>{p.montant_ht ? fmt(p.montant_ht) : '—'}</span>
+                    </div>
+                  </div>
+                ))}
+                {jours?.map((j: any) => (
+                  <div key={`mj-${j.id}`} style={{ background:'#fff', border:'1.5px solid #b8b0a4', boxShadow:'0 1px 4px rgba(0,0,0,0.06)', padding:'12px' }}>
+                    <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', gap:'8px' }}>
+                      <div style={{ display:'flex', alignItems:'center', gap:'8px', minWidth:0 }}>
+                        <span className="pill-mad">MAD</span>
+                        <span className="mono" style={{ fontSize:'11px' }}>{j.jour_semaine} {format(new Date(j.date),'dd/MM/yy',{locale:fr})}</span>
+                      </div>
+                      <span style={{ fontSize:'10px', fontWeight:700, color: j.statut === 'termine' ? '#8a8478' : '#1e3f70' }}>{j.statut}</span>
+                    </div>
+                    <div style={{ fontWeight:600, fontSize:'13px', marginTop:'6px' }}>{j.prestation?.dossier?.client?.nom ?? '—'}</div>
+                    <div className="mono" style={{ fontSize:'9px', color:'#9a7a28' }}>{j.prestation?.dossier?.numero}</div>
+                    <div style={{ display:'flex', justifyContent:'space-between', gap:'8px', marginTop:'6px', fontSize:'11px' }}>
+                      <span style={{ color:'#5a564e' }}>{j.chauffeur ? `${j.chauffeur.prenom} ${j.chauffeur.nom}` : '—'}</span>
+                      <span className="mono" style={{ color:'#9a7a28' }}>{fmt(j.tarif_ht)}</span>
+                    </div>
+                  </div>
+                ))}
+              </>
+            )}
+          </div>
+
+          {/* Table (desktop) */}
+          <div className="table-container hidden md:block">
             <table style={{ width:'100%', borderCollapse:'collapse' }}>
               <thead className="table-head">
                 <tr>
