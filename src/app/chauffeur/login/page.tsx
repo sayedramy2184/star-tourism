@@ -1,0 +1,62 @@
+'use client'
+
+import { useState } from 'react'
+import { useRouter } from 'next/navigation'
+import { createClient } from '@/lib/supabase/client'
+import toast from 'react-hot-toast'
+
+export default function ChauffeurLoginPage() {
+  const router = useRouter()
+  const supabase = createClient()
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [loading, setLoading] = useState(false)
+
+  async function handleLogin(e: React.FormEvent) {
+    e.preventDefault()
+    setLoading(true)
+    const { error } = await supabase.auth.signInWithPassword({ email, password })
+    if (error) {
+      toast.error(error.message === 'Invalid login credentials'
+        ? 'Email ou mot de passe incorrect'
+        : error.message)
+      setLoading(false)
+      return
+    }
+    toast.success('Connexion réussie')
+    router.replace('/chauffeur')
+    router.refresh()
+  }
+
+  return (
+    <div style={{ minHeight: '100dvh', background: '#16130e', display: 'flex', flexDirection: 'column', justifyContent: 'center', padding: '28px 24px' }}>
+      {/* Logo */}
+      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginBottom: '40px' }}>
+        <div style={{ width: '52px', height: '52px', border: '2px solid #9a7a28', display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: 'Cormorant Garamond,serif', fontSize: '28px', color: '#9a7a28', fontWeight: 600 }}>
+          ✦
+        </div>
+        <div style={{ fontFamily: 'Cormorant Garamond,serif', fontSize: '22px', color: '#fff', letterSpacing: '2px', marginTop: '14px' }}>STAR TOURISM</div>
+        <div style={{ fontSize: '10px', letterSpacing: '3px', color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase', marginTop: '4px' }}>Espace chauffeur</div>
+      </div>
+
+      <form onSubmit={handleLogin} style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
+        <div>
+          <label style={{ fontSize: '10px', fontWeight: 600, letterSpacing: '2px', textTransform: 'uppercase', color: 'rgba(255,255,255,0.5)', display: 'block', marginBottom: '6px' }}>Email</label>
+          <input type="email" required value={email} onChange={e => setEmail(e.target.value)}
+            autoComplete="username" placeholder="chauffeur@elitedrive.fr"
+            style={{ width: '100%', background: 'rgba(255,255,255,0.06)', border: '1.5px solid rgba(255,255,255,0.15)', color: '#fff', padding: '14px', fontSize: '15px', outline: 'none' }} />
+        </div>
+        <div>
+          <label style={{ fontSize: '10px', fontWeight: 600, letterSpacing: '2px', textTransform: 'uppercase', color: 'rgba(255,255,255,0.5)', display: 'block', marginBottom: '6px' }}>Mot de passe</label>
+          <input type="password" required value={password} onChange={e => setPassword(e.target.value)}
+            autoComplete="current-password" placeholder="••••••••"
+            style={{ width: '100%', background: 'rgba(255,255,255,0.06)', border: '1.5px solid rgba(255,255,255,0.15)', color: '#fff', padding: '14px', fontSize: '15px', outline: 'none' }} />
+        </div>
+        <button type="submit" disabled={loading}
+          style={{ width: '100%', background: '#9a7a28', color: '#fff', border: 'none', padding: '15px', fontSize: '14px', fontWeight: 600, letterSpacing: '1px', textTransform: 'uppercase', cursor: 'pointer', marginTop: '8px' }}>
+          {loading ? 'Connexion…' : 'Se connecter'}
+        </button>
+      </form>
+    </div>
+  )
+}

@@ -1,0 +1,244 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ── Base ── */
+* { box-sizing: border-box; }
+
+body {
+  background: #ede9e2;
+  color: #16130e;
+  -webkit-font-smoothing: antialiased;
+  font-size: 13px;
+}
+
+/* ── Scrollbar ── */
+::-webkit-scrollbar        { width: 3px; height: 3px; }
+::-webkit-scrollbar-track  { background: #ede9e2; }
+::-webkit-scrollbar-thumb  { background: #b8b0a4; }
+
+@layer components {
+
+  /* ── Boutons ── */
+  .btn-primary {
+    background: #16130e;
+    color: #fff;
+    border: none;
+    padding: 8px 18px;
+    font-family: inherit;
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.3px;
+    cursor: pointer;
+    transition: background 0.15s;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .btn-primary:hover { background: #2e2b25; }
+  .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
+
+  .btn-ghost {
+    background: transparent;
+    color: #5a564e;
+    border: 1.5px solid #b8b0a4;
+    padding: 7px 16px;
+    font-family: inherit;
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.15s;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .btn-ghost:hover { border-color: #9a7a28; color: #9a7a28; }
+
+  .btn-or {
+    background: #9a7a28;
+    color: #fff;
+    border: none;
+    padding: 8px 18px;
+    font-family: inherit;
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: filter 0.15s;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .btn-or:hover { filter: brightness(0.9); }
+
+  /* ── Inputs ── */
+  .input {
+    background: #ffffff;
+    border: 1.5px solid #b8b0a4;
+    color: #16130e;
+    padding: 9px 12px;
+    font-family: inherit;
+    font-size: 12px;
+    font-weight: 400;
+    width: 100%;
+    outline: none;
+    transition: border-color 0.14s;
+    -webkit-appearance: none;
+    appearance: none;
+  }
+  .input:focus { border-color: #9a7a28; background: #fff; }
+  .input::placeholder { color: #c2bdb4; }
+  .select { @apply input; cursor: pointer; }
+  .textarea { @apply input; resize: vertical; min-height: 64px; }
+
+  /* ── Form label ── */
+  .form-label {
+    font-size: 9px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: #5a564e;
+    display: block;
+    margin-bottom: 5px;
+  }
+
+  /* ── KPI Card ── */
+  .kpi-card {
+    background: #ffffff;
+    border: 1.5px solid #b8b0a4;
+    padding: 18px 20px 14px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+    transition: box-shadow 0.15s;
+  }
+  .kpi-card:hover { box-shadow: 0 4px 14px rgba(0,0,0,0.10); }
+  .kpi-label {
+    font-size: 9px;
+    font-weight: 600;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    color: #8a8478;
+    margin-bottom: 8px;
+  }
+  .kpi-value {
+    font-family: 'Cormorant Garamond', var(--font-display), serif;
+    font-size: 36px;
+    font-weight: 300;
+    color: #16130e;
+    line-height: 1;
+    margin-bottom: 5px;
+  }
+  .kpi-sub { font-size: 11px; color: #5a564e; }
+
+  /* ── Card ── */
+  .card {
+    background: #ffffff;
+    border: 1.5px solid #b8b0a4;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+  }
+  .card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    background: #16130e;
+    padding: 11px 18px;
+    min-height: 46px;
+  }
+  .card-header-title {
+    display: inline-flex;
+    align-items: center;
+    font-family: 'Cormorant Garamond', var(--font-display), serif;
+    font-size: 16px;
+    font-weight: 500;
+    letter-spacing: 0.3px;
+    color: #f3efe6;
+  }
+
+  /* ── Status badges ── */
+  .badge { display: inline-flex; align-items: center; gap: 5px; font-size: 10px; font-weight: 700; }
+  .badge-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+  .badge-confirmed  { color: #1e5e3a; } .badge-confirmed  .badge-dot { background: #1e5e3a; }
+  .badge-pending    { color: #7a5c10; } .badge-pending    .badge-dot { background: #7a5c10; }
+  .badge-inprogress { color: #1e3f70; } .badge-inprogress .badge-dot { background: #1e3f70; animation: blink 1.6s infinite; }
+  .badge-done       { color: #8a8478; } .badge-done       .badge-dot { background: #c2bdb4; }
+  .badge-cancelled  { color: #9e2a2a; } .badge-cancelled  .badge-dot { background: #9e2a2a; }
+  .badge-draft      { color: #8a8478; } .badge-draft      .badge-dot { background: #c2bdb4; }
+  @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.3} }
+
+  /* ── Pills ── */
+  .pill-mad      { display:inline-block; background:#fdf3dc; color:#7a5c10; font-size:8px; font-weight:700; letter-spacing:.5px; text-transform:uppercase; padding:2px 7px; border:1px solid rgba(122,92,16,0.2); }
+  .pill-transfer { display:inline-block; background:#e8eef8; color:#1e3f70; font-size:8px; font-weight:700; letter-spacing:.5px; text-transform:uppercase; padding:2px 7px; border:1px solid rgba(30,63,112,0.2); }
+  .pill-ext      { display:inline-block; background:#f0ebfa; color:#4a2a6e; font-size:8px; font-weight:700; letter-spacing:.5px; text-transform:uppercase; padding:2px 7px; border:1px solid rgba(74,42,110,0.2); }
+
+  /* ── Table ── */
+  .table-container { background:#fff; border:1.5px solid #b8b0a4; overflow-x:auto; overflow-y:hidden; -webkit-overflow-scrolling:touch; box-shadow:0 2px 10px rgba(0,0,0,0.07); }
+  .table-container > table { min-width:680px; }
+  .table-head { background: #16130e; }
+  .th { padding:11px 16px; text-align:left; font-size:9px; letter-spacing:2px; text-transform:uppercase; color:rgba(255,255,255,0.55); font-weight:600; white-space:nowrap; }
+  .tr-body { border-bottom:1px solid #d8d2c8; cursor:pointer; transition:background 0.12s; }
+  .tr-body:last-child { border-bottom:none; }
+  .tr-body:nth-child(odd)  { background:#fff; }
+  .tr-body:nth-child(even) { background:#f5f2ed; }
+  .tr-body:hover { background:#fdf6e3 !important; }
+  .td { padding:12px 16px; font-size:12px; color:#2e2b25; vertical-align:middle; border-right:1px solid #ede9e2; }
+  .td:last-child { border-right:none; }
+
+  /* ── Filter chips ── */
+  .filter-chip { padding:5px 14px; font-size:10px; font-weight:600; letter-spacing:1px; text-transform:uppercase; border:1.5px solid #b8b0a4; color:#5a564e; cursor:pointer; transition:all 0.14s; background:#fff; }
+  .filter-chip:hover  { border-color:#2e2b25; color:#16130e; }
+  .filter-chip.active { border-color:#9a7a28; color:#9a7a28; background:#fdf6e3; }
+
+  /* ── Nav ── */
+  .nav-item { display:flex; align-items:center; gap:10px; padding:9px 22px; cursor:pointer; color:rgba(255,255,255,0.45); font-size:12px; font-weight:400; border-left:2px solid transparent; transition:all 0.15s; text-decoration:none; }
+  .nav-item:hover { color:rgba(255,255,255,0.8); background:rgba(255,255,255,0.04); }
+  .nav-item-active { color:#fff !important; border-left-color:#9a7a28 !important; background:rgba(154,122,40,0.12) !important; font-weight:500 !important; }
+
+  /* ── Topbar ── */
+  .topbar { background:#fff; border-bottom:2px solid #b8b0a4; padding:0 32px; height:56px; display:flex; align-items:center; gap:14px; position:sticky; top:0; z-index:40; box-shadow:0 2px 8px rgba(0,0,0,0.08); }
+
+  /* ── Section title ── */
+  .section-title { font-family:'Cormorant Garamond',var(--font-display),serif; font-size:18px; font-weight:500; color:#16130e; letter-spacing:.5px; }
+
+  /* ── Mono / display ── */
+  .mono    { font-family:'JetBrains Mono',var(--font-mono),monospace; }
+  .display { font-family:'Cormorant Garamond',var(--font-display),serif; }
+}
+
+/* ── Modals — forcer fond blanc sur tous les éléments ── */
+.modal-body .input,
+.modal-body .select,
+.modal-body .textarea {
+  background: #ffffff !important;
+  border-color: #b8b0a4;
+}
+
+.modal-body .input:focus,
+.modal-body .select:focus,
+.modal-body .textarea:focus {
+  background: #ffffff !important;
+  border-color: #9a7a28;
+}
+
+/* ═══ Responsive helpers ═══
+   Classes de grille qui se replient sur mobile. À utiliser À LA PLACE des
+   styles inline `gridTemplateColumns` (un style inline l'emporterait sur ces règles). */
+
+.detail-grid { display:grid; grid-template-columns: 1fr 300px; gap:20px; }
+@media (max-width: 900px) { .detail-grid { grid-template-columns: 1fr; } }
+
+.form-grid-2 { display:grid; grid-template-columns: 1fr 1fr; gap:12px; }
+.form-grid-3 { display:grid; grid-template-columns: 1fr 1fr 1fr; gap:12px; }
+.form-grid-4 { display:grid; grid-template-columns: repeat(4, 1fr); gap:10px; }
+.stat-grid-3 { display:grid; grid-template-columns: repeat(3, 1fr); gap:16px; }
+
+@media (max-width: 720px) {
+  .form-grid-3, .form-grid-4 { grid-template-columns: 1fr 1fr; }
+}
+@media (max-width: 480px) {
+  .form-grid-2, .form-grid-3, .form-grid-4, .stat-grid-3 { grid-template-columns: 1fr; }
+}
+
+/* Sur petit écran, réduire le padding des cartes et titres */
+@media (max-width: 640px) {
+  .section-title { font-size: 16px; }
+  .card-header { padding-left: 14px; padding-right: 14px; }
+}
