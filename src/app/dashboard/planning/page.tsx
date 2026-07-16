@@ -162,7 +162,7 @@ export default function PlanningPage() {
         </div>
 
         {/* Onglets missions / chauffeurs / véhicules */}
-        <div style={{ display:'flex', gap:'3px', borderLeft:'1px solid #d8d2c8', paddingLeft:'10px' }}>
+        <div className="hidden md:flex" style={{ gap:'3px', borderLeft:'1px solid #d8d2c8', paddingLeft:'10px' }}>
           {([
             ['missions',  'Missions',  <Calendar size={11}/>],
             ['chauffeurs','Chauffeurs',<Users size={11}/>],
@@ -201,31 +201,24 @@ export default function PlanningPage() {
           <div style={{ display:'flex', alignItems:'center', justifyContent:'center', height:'200px', color:'#8a8478', fontSize:'12px' }}>
             Chargement…
           </div>
-        ) : tab === 'missions' ? (
-          <MissionsView
-            days={days} viewMode={viewMode} data={data}
-            onTooltip={setTooltip}
-            onDragStart={setDragJourId}
-            router={router}
-          />
-        ) : tab === 'chauffeurs' ? (
-          <ChauffeursView
-            days={days} viewMode={viewMode} data={data}
-            onTooltip={setTooltip}
-            dragJourId={dragJourId}
-            dragOver={dragOver}
-            onDragStart={setDragJourId}
-            onDragOver={setDragOver}
-            onDrop={handleDrop}
-            conflits={conflits}
-            router={router}
-          />
         ) : (
-          <VehiculesView
-            days={days} viewMode={viewMode} data={data}
-            onTooltip={setTooltip}
-            router={router}
-          />
+          <>
+            {/* ── Mobile : agenda jour par jour ── */}
+            <div className="md:hidden">
+              <PlanningMobile days={days} data={data} router={router} />
+            </div>
+
+            {/* ── Desktop : gantt ── */}
+            <div className="hidden md:block">
+              {tab === 'missions' ? (
+                <MissionsView days={days} viewMode={viewMode} data={data} onTooltip={setTooltip} onDragStart={setDragJourId} router={router} />
+              ) : tab === 'chauffeurs' ? (
+                <ChauffeursView days={days} viewMode={viewMode} data={data} onTooltip={setTooltip} dragJourId={dragJourId} dragOver={dragOver} onDragStart={setDragJourId} onDragOver={setDragOver} onDrop={handleDrop} conflits={conflits} router={router} />
+              ) : (
+                <VehiculesView days={days} viewMode={viewMode} data={data} onTooltip={setTooltip} router={router} />
+              )}
+            </div>
+          </>
         )}
       </div>
 
@@ -610,6 +603,111 @@ function VehiculesView({ days, viewMode, data, onTooltip, router }: any) {
 // ══════════════════════════════════════════════
 //  COMPOSANTS UI
 // ══════════════════════════════════════════════
+
+// ══════════════════════════════════════════════
+//  VUE MOBILE — agenda jour par jour (cartes)
+// ══════════════════════════════════════════════
+
+function PlanningMobile({ days, data, router }: { days: Date[]; data: any; router: any }) {
+  const todayIdx = days.findIndex(d => isToday(d))
+  const [sel, setSel] = useState(todayIdx >= 0 ? todayIdx : 0)
+  if (!data) return null
+
+  const day = days[Math.min(sel, days.length - 1)] ?? days[0]
+  const dateStr = format(day, 'yyyy-MM-dd')
+  const jours = (data.jours ?? []).filter((j: JourMad) => j.date === dateStr)
+  const transferts = (data.transferts ?? []).filter((t: Transfert) => t.date_debut === dateStr)
+  const total = jours.length + transferts.length
+
+  function nbFor(d: Date) {
+    const ds = format(d, 'yyyy-MM-dd')
+    return (data.jours ?? []).filter((j: JourMad) => j.date === ds).length + (data.transferts ?? []).filter((t: Transfert) => t.date_debut === ds).length
+  }
+
+  return (
+    <div>
+      {/* Sélecteur de jour */}
+      <div style={{ display: 'flex', gap: '6px', overflowX: 'auto', padding: '12px', borderBottom: '1.5px solid #d8d2c8', WebkitOverflowScrolling: 'touch' }}>
+        {days.map((d, i) => {
+          const on = i === sel; const today = isToday(d); const n = nbFor(d)
+          return (
+            <button key={d.toISOString()} onClick={() => setSel(i)}
+              style={{ flexShrink: 0, minWidth: '46px', padding: '6px 4px', textAlign: 'center', cursor: 'pointer',
+                background: on ? '#16130e' : today ? '#fdf6e3' : '#fff', border: `1.5px solid ${on ? '#16130e' : today ? '#9a7a28' : '#d8d2c8'}`,
+                color: on ? '#fff' : '#16130e' }}>
+              <div style={{ fontSize: '8px', textTransform: 'uppercase', letterSpacing: '0.5px', opacity: 0.7 }}>{format(d, 'EEE', { locale: fr })}</div>
+              <div style={{ fontFamily: 'Cormorant Garamond,serif', fontSize: '17px', lineHeight: 1.1 }}>{format(d, 'd', { locale: fr })}</div>
+              {n > 0 && <div style={{ fontSize: '8px', fontFamily: 'JetBrains Mono,monospace', color: on ? '#c9a84c' : '#9a7a28' }}>{n}</div>}
+            </button>
+          )
+        })}
+      </div>
+
+      {/* Missions du jour */}
+      <div style={{ padding: '12px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
+        <div style={{ fontSize: '11px', color: '#8a8478', fontWeight: 600 }}>
+          {format(day, 'EEEE d MMMM', { locale: fr })} · {total} mission{total > 1 ? 's' : ''}
+        </div>
+        {total === 0 ? (
+          <div style={{ padding: '30px', textAlign: 'center', color: '#8a8478', fontSize: '12px' }}>Aucune mission ce jour</div>
+        ) : (
+          <>
+            {jours.map((j: JourMad) => {
+              const stat = calcStatutClient({ statut: j.prestation.statut ?? j.statut, type: 'mad', date_debut: j.date, date_fin: j.date, heure_debut_journee: j.prestation.heure_debut_journee, heure_fin_journee: j.prestation.heure_fin_journee })
+              const si = STATUT_MAP[stat] ?? STATUT_MAP.en_attente
+              const veh = (data.vehicules ?? []).find((v: any) => v.id === jourVehiculeId(j))
+              const chauf = j.chauffeur ? `${j.chauffeur.prenom} ${j.chauffeur.nom}` : j.sous_traitant ? `ST · ${j.sous_traitant.societe}` : null
+              return (
+                <MobileMissionCard key={j.id} type="MAD" typeColor="#7a5c10" client={j.prestation.dossier.client.nom} numero={j.prestation.dossier.numero}
+                  heure={j.prestation.heure_debut_journee ? `${j.prestation.heure_debut_journee}→${j.prestation.heure_fin_journee ?? ''}` : null}
+                  itineraire={j.prestation.adresse_depart ?? 'Mise à disposition'}
+                  chauffeur={chauf} vehicule={veh ? `${veh.marque} ${veh.modele}` : (j.prestation.modele_souhaite ?? null)}
+                  siLabel={si.label} siColor={si.color} siBg={si.bg} siBorder={si.border}
+                  onOpen={() => router.push(`/dashboard/dossiers/${j.prestation.dossier.id}`)} />
+              )
+            })}
+            {transferts.map((t: Transfert) => {
+              const stat = calcStatutClient({ statut: t.statut, type: 'transfert', date_debut: t.date_debut, date_fin: t.date_debut, heure_depart: t.heure_depart })
+              const si = STATUT_MAP[stat] ?? STATUT_MAP.en_attente
+              const chauf = t.chauffeur ? `${t.chauffeur.prenom} ${t.chauffeur.nom}` : t.sous_traitant ? `ST · ${t.sous_traitant.societe}` : null
+              return (
+                <MobileMissionCard key={t.id} type="Transfert" typeColor="#1e3f70" client={t.dossier.client.nom} numero={t.dossier.numero}
+                  heure={t.heure_depart ?? null}
+                  itineraire={`${t.adresse_depart ?? '—'} → ${t.adresse_arrivee ?? '—'}`}
+                  chauffeur={chauf} vehicule={t.vehicule ? `${t.vehicule.marque} ${t.vehicule.modele}` : null}
+                  siLabel={si.label} siColor={si.color} siBg={si.bg} siBorder={si.border}
+                  onOpen={() => router.push(`/dashboard/dossiers/${t.dossier.id}`)} />
+              )
+            })}
+          </>
+        )}
+      </div>
+    </div>
+  )
+}
+
+function MobileMissionCard({ type, typeColor, client, numero, heure, itineraire, chauffeur, vehicule, siLabel, siColor, siBg, siBorder, onOpen }: any) {
+  return (
+    <div onClick={onOpen} style={{ background: '#fff', border: '1.5px solid #b8b0a4', borderLeft: `3px solid ${typeColor}`, boxShadow: '0 1px 4px rgba(0,0,0,0.06)', cursor: 'pointer' }}>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '8px', padding: '9px 12px', borderBottom: '1px solid #ede9e2' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', minWidth: 0 }}>
+          <span style={{ fontSize: '9px', fontWeight: 700, color: typeColor }}>{type}</span>
+          <span style={{ fontFamily: 'JetBrains Mono,monospace', fontSize: '11px', color: '#9a7a28' }}>{numero}</span>
+          {heure && <span style={{ fontFamily: 'JetBrains Mono,monospace', fontSize: '11px', color: '#16130e', fontWeight: 600 }}>{heure}</span>}
+        </div>
+        <span style={{ flexShrink: 0, display: 'inline-flex', alignItems: 'center', gap: '5px', fontSize: '9px', fontWeight: 700, padding: '2px 8px', color: siColor, background: siBg, border: `1px solid ${siBorder}` }}>{siLabel}</span>
+      </div>
+      <div style={{ padding: '9px 12px' }}>
+        <div style={{ fontWeight: 600, color: '#16130e', fontSize: '14px' }}>{client}</div>
+        <div style={{ fontSize: '12px', color: '#5a564e', marginTop: '2px' }}>{itineraire}</div>
+        <div style={{ display: 'flex', justifyContent: 'space-between', gap: '8px', marginTop: '6px', fontSize: '11px', flexWrap: 'wrap' }}>
+          <span style={{ color: chauffeur ? '#5a564e' : '#9e2a2a', fontWeight: chauffeur ? 400 : 600 }}>{chauffeur ?? '⚠ À affecter'}</span>
+          <span style={{ color: '#8a8478' }}>{vehicule ?? '—'}</span>
+        </div>
+      </div>
+    </div>
+  )
+}
 
 function GanttHeader({ days, viewMode, firstColLabel }: { days: Date[]; viewMode: ViewMode; firstColLabel: string }) {
   return (
