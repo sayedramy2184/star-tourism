@@ -20,12 +20,19 @@ export async function POST(req: NextRequest) {
   // Vérifie que ce jour appartient bien au chauffeur connecté
   const { data: jour } = await supabase
     .from('jours_mad')
-    .select('id, chauffeur_id, prestation_id')
+    .select('id, chauffeur_id, prestation_id, prestation:prestations(dossier:dossiers(valide_at))')
     .eq('id', jour_id)
     .single()
 
   if (!jour || jour.chauffeur_id !== chauffeur.id) {
     return NextResponse.json({ error: 'Mission non autorisée' }, { status: 403 })
+  }
+
+  // Verrou : une fois le dossier validé par le dispatch, les heures sont figées
+  const prest = Array.isArray(jour.prestation) ? jour.prestation[0] : jour.prestation
+  const dossier = prest ? (Array.isArray(prest.dossier) ? prest.dossier[0] : prest.dossier) : null
+  if (dossier?.valide_at) {
+    return NextResponse.json({ error: 'Heures validées par le dispatch — modification impossible.' }, { status: 423 })
   }
 
   const { error: upErr } = await supabase

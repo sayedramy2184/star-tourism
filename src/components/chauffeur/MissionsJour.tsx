@@ -8,11 +8,12 @@ import { fr } from 'date-fns/locale'
 import toast from 'react-hot-toast'
 import {
   ChevronLeft, ChevronRight, MapPin, Phone, Navigation, Clock, LogOut, Car, CalendarDays,
+  CalendarClock, History, User, Lock, ShieldCheck, Briefcase,
 } from 'lucide-react'
 import DocumentsControle from './DocumentsControle'
 
-// Supabase renvoie parfois les relations 1-1 sous forme de tableau : on normalise.
 function one(v: any) { return Array.isArray(v) ? v[0] : v }
+function todayStr() { return new Date().toISOString().slice(0, 10) }
 
 const STATUTS: Record<string, { label: string; color: string; bg: string }> = {
   en_attente: { label: 'À venir',   color: '#7a5c10', bg: '#fdf3dc' },
@@ -49,35 +50,16 @@ function AddressRow({ label, addr }: { label: string; addr: string }) {
   )
 }
 
+// ══════════════════════════════════════════════
+//  SHELL — onglets
+// ══════════════════════════════════════════════
+
+type Tab = 'jour' | 'avenir' | 'historique' | 'profil'
+
 export default function MissionsJour({ chauffeurNom }: { chauffeurNom: string }) {
   const router = useRouter()
   const supabase = createClient()
-  const [date, setDate] = useState(() => new Date().toISOString().slice(0, 10))
-  const [data, setData] = useState<{ jours: any[]; transferts: any[] } | null>(null)
-  const [chauffeurInfo, setChauffeurInfo] = useState<{ prenom: string; nom: string; vtc_card_numero: string | null } | null>(null)
-  const [loading, setLoading] = useState(true)
-
-  const load = useCallback(async (d: string) => {
-    setLoading(true)
-    try {
-      const res = await fetch(`/api/chauffeur/missions?date=${d}`)
-      const json = await res.json()
-      if (!res.ok) throw new Error(json.error ?? 'Erreur')
-      setData({ jours: json.data.jours, transferts: json.data.transferts })
-      setChauffeurInfo(json.data.chauffeur)
-    } catch (err: any) {
-      toast.error(err.message)
-      setData({ jours: [], transferts: [] })
-    } finally {
-      setLoading(false)
-    }
-  }, [])
-
-  useEffect(() => { load(date) }, [date, load])
-
-  function shiftDay(n: number) {
-    setDate(format(addDays(parseISO(date), n), 'yyyy-MM-dd'))
-  }
+  const [tab, setTab] = useState<Tab>('jour')
 
   async function logout() {
     await supabase.auth.signOut()
@@ -85,13 +67,9 @@ export default function MissionsJour({ chauffeurNom }: { chauffeurNom: string })
     router.refresh()
   }
 
-  const total = (data?.jours.length ?? 0) + (data?.transferts.length ?? 0)
-  const dObj = parseISO(date)
-
   return (
-    <div style={{ minHeight: '100dvh', display: 'flex', flexDirection: 'column' }}>
-
-      {/* ── En-tête ── */}
+    <div style={{ minHeight: '100dvh', display: 'flex', flexDirection: 'column', background: '#ede9e2' }}>
+      {/* En-tête */}
       <header style={{ background: '#16130e', padding: 'max(env(safe-area-inset-top), 14px) 18px 14px', position: 'sticky', top: 0, zIndex: 20 }}>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
@@ -108,7 +86,64 @@ export default function MissionsJour({ chauffeurNom }: { chauffeurNom: string })
         </div>
       </header>
 
-      {/* ── Navigation jour ── */}
+      {/* Contenu selon l'onglet */}
+      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', paddingBottom: 'calc(64px + env(safe-area-inset-bottom))' }}>
+        {tab === 'jour'       && <TabJour />}
+        {tab === 'avenir'     && <TabRange mode="avenir" />}
+        {tab === 'historique' && <TabRange mode="historique" />}
+        {tab === 'profil'     && <TabProfil />}
+      </div>
+
+      {/* Barre d'onglets fixe */}
+      <nav style={{ position: 'fixed', bottom: 0, left: 0, right: 0, background: '#fff', borderTop: '1.5px solid #d8d2c8', display: 'flex', paddingBottom: 'env(safe-area-inset-bottom)', zIndex: 30 }}>
+        {([
+          ['jour', 'Aujourd\'hui', <CalendarDays size={19} key="a" />],
+          ['avenir', 'À venir', <CalendarClock size={19} key="b" />],
+          ['historique', 'Historique', <History size={19} key="c" />],
+          ['profil', 'Profil', <User size={19} key="d" />],
+        ] as const).map(([v, label, icon]) => (
+          <button key={v} onClick={() => setTab(v)}
+            style={{ flex: 1, background: 'none', border: 'none', cursor: 'pointer', padding: '9px 4px 8px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '3px', color: tab === v ? '#9a7a28' : '#8a8478' }}>
+            {icon}
+            <span style={{ fontSize: '9px', fontWeight: tab === v ? 700 : 500, letterSpacing: '0.3px' }}>{label}</span>
+          </button>
+        ))}
+      </nav>
+    </div>
+  )
+}
+
+// ══════════════════════════════════════════════
+//  ONGLET AUJOURD'HUI — navigation jour + saisie heures
+// ══════════════════════════════════════════════
+
+function TabJour() {
+  const [date, setDate] = useState(todayStr)
+  const [data, setData] = useState<{ jours: any[]; transferts: any[] } | null>(null)
+  const [chauffeurInfo, setChauffeurInfo] = useState<any>(null)
+  const [loading, setLoading] = useState(true)
+
+  const load = useCallback(async (d: string) => {
+    setLoading(true)
+    try {
+      const res = await fetch(`/api/chauffeur/missions?date=${d}`)
+      const json = await res.json()
+      if (!res.ok) throw new Error(json.error ?? 'Erreur')
+      setData({ jours: json.data.jours, transferts: json.data.transferts })
+      setChauffeurInfo(json.data.chauffeur)
+    } catch (err: any) { toast.error(err.message); setData({ jours: [], transferts: [] }) }
+    finally { setLoading(false) }
+  }, [])
+
+  useEffect(() => { load(date) }, [date, load])
+  function shiftDay(n: number) { setDate(format(addDays(parseISO(date), n), 'yyyy-MM-dd')) }
+
+  const total = (data?.jours.length ?? 0) + (data?.transferts.length ?? 0)
+  const dObj = parseISO(date)
+
+  return (
+    <>
+      {/* Navigation jour */}
       <div style={{ background: '#fff', borderBottom: '1.5px solid #d8d2c8', padding: '10px 12px', display: 'flex', alignItems: 'center', gap: '8px', position: 'sticky', top: '62px', zIndex: 15 }}>
         <button onClick={() => shiftDay(-1)} aria-label="Jour précédent"
           style={{ background: '#f5f2ed', border: '1.5px solid #d8d2c8', width: '40px', height: '40px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', flexShrink: 0 }}>
@@ -118,7 +153,7 @@ export default function MissionsJour({ chauffeurNom }: { chauffeurNom: string })
           <div style={{ fontFamily: 'Cormorant Garamond,serif', fontSize: '18px', color: '#16130e', lineHeight: 1.1, textTransform: 'capitalize' }}>
             {format(dObj, 'EEEE d MMMM', { locale: fr })}
           </div>
-          <button onClick={() => setDate(new Date().toISOString().slice(0, 10))}
+          <button onClick={() => setDate(todayStr())}
             style={{ background: 'none', border: 'none', fontSize: '11px', color: isToday(dObj) ? '#9a7a28' : '#8a8478', cursor: 'pointer', marginTop: '1px', display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
             <CalendarDays size={11} /> {isToday(dObj) ? "Aujourd'hui" : "Revenir à aujourd'hui"}
           </button>
@@ -129,8 +164,7 @@ export default function MissionsJour({ chauffeurNom }: { chauffeurNom: string })
         </button>
       </div>
 
-      {/* ── Contenu ── */}
-      <div style={{ flex: 1, padding: '14px 12px 96px' }}>
+      <div style={{ flex: 1, padding: '14px 12px 20px' }}>
         {loading ? (
           <div style={{ textAlign: 'center', padding: '60px 0', color: '#8a8478', fontSize: '13px' }}>Chargement…</div>
         ) : total === 0 ? (
@@ -151,23 +185,198 @@ export default function MissionsJour({ chauffeurNom }: { chauffeurNom: string })
         )}
       </div>
 
-      {/* ── Documents de contrôle (bouton fixe + centre plein écran) ── */}
       {chauffeurInfo && (
-        <DocumentsControle
-          jours={data?.jours ?? []}
-          transferts={data?.transferts ?? []}
-          chauffeur={chauffeurInfo}
-        />
+        <DocumentsControle jours={data?.jours ?? []} transferts={data?.transferts ?? []} chauffeur={chauffeurInfo} />
+      )}
+    </>
+  )
+}
+
+// ══════════════════════════════════════════════
+//  ONGLET À VENIR / HISTORIQUE — liste groupée par jour
+// ══════════════════════════════════════════════
+
+function TabRange({ mode }: { mode: 'avenir' | 'historique' }) {
+  const [items, setItems] = useState<any[] | null>(null)
+
+  useEffect(() => {
+    const t = todayStr()
+    const from = mode === 'avenir' ? format(addDays(new Date(), 1), 'yyyy-MM-dd') : format(addDays(new Date(), -30), 'yyyy-MM-dd')
+    const to   = mode === 'avenir' ? format(addDays(new Date(), 21), 'yyyy-MM-dd') : format(addDays(new Date(), -1), 'yyyy-MM-dd')
+    fetch(`/api/chauffeur/missions?from=${from}&to=${to}`)
+      .then(r => r.json())
+      .then(({ data }) => {
+        const list = [
+          ...(data?.transferts ?? []).map((t: any) => normTransfert(t)),
+          ...(data?.jours ?? []).map((j: any) => normJour(j)),
+        ].sort((a, b) => (a.date + (a.heure ?? '')).localeCompare(b.date + (b.heure ?? '')) * (mode === 'historique' ? -1 : 1))
+        setItems(list)
+      })
+      .catch(() => setItems([]))
+  }, [mode])
+
+  if (items === null) return <div style={{ textAlign: 'center', padding: '60px 0', color: '#8a8478', fontSize: '13px' }}>Chargement…</div>
+  if (items.length === 0) return (
+    <div style={{ textAlign: 'center', padding: '70px 20px', color: '#8a8478' }}>
+      {mode === 'avenir' ? <CalendarClock size={30} style={{ color: '#c2bdb4', marginBottom: '12px' }} /> : <History size={30} style={{ color: '#c2bdb4', marginBottom: '12px' }} />}
+      <div style={{ fontSize: '14px', color: '#5a564e' }}>{mode === 'avenir' ? 'Aucune mission à venir' : 'Aucune mission passée'}</div>
+    </div>
+  )
+
+  // Groupement par date
+  const groups: Record<string, any[]> = {}
+  for (const it of items) { (groups[it.date] ??= []).push(it) }
+
+  return (
+    <div style={{ padding: '14px 12px 20px' }}>
+      {Object.entries(groups).map(([d, list]) => (
+        <div key={d} style={{ marginBottom: '18px' }}>
+          <div style={{ fontSize: '11px', fontWeight: 700, letterSpacing: '1px', textTransform: 'capitalize', color: '#9a7a28', marginBottom: '8px' }}>
+            {format(parseISO(d), 'EEEE d MMMM', { locale: fr })}
+          </div>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+            {list.map(it => <MissionListItem key={it.id} it={it} />)}
+          </div>
+        </div>
+      ))}
+    </div>
+  )
+}
+
+function normTransfert(t: any) {
+  const dossier = one(t.dossier); const client = one(dossier?.client)
+  return {
+    id: t.id, kind: 'transfert' as const, date: t.date_debut, heure: t.heure_depart?.slice(0, 5) ?? null,
+    clientNom: client?.nom ?? '—', dossierNum: dossier?.numero, statut: t.statut,
+    lieu: [t.adresse_depart, t.adresse_arrivee].filter(Boolean).join(' → '),
+    heuresReelles: null,
+  }
+}
+function normJour(j: any) {
+  const prest = one(j.prestation); const dossier = one(prest?.dossier); const client = one(dossier?.client)
+  return {
+    id: j.id, kind: 'mad' as const, date: j.date, heure: prest?.heure_debut_journee?.slice(0, 5) ?? null,
+    clientNom: client?.nom ?? '—', dossierNum: dossier?.numero, statut: prest?.statut ?? 'en_attente',
+    lieu: prest?.adresse_depart ?? 'Mise à disposition',
+    heuresReelles: j.heures_reelles ?? null,
+  }
+}
+
+function MissionListItem({ it }: { it: any }) {
+  const col = it.kind === 'mad' ? '#7a5c10' : '#1e3f70'
+  return (
+    <div style={{ background: '#fff', border: '1.5px solid #d8d2c8', borderLeft: `3px solid ${col}`, padding: '10px 12px' }}>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '8px', marginBottom: '3px' }}>
+        <span style={{ display: 'flex', alignItems: 'center', gap: '6px', minWidth: 0 }}>
+          <span style={{ fontSize: '9px', fontWeight: 700, textTransform: 'uppercase', color: col }}>{it.kind === 'mad' ? 'MAD' : 'Transfert'}</span>
+          {it.heure && <span style={{ fontFamily: 'JetBrains Mono,monospace', fontSize: '13px', color: '#16130e', fontWeight: 600 }}>{it.heure}</span>}
+        </span>
+        <StatutChip statut={it.statut} />
+      </div>
+      <div style={{ fontFamily: 'Cormorant Garamond,serif', fontSize: '16px', color: '#16130e', lineHeight: 1.15 }}>{it.clientNom}</div>
+      <div style={{ fontSize: '12px', color: '#5a564e', marginTop: '2px' }}>{it.lieu}</div>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: '4px' }}>
+        {it.dossierNum && <span style={{ fontFamily: 'JetBrains Mono,monospace', fontSize: '10px', color: '#9a7a28' }}>{it.dossierNum}</span>}
+        {it.heuresReelles != null && Number(it.heuresReelles) > 0 && (
+          <span style={{ fontSize: '11px', color: '#1e5e3a', fontWeight: 600 }}>{it.heuresReelles}h faites</span>
+        )}
+      </div>
+    </div>
+  )
+}
+
+// ══════════════════════════════════════════════
+//  ONGLET PROFIL
+// ══════════════════════════════════════════════
+
+const LANGUES_LBL: Record<string, string> = { francais: 'Français', anglais: 'Anglais', espagnol: 'Espagnol', allemand: 'Allemand', italien: 'Italien', arabe: 'Arabe', chinois: 'Chinois', russe: 'Russe' }
+const COMP_LBL: Record<string, string> = { bodyguard: 'Bodyguard', guide: 'Guide', secouriste: 'Secouriste', tpmr: 'TPMR', permis_d: 'Permis D' }
+
+function docState(dateStr: string | null) {
+  if (!dateStr) return null
+  const days = Math.ceil((parseISO(dateStr).getTime() - Date.now()) / 86400000)
+  if (days < 0)  return { label: `Expiré le ${format(parseISO(dateStr), 'dd/MM/yyyy')}`, color: '#9e2a2a' }
+  if (days < 30) return { label: `Expire dans ${days} j`, color: '#7a5c10' }
+  return { label: `Valide → ${format(parseISO(dateStr), 'dd/MM/yyyy')}`, color: '#1e5e3a' }
+}
+
+function TabProfil() {
+  const [d, setD] = useState<{ chauffeur: any; stats: any } | null>(null)
+
+  useEffect(() => {
+    fetch('/api/chauffeur/profil').then(r => r.json()).then(({ data }) => setD(data)).catch(() => setD(null))
+  }, [])
+
+  if (!d) return <div style={{ textAlign: 'center', padding: '60px 0', color: '#8a8478', fontSize: '13px' }}>Chargement…</div>
+  const c = d.chauffeur
+  const docs = [
+    { label: 'Carte VTC', num: c.vtc_card_numero, st: docState(c.vtc_card_expiry) },
+    { label: 'Permis', num: null, st: docState(c.permis_expiry) },
+    { label: 'Visite médicale', num: null, st: docState(c.visite_medicale_expiry) },
+    { label: 'Carte qualification', num: null, st: docState(c.carte_qualif_expiry) },
+    { label: 'Carte de séjour', num: c.carte_sejour_numero, st: docState(c.carte_sejour_expiry) },
+  ].filter(x => x.num || x.st)
+
+  return (
+    <div style={{ padding: '16px 12px 20px' }}>
+      {/* Stats du mois */}
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px', marginBottom: '16px' }}>
+        <StatCard icon={<Briefcase size={16} />} label="Missions ce mois" value={String(d.stats.missionsMois)} />
+        <StatCard icon={<Clock size={16} />} label="Heures ce mois" value={`${d.stats.heuresMois} h`} />
+      </div>
+
+      {/* Fiche */}
+      <div style={{ background: '#fff', border: '1.5px solid #d8d2c8', padding: '16px', marginBottom: '14px' }}>
+        <div style={{ fontFamily: 'Cormorant Garamond,serif', fontSize: '22px', color: '#16130e' }}>{c.prenom} {c.nom}</div>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', marginTop: '10px' }}>
+          {c.telephone && <a href={`tel:${c.telephone}`} style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '13px', color: '#16130e', textDecoration: 'none' }}><Phone size={14} color="#8a8478" /> {c.telephone}</a>}
+          {c.email && <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '13px', color: '#5a564e' }}><User size={14} color="#8a8478" /> {c.email}</div>}
+        </div>
+        {((c.langues?.length ?? 0) > 0 || (c.competences?.length ?? 0) > 0) && (
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px', marginTop: '12px' }}>
+            {(c.langues ?? []).map((l: string) => <span key={l} style={{ fontSize: '11px', fontWeight: 600, padding: '3px 9px', background: '#fdf6e3', color: '#9a7a28', border: '1px solid rgba(154,122,40,0.25)' }}>{LANGUES_LBL[l] ?? l}</span>)}
+            {(c.competences ?? []).map((k: string) => <span key={k} style={{ fontSize: '11px', fontWeight: 600, padding: '3px 9px', background: '#e8eef8', color: '#1e3f70', border: '1px solid rgba(30,63,112,0.25)' }}>{COMP_LBL[k] ?? k}</span>)}
+          </div>
+        )}
+      </div>
+
+      {/* Documents */}
+      {docs.length > 0 && (
+        <div style={{ background: '#fff', border: '1.5px solid #d8d2c8', padding: '14px 16px' }}>
+          <div style={{ fontSize: '9px', letterSpacing: '2px', textTransform: 'uppercase', color: '#9a7a28', fontWeight: 700, marginBottom: '10px' }}>Mes documents</div>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+            {docs.map(doc => (
+              <div key={doc.label} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '8px' }}>
+                <div>
+                  <div style={{ fontSize: '13px', fontWeight: 600, color: '#16130e' }}>{doc.label}</div>
+                  {doc.num && <div style={{ fontFamily: 'JetBrains Mono,monospace', fontSize: '10px', color: '#8a8478' }}>{doc.num}</div>}
+                </div>
+                {doc.st && <span style={{ fontSize: '11px', fontWeight: 600, color: doc.st.color, textAlign: 'right' }}>{doc.st.label}</span>}
+              </div>
+            ))}
+          </div>
+        </div>
       )}
     </div>
   )
 }
 
-// ── Carte transfert ───────────────────────────
+function StatCard({ icon, label, value }: { icon: React.ReactNode; label: string; value: string }) {
+  return (
+    <div style={{ background: '#fff', border: '1.5px solid #d8d2c8', padding: '14px' }}>
+      <div style={{ color: '#9a7a28', marginBottom: '6px' }}>{icon}</div>
+      <div style={{ fontFamily: 'Cormorant Garamond,serif', fontSize: '26px', color: '#16130e', lineHeight: 1 }}>{value}</div>
+      <div style={{ fontSize: '10px', letterSpacing: '0.5px', textTransform: 'uppercase', color: '#8a8478', marginTop: '4px' }}>{label}</div>
+    </div>
+  )
+}
+
+// ══════════════════════════════════════════════
+//  CARTES (aujourd'hui)
+// ══════════════════════════════════════════════
+
 function TransfertCard({ t }: { t: any }) {
-  const dossier = one(t.dossier)
-  const client = one(dossier?.client)
-  const veh = one(t.vehicule)
+  const dossier = one(t.dossier); const client = one(dossier?.client); const veh = one(t.vehicule)
   return (
     <div style={{ background: '#fff', border: '1.5px solid #d8d2c8', borderLeft: '3px solid #1e3f70', boxShadow: '0 1px 4px rgba(0,0,0,0.05)' }}>
       <div style={{ padding: '12px 14px 10px' }}>
@@ -188,12 +397,9 @@ function TransfertCard({ t }: { t: any }) {
   )
 }
 
-// ── Carte MAD (avec saisie heures) ────────────
 function MadCard({ j, onSaved }: { j: any; onSaved: () => void }) {
-  const prest = one(j.prestation)
-  const dossier = one(prest?.dossier)
-  const client = one(dossier?.client)
-  const veh = one(j.vehicule)
+  const prest = one(j.prestation); const dossier = one(prest?.dossier); const client = one(dossier?.client); const veh = one(j.vehicule)
+  const locked = !!dossier?.valide_at   // dossier validé par le dispatch → heures figées
 
   const [debut, setDebut] = useState<string>(j.heure_debut_reelle?.slice(0, 5) ?? '')
   const [fin, setFin] = useState<string>(j.heure_fin_reelle?.slice(0, 5) ?? '')
@@ -205,28 +411,21 @@ function MadCard({ j, onSaved }: { j: any; onSaved: () => void }) {
     setSaving(true)
     try {
       const res = await fetch('/api/chauffeur/heures', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ jour_id: j.id, heure_debut: debut, heure_fin: fin }),
       })
       const json = await res.json()
       if (!res.ok) throw new Error(json.error ?? 'Erreur')
-      toast.success('Heures enregistrées')
-      onSaved()
-    } catch (err: any) {
-      toast.error(err.message)
-    } finally {
-      setSaving(false)
-    }
+      toast.success('Heures enregistrées'); onSaved()
+    } catch (err: any) { toast.error(err.message) }
+    finally { setSaving(false) }
   }
 
   return (
     <div style={{ background: '#fff', border: '1.5px solid #d8d2c8', borderLeft: '3px solid #7a5c10', boxShadow: '0 1px 4px rgba(0,0,0,0.05)' }}>
       <div style={{ padding: '12px 14px 10px' }}>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '8px' }}>
-          <span style={{ fontSize: '11px', fontWeight: 700, letterSpacing: '1px', textTransform: 'uppercase', color: '#7a5c10' }}>
-            ◷ Mise à disposition
-          </span>
+          <span style={{ fontSize: '11px', fontWeight: 700, letterSpacing: '1px', textTransform: 'uppercase', color: '#7a5c10' }}>◷ Mise à disposition</span>
           <StatutChip statut={prest?.statut ?? 'en_attente'} />
         </div>
         <div style={{ fontFamily: 'Cormorant Garamond,serif', fontSize: '18px', color: '#16130e', lineHeight: 1.15 }}>{client?.nom}</div>
@@ -240,42 +439,51 @@ function MadCard({ j, onSaved }: { j: any; onSaved: () => void }) {
       </div>
 
       {prest?.adresse_depart && (
-        <div style={{ padding: '0 14px 4px' }}>
-          <AddressRow label="Lieu" addr={prest.adresse_depart} />
-        </div>
+        <div style={{ padding: '0 14px 4px' }}><AddressRow label="Lieu" addr={prest.adresse_depart} /></div>
       )}
 
-      {/* Saisie heures réelles */}
-      <div style={{ background: saisi ? '#eaf4ee' : '#faf9f7', borderTop: '1px solid #e6e0d6', padding: '12px 14px' }}>
-        <div style={{ fontSize: '9px', letterSpacing: '2px', textTransform: 'uppercase', color: '#9a7a28', fontWeight: 700, marginBottom: '8px' }}>
-          Mes heures réelles
-        </div>
-        <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
-          <input type="time" value={debut} onChange={e => setDebut(e.target.value)} aria-label="Heure de début"
-            style={{ flex: 1, background: '#fff', border: '1.5px solid #b8b0a4', padding: '11px', fontSize: '16px', fontFamily: 'JetBrains Mono,monospace', textAlign: 'center', outline: 'none' }} />
-          <span style={{ color: '#8a8478' }}>→</span>
-          <input type="time" value={fin} onChange={e => setFin(e.target.value)} aria-label="Heure de fin"
-            style={{ flex: 1, background: '#fff', border: '1.5px solid #b8b0a4', padding: '11px', fontSize: '16px', fontFamily: 'JetBrains Mono,monospace', textAlign: 'center', outline: 'none' }} />
-        </div>
-
-        {saisi && (
-          <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '8px', fontSize: '12px' }}>
-            <span style={{ color: '#1e5e3a', fontWeight: 600 }}>
-              {j.heures_reelles ?? 0}h réelles{(j.heures_sup ?? 0) > 0 ? ` · +${j.heures_sup}h sup` : ''}
+      {/* Saisie heures réelles (verrouillée si dossier validé) */}
+      <div style={{ background: locked ? '#f0eeeb' : saisi ? '#eaf4ee' : '#faf9f7', borderTop: '1px solid #e6e0d6', padding: '12px 14px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '8px' }}>
+          <span style={{ fontSize: '9px', letterSpacing: '2px', textTransform: 'uppercase', color: '#9a7a28', fontWeight: 700 }}>Mes heures réelles</span>
+          {locked && (
+            <span style={{ display: 'inline-flex', alignItems: 'center', gap: '4px', fontSize: '10px', fontWeight: 700, color: '#1e5e3a' }}>
+              <ShieldCheck size={12} /> Validé
             </span>
-          </div>
-        )}
+          )}
+        </div>
 
-        <button onClick={save} disabled={saving}
-          style={{ width: '100%', marginTop: '10px', background: '#16130e', color: '#fff', border: 'none', padding: '13px', fontSize: '13px', fontWeight: 600, letterSpacing: '0.5px', cursor: 'pointer' }}>
-          {saving ? 'Enregistrement…' : saisi ? 'Mettre à jour mes heures' : 'Enregistrer mes heures'}
-        </button>
+        {locked ? (
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontFamily: 'JetBrains Mono,monospace', fontSize: '16px', color: '#16130e' }}>
+            <Lock size={14} color="#8a8478" />
+            {saisi ? `${debut} → ${fin}` : 'Non saisies'}
+            {saisi && <span style={{ fontFamily: 'inherit', fontSize: '12px', color: '#1e5e3a', fontWeight: 600, marginLeft: 'auto' }}>{j.heures_reelles ?? 0}h{(j.heures_sup ?? 0) > 0 ? ` · +${j.heures_sup}h sup` : ''}</span>}
+          </div>
+        ) : (
+          <>
+            <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+              <input type="time" value={debut} onChange={e => setDebut(e.target.value)} aria-label="Heure de début"
+                style={{ flex: 1, background: '#fff', border: '1.5px solid #b8b0a4', padding: '11px', fontSize: '16px', fontFamily: 'JetBrains Mono,monospace', textAlign: 'center', outline: 'none' }} />
+              <span style={{ color: '#8a8478' }}>→</span>
+              <input type="time" value={fin} onChange={e => setFin(e.target.value)} aria-label="Heure de fin"
+                style={{ flex: 1, background: '#fff', border: '1.5px solid #b8b0a4', padding: '11px', fontSize: '16px', fontFamily: 'JetBrains Mono,monospace', textAlign: 'center', outline: 'none' }} />
+            </div>
+            {saisi && (
+              <div style={{ marginTop: '8px', fontSize: '12px', color: '#1e5e3a', fontWeight: 600 }}>
+                {j.heures_reelles ?? 0}h réelles{(j.heures_sup ?? 0) > 0 ? ` · +${j.heures_sup}h sup` : ''}
+              </div>
+            )}
+            <button onClick={save} disabled={saving}
+              style={{ width: '100%', marginTop: '10px', background: '#16130e', color: '#fff', border: 'none', padding: '13px', fontSize: '13px', fontWeight: 600, letterSpacing: '0.5px', cursor: 'pointer' }}>
+              {saving ? 'Enregistrement…' : saisi ? 'Mettre à jour mes heures' : 'Enregistrer mes heures'}
+            </button>
+          </>
+        )}
       </div>
     </div>
   )
 }
 
-// ── Ligne méta (dossier · véhicule · appel) ───
 function MetaLine({ dossierNum, veh, modele, tel }: { dossierNum?: string; veh?: any; modele?: string | null; tel?: string | null }) {
   return (
     <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap', marginTop: '6px' }}>

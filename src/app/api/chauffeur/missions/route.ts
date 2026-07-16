@@ -13,7 +13,12 @@ export async function GET(req: NextRequest) {
     .from('chauffeurs').select('id, nom, prenom, vtc_card_numero').eq('profile_id', user.id).maybeSingle()
   if (!chauffeur) return NextResponse.json({ error: 'Aucune fiche chauffeur liée' }, { status: 404 })
 
-  const date = req.nextUrl.searchParams.get('date') || new Date().toISOString().slice(0, 10)
+  // Plage de dates : ?date=... (un jour) OU ?from=...&to=... (plage, pour « à venir » / « historique »)
+  const sp = req.nextUrl.searchParams
+  const today = new Date().toISOString().slice(0, 10)
+  const dateParam = sp.get('date')
+  const from = sp.get('from') || dateParam || today
+  const to   = sp.get('to')   || dateParam || today
 
   // Jours de mise à disposition
   const { data: jours, error: jErr } = await supabase
@@ -24,11 +29,13 @@ export async function GET(req: NextRequest) {
       vehicule:vehicules(marque, modele, immatriculation),
       prestation:prestations(
         id, adresse_depart, heure_debut_journee, heure_fin_journee, modele_souhaite, statut, passager_ids,
-        dossier:dossiers(numero, client:clients(nom, telephone), passagers(id, nom, nationalite))
+        dossier:dossiers(numero, valide_at, client:clients(nom, telephone), passagers(id, nom, nationalite))
       )
     `)
     .eq('chauffeur_id', chauffeur.id)
-    .eq('date', date)
+    .gte('date', from)
+    .lte('date', to)
+    .order('date', { ascending: true })
 
   // Transferts
   const { data: transferts, error: tErr } = await supabase
@@ -36,11 +43,14 @@ export async function GET(req: NextRequest) {
     .select(`
       id, date_debut, heure_depart, adresse_depart, adresse_arrivee, modele_souhaite, statut, passager_ids,
       vehicule:vehicules(marque, modele, immatriculation),
-      dossier:dossiers(numero, client:clients(nom, telephone), passagers(id, nom, nationalite))
+      dossier:dossiers(numero, valide_at, client:clients(nom, telephone), passagers(id, nom, nationalite))
     `)
     .eq('chauffeur_id', chauffeur.id)
     .eq('type', 'transfert')
-    .eq('date_debut', date)
+    .gte('date_debut', from)
+    .lte('date_debut', to)
+    .order('date_debut', { ascending: true })
+    .order('heure_depart', { ascending: true, nullsFirst: true })
 
   if (jErr || tErr) {
     return NextResponse.json({ error: (jErr ?? tErr)?.message }, { status: 500 })
