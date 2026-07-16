@@ -6,6 +6,7 @@ import { fr } from 'date-fns/locale'
 import { ArrowLeft, Phone, Mail, AlertTriangle, CheckCircle } from 'lucide-react'
 import AccesChauffeur from '@/components/chauffeurs/AccesChauffeur'
 import ChauffeurEditModal from '@/components/chauffeurs/ChauffeurEditModal'
+import HistoriqueChauffeur, { type HistoItem } from '@/components/chauffeurs/HistoriqueChauffeur'
 
 function docStatus(dateStr: string | null) {
   if (!dateStr) return { level: 'none', label: 'Non renseigné', color: '#c2bdb4' }
@@ -84,6 +85,28 @@ export default async function ChauffeurDetailPage({ params }: { params: { id: st
   const nbMissions   = (jours?.length ?? 0) + (transferts?.length ?? 0)
   const caTotal      = (jours?.reduce((s: number, j: any) => s + (j.tarif_ht ?? 0), 0) ?? 0) +
                        (transferts?.reduce((s: number, t: any) => s + (t.tarif_fixe_ht ?? 0), 0) ?? 0)
+
+  // Historique normalisé pour le composant client (filtres)
+  const histoItems: HistoItem[] = [
+    ...(jours ?? []).map((j: any): HistoItem => ({
+      id: `mad-${j.id}`, kind: 'mad',
+      date: j.date, heure: null, jourSemaine: j.jour_semaine,
+      clientNom: j.prestation?.dossier?.client?.nom ?? '—',
+      dossierId: j.prestation?.dossier?.id ?? null,
+      dossierNumero: j.prestation?.dossier?.numero ?? null,
+      details: 'Journée complète' + (j.note ? `\n${j.note}` : ''),
+      tarif: j.tarif_ht ?? 0, statut: j.statut,
+    })),
+    ...(transferts ?? []).map((t: any): HistoItem => ({
+      id: `tr-${t.id}`, kind: 'transfert',
+      date: t.date_debut, heure: t.heure_depart ?? null, jourSemaine: null,
+      clientNom: t.dossier?.client?.nom ?? '—',
+      dossierId: t.dossier?.id ?? null,
+      dossierNumero: t.dossier?.numero ?? null,
+      details: [t.adresse_depart, t.adresse_arrivee ? `→ ${t.adresse_arrivee}` : null].filter(Boolean).join('\n') || '—',
+      tarif: t.tarif_fixe_ht ?? 0, statut: t.statut,
+    })),
+  ]
 
   return (
     <div>
@@ -183,106 +206,8 @@ export default async function ChauffeurDetailPage({ params }: { params: { id: st
             </div>
           </div>
 
-          {/* ── Historique des prestations ── */}
-          <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom:'12px' }}>
-            <span className="section-title">Historique des prestations</span>
-            <div style={{ display:'flex', gap:'4px' }}>
-              <span style={{ fontFamily:'JetBrains Mono,monospace', fontSize:'11px', color:'#8a8478' }}>
-                {nbMissions} prestation{nbMissions > 1 ? 's' : ''}
-              </span>
-            </div>
-          </div>
-
-          {/* Tableau historique */}
-          <div className="table-container">
-            <table style={{ width:'100%', borderCollapse:'collapse' }}>
-              <thead className="table-head">
-                <tr>
-                  {['Date','Type','Client / Dossier','Détails','Tarif HT','Statut'].map((h, i) => (
-                    <th key={h} className="th" style={i%2===1?{background:'rgba(0,0,0,0.1)'}:{}}>{h}</th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody>
-                {/* Jours MAD */}
-                {jours?.map((j: any) => (
-                  <tr key={`mad-${j.id}`} className="tr-body">
-                    <td className="td" style={{ background:'rgba(154,122,40,0.04)' }}>
-                      <div style={{ fontFamily:'JetBrains Mono,monospace', fontSize:'11px' }}>
-                        {j.jour_semaine} {format(new Date(j.date),'dd/MM/yyyy',{locale:fr})}
-                      </div>
-                    </td>
-                    <td className="td">
-                      <span className="pill-mad">MAD</span>
-                    </td>
-                    <td className="td">
-                      <div style={{ fontWeight:600, fontSize:'12px' }}>{j.prestation?.dossier?.client?.nom ?? '—'}</div>
-                      <div style={{ fontFamily:'JetBrains Mono,monospace', fontSize:'9px', color:'#9a7a28' }}>
-                        {j.prestation?.dossier?.numero}
-                      </div>
-                    </td>
-                    <td className="td">
-                      <div style={{ fontSize:'11px', color:'#5a564e' }}>
-                        Journée complète
-                        {j.note && <div style={{ color:'#8a8478', fontStyle:'italic' }}>{j.note}</div>}
-                      </div>
-                    </td>
-                    <td className="td">
-                      <span style={{ fontFamily:'JetBrains Mono,monospace', fontSize:'11px', color:'#9a7a28' }}>
-                        {fmt(j.tarif_ht)}
-                      </span>
-                    </td>
-                    <td className="td">
-                      <StatutBadge statut={j.statut} />
-                    </td>
-                  </tr>
-                ))}
-
-                {/* Transferts */}
-                {transferts?.map((t: any) => (
-                  <tr key={`tr-${t.id}`} className="tr-body">
-                    <td className="td" style={{ background:'rgba(154,122,40,0.04)' }}>
-                      <div style={{ fontFamily:'JetBrains Mono,monospace', fontSize:'11px' }}>
-                        {format(new Date(t.date_debut),'dd/MM/yyyy',{locale:fr})}
-                        {t.heure_depart && <div style={{ fontSize:'10px', color:'#8a8478' }}>{t.heure_depart}</div>}
-                      </div>
-                    </td>
-                    <td className="td">
-                      <span className="pill-transfer">Transfert</span>
-                    </td>
-                    <td className="td">
-                      <div style={{ fontWeight:600, fontSize:'12px' }}>{t.dossier?.client?.nom ?? '—'}</div>
-                      <div style={{ fontFamily:'JetBrains Mono,monospace', fontSize:'9px', color:'#9a7a28' }}>
-                        {t.dossier?.numero}
-                      </div>
-                    </td>
-                    <td className="td">
-                      <div style={{ fontSize:'11px', color:'#5a564e' }}>
-                        {t.adresse_depart && <div>{t.adresse_depart}</div>}
-                        {t.adresse_arrivee && <div style={{ color:'#8a8478' }}>→ {t.adresse_arrivee}</div>}
-                      </div>
-                    </td>
-                    <td className="td">
-                      <span style={{ fontFamily:'JetBrains Mono,monospace', fontSize:'11px', color:'#9a7a28' }}>
-                        {t.tarif_fixe_ht ? fmt(t.tarif_fixe_ht) : '—'}
-                      </span>
-                    </td>
-                    <td className="td">
-                      <StatutBadge statut={t.statut} />
-                    </td>
-                  </tr>
-                ))}
-
-                {(jours?.length ?? 0) + (transferts?.length ?? 0) === 0 && (
-                  <tr>
-                    <td colSpan={6} style={{ padding:'50px', textAlign:'center', color:'#8a8478', fontSize:'12px' }}>
-                      Aucune prestation pour ce chauffeur
-                    </td>
-                  </tr>
-                )}
-              </tbody>
-            </table>
-          </div>
+          {/* ── Historique des prestations (avec filtres) ── */}
+          <HistoriqueChauffeur items={histoItems} />
 
         </div>
 
@@ -385,16 +310,3 @@ function DocCard({ label, numero, status }: { label: string; numero: string | nu
   )
 }
 
-function StatutBadge({ statut }: { statut: string }) {
-  const map: Record<string, { label: string; color: string }> = {
-    en_attente: { label: 'En attente', color: '#7a5c10' },
-    confirme:   { label: 'Confirmé',   color: '#1e5e3a' },
-    en_cours:   { label: 'En cours',   color: '#1e3f70' },
-    termine:    { label: 'Terminé',    color: '#8a8478' },
-    annule:     { label: 'Annulé',     color: '#9e2a2a' },
-  }
-  const s = map[statut] ?? { label: statut, color: '#8a8478' }
-  return (
-    <span style={{ fontSize:'10px', fontWeight:700, color: s.color }}>{s.label}</span>
-  )
-}
