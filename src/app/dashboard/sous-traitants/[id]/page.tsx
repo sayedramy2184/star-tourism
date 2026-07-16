@@ -257,7 +257,7 @@ export default function SousTraitantDetailPage() {
             <div key={p.id} style={{ background:'#fff', border:'1.5px solid #b8b0a4', boxShadow:'0 1px 4px rgba(0,0,0,0.06)', padding:'12px' }}>
               <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', gap:'8px' }}>
                 <div style={{ display:'flex', alignItems:'center', gap:'8px', minWidth:0 }}>
-                  <span style={{ fontSize:'9px', fontWeight:700, padding:'2px 8px', background: p.type==='mad' ? '#fdf3dc' : '#e8eef8', color: p.type==='mad' ? '#7a5c10' : '#1e3f70' }}>{p.type === 'mad' ? 'MAD' : 'Transfert'}</span>
+                  <span style={{ fontSize:'9px', fontWeight:700, padding:'2px 8px', background: p.type==='mad' ? '#f8ece7' : '#e8eef8', color: p.type==='mad' ? '#a6432a' : '#1e3f70' }}>{p.type === 'mad' ? 'MAD' : 'Transfert'}</span>
                   <Link href={`/dashboard/dossiers/${p.dossier.id}`} style={{ fontFamily:'JetBrains Mono,monospace', fontSize:'11px', color:'#9a7a28', textDecoration:'none', fontWeight:600 }}>{p.dossier.numero}</Link>
                   <span className="mono" style={{ fontSize:'10px', color:'#8a8478' }}>{format(new Date(p.date_debut), 'dd/MM/yy', { locale: fr })}</span>
                 </div>
@@ -312,7 +312,7 @@ export default function SousTraitantDetailPage() {
                     </span>
                   </td>
                   <td className="td">
-                    <span style={{ fontSize:'9px', fontWeight:700, padding:'2px 8px', background: p.type==='mad' ? '#fdf3dc' : '#e8eef8', color: p.type==='mad' ? '#7a5c10' : '#1e3f70', border:`1px solid ${p.type==='mad' ? 'rgba(122,92,16,0.2)' : 'rgba(30,63,112,0.2)'}` }}>
+                    <span style={{ fontSize:'9px', fontWeight:700, padding:'2px 8px', background: p.type==='mad' ? '#f8ece7' : '#e8eef8', color: p.type==='mad' ? '#a6432a' : '#1e3f70', border:`1px solid ${p.type==='mad' ? 'rgba(166,67,42,0.2)' : 'rgba(30,63,112,0.2)'}` }}>
                       {p.type === 'mad' ? 'MAD' : 'Transfert'}
                     </span>
                   </td>

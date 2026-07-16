@@ -182,14 +182,14 @@ function Repartition({ mad, transfert }: { mad: number; transfert: number }) {
     <div>
       <div style={{ display: 'flex', height: '14px', overflow: 'hidden', border: '1px solid #d8d2c8', marginBottom: '12px' }}>
         <div style={{ width: `${total ? pTr : 50}%`, background: '#1e3f70' }} />
-        <div style={{ width: `${total ? pMad : 50}%`, background: '#7a5c10' }} />
+        <div style={{ width: `${total ? pMad : 50}%`, background: '#a6432a' }} />
       </div>
       <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '12px' }}>
         <span style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
           <span style={{ width: '10px', height: '10px', background: '#1e3f70' }} /> Transferts <b>{transfert}</b> <span style={{ color: '#8a8478' }}>({pTr}%)</span>
         </span>
         <span style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-          <span style={{ width: '10px', height: '10px', background: '#7a5c10' }} /> MAD <b>{mad}</b> <span style={{ color: '#8a8478' }}>({pMad}%)</span>
+          <span style={{ width: '10px', height: '10px', background: '#a6432a' }} /> MAD <b>{mad}</b> <span style={{ color: '#8a8478' }}>({pMad}%)</span>
         </span>
       </div>
     </div>

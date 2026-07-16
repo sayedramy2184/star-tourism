@@ -458,7 +458,7 @@ function ChauffeursView({ days, viewMode, data, onTooltip, dragJourId, dragOver,
                   >
                     {jours.map((j: JourMad) => (
                       <MBlock key={j.id}
-                        bg="#fdf3dc" border="#7a5c10" text="#7a5c10"
+                        bg="#f8ece7" border="#a6432a" text="#a6432a"
                         icon="◷" label="MAD"
                         title={j.prestation.dossier.client.nom}
                         sub={j.prestation.dossier.numero}
@@ -570,7 +570,7 @@ function VehiculesView({ days, viewMode, data, onTooltip, router }: any) {
                 return (
                   <td key={dateStr} style={{ padding:'3px', verticalAlign:'top', background: conflict ? 'rgba(158,42,42,0.06)' : today ? '#fdf6e3' : weekend ? '#f1ece4' : idx%2===0 ? '#faf9f7' : '#fff', borderRight:'1px solid #ede9e2' }}>
                     {jours.map((j: JourMad) => (
-                      <MBlock key={j.id} bg="#fdf3dc" border="#7a5c10" text="#7a5c10"
+                      <MBlock key={j.id} bg="#f8ece7" border="#a6432a" text="#a6432a"
                         icon="◷" label="MAD"
                         title={j.prestation.dossier.client.nom}
                         sub={j.prestation.dossier.numero}
@@ -658,7 +658,7 @@ function PlanningMobile({ days, data, router }: { days: Date[]; data: any; route
               const veh = (data.vehicules ?? []).find((v: any) => v.id === jourVehiculeId(j))
               const chauf = j.chauffeur ? `${j.chauffeur.prenom} ${j.chauffeur.nom}` : j.sous_traitant ? `ST · ${j.sous_traitant.societe}` : null
               return (
-                <MobileMissionCard key={j.id} type="MAD" typeColor="#7a5c10" client={j.prestation.dossier.client.nom} numero={j.prestation.dossier.numero}
+                <MobileMissionCard key={j.id} type="MAD" typeColor="#a6432a" client={j.prestation.dossier.client.nom} numero={j.prestation.dossier.numero}
                   heure={j.prestation.heure_debut_journee ? `${j.prestation.heure_debut_journee}→${j.prestation.heure_fin_journee ?? ''}` : null}
                   itineraire={j.prestation.adresse_depart ?? 'Mise à disposition'}
                   chauffeur={chauf} vehicule={veh ? `${veh.marque} ${veh.modele}` : (j.prestation.modele_souhaite ?? null)}
@@ -785,7 +785,7 @@ function Legende() {
   return (
     <div style={{ display:'flex', gap:'8px', alignItems:'center' }}>
       {[
-        { color:'#fdf3dc', border:'#7a5c10', label:'MAD' },
+        { color:'#f8ece7', border:'#a6432a', label:'MAD' },
         { color:'#e8eef8', border:'#1e3f70', label:'Transfert' },
         { color:'#fff8e8', border:'#9a7a28', label:'Non affecté' },
         { color:'rgba(158,42,42,0.06)', border:'#9e2a2a', label:'Conflit' },
@@ -812,7 +812,7 @@ function Tooltip({ tooltip, onClose, router }: { tooltip: any; onClose: () => vo
         background:'#fff', border:'1.5px solid #b8b0a4', boxShadow:'0 8px 24px rgba(0,0,0,0.15)', padding:'14px',
       }}>
         <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom:'10px', paddingBottom:'8px', borderBottom:'1px solid #d8d2c8' }}>
-          <span style={{ padding:'2px 8px', fontSize:'8px', fontWeight:700, letterSpacing:'1px', textTransform:'uppercase', background: content.type==='MAD' ? '#fdf3dc' : '#e8eef8', color: content.type==='MAD' ? '#7a5c10' : '#1e3f70' }}>
+          <span style={{ padding:'2px 8px', fontSize:'8px', fontWeight:700, letterSpacing:'1px', textTransform:'uppercase', background: content.type==='MAD' ? '#f8ece7' : '#e8eef8', color: content.type==='MAD' ? '#a6432a' : '#1e3f70' }}>
             {content.type}
           </span>
           <button onClick={onClose} style={{ background:'none', border:'none', cursor:'pointer', color:'#b8b0a4', fontSize:'14px' }}>✕</button>

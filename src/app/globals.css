@@ -167,7 +167,7 @@ body {
   @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.3} }
 
   /* ── Pills ── */
-  .pill-mad      { display:inline-block; background:#fdf3dc; color:#7a5c10; font-size:8px; font-weight:700; letter-spacing:.5px; text-transform:uppercase; padding:2px 7px; border:1px solid rgba(122,92,16,0.2); }
+  .pill-mad      { display:inline-block; background:#f8ece7; color:#a6432a; font-size:8px; font-weight:700; letter-spacing:.5px; text-transform:uppercase; padding:2px 7px; border:1px solid rgba(166,67,42,0.2); }
   .pill-transfer { display:inline-block; background:#e8eef8; color:#1e3f70; font-size:8px; font-weight:700; letter-spacing:.5px; text-transform:uppercase; padding:2px 7px; border:1px solid rgba(30,63,112,0.2); }
   .pill-ext      { display:inline-block; background:#f0ebfa; color:#4a2a6e; font-size:8px; font-weight:700; letter-spacing:.5px; text-transform:uppercase; padding:2px 7px; border:1px solid rgba(74,42,110,0.2); }
 

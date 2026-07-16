@@ -93,7 +93,7 @@ export default function TarifsClient({ clientId }: { clientId: string }) {
           <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
             {tarifs.map(t => (
               <div key={t.id} style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '8px 10px', background: '#f5f2ed', border: '1px solid #d8d2c8' }}>
-                <span style={{ fontSize: '8px', fontWeight: 700, letterSpacing: '0.5px', textTransform: 'uppercase', padding: '2px 6px', color: t.type === 'mad' ? '#7a5c10' : '#1e3f70', background: t.type === 'mad' ? '#fdf3dc' : '#e8eef8' }}>{t.type === 'mad' ? 'MAD' : 'TRANSF'}</span>
+                <span style={{ fontSize: '8px', fontWeight: 700, letterSpacing: '0.5px', textTransform: 'uppercase', padding: '2px 6px', color: t.type === 'mad' ? '#a6432a' : '#1e3f70', background: t.type === 'mad' ? '#f8ece7' : '#e8eef8' }}>{t.type === 'mad' ? 'MAD' : 'TRANSF'}</span>
                 <div style={{ flex: 1, minWidth: 0 }}>
                   <div style={{ fontSize: '12px', fontWeight: 600, color: '#16130e' }}>{t.libelle}</div>
                   {t.categorie && <div style={{ fontSize: '10px', color: '#8a8478' }}>{CATS[t.categorie] ?? t.categorie}</div>}

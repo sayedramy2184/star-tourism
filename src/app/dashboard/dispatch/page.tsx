@@ -142,7 +142,7 @@ function MissionRow({ m, onOpen }: { m: any; onOpen: () => void }) {
   const veh = one(m.vehicule); const ch = one(m.chauffeur); const st = one(m.sous_traitant)
   const isMad = m.type === 'mad'
   const eff = effectif(m); const si = STATUT_MAP[eff]
-  const typeCol = isMad ? '#7a5c10' : '#1e3f70'
+  const typeCol = isMad ? '#a6432a' : '#1e3f70'
   const heure = isMad ? m.heure_debut_journee : m.heure_depart
 
   // Chauffeur / partenaire
@@ -212,7 +212,7 @@ function MissionCard({ m, onOpen }: { m: any; onOpen: () => void }) {
   const veh = one(m.vehicule); const ch = one(m.chauffeur); const st = one(m.sous_traitant)
   const isMad = m.type === 'mad'
   const eff = effectif(m); const si = STATUT_MAP[eff]
-  const typeCol = isMad ? '#7a5c10' : '#1e3f70'
+  const typeCol = isMad ? '#a6432a' : '#1e3f70'
   const heure = isMad ? m.heure_debut_journee : m.heure_depart
 
   let aff: React.ReactNode

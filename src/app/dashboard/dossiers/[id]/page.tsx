@@ -277,9 +277,9 @@ export default async function DossierDetailPage({ params }: { params: { id: stri
                   <div style={{ display:'flex', flexDirection:'column', alignItems:'center', width:'10px', flexShrink:0 }}>
                     <div style={{
                       width:'8px', height:'8px', borderRadius:'50', marginTop:'3px', flexShrink:0,
-                      background: p.type === 'mad' ? '#7a5c10' : '#1e3f70',
+                      background: p.type === 'mad' ? '#a6432a' : '#1e3f70',
                       border: '1.5px solid',
-                      borderColor: p.type === 'mad' ? '#7a5c10' : '#1e3f70',
+                      borderColor: p.type === 'mad' ? '#a6432a' : '#1e3f70',
                     }} />
                     {i < prestations.length - 1 && (
                       <div style={{ width:'1px', flex:1, background:'#d8d2c8', marginTop:'3px', minHeight:'16px' }} />

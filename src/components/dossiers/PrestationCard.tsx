@@ -179,7 +179,7 @@ export default function PrestationCard({ p, dossierId, passagers = [] }: { p: an
       })
     } catch { toast.error('Erreur') }
   }
-  const typeColor = p.type === 'mad' ? '#7a5c10' : '#1e3f70'
+  const typeColor = p.type === 'mad' ? '#a6432a' : '#1e3f70'
   const typeLabel = p.type === 'mad' ? 'Mise à disposition' : 'Transfert'
   const jours     = p.jours ?? []
   const joursManquants = jours.filter((j: any) => !j.chauffeur_id).length
