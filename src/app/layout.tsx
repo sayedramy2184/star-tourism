@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from 'next'
 import { DM_Sans, Cormorant_Garamond, JetBrains_Mono } from 'next/font/google'
 import './globals.css'
+import NoZoom from '@/components/NoZoom'
 
 const dmSans = DM_Sans({
   subsets: ['latin'],
@@ -45,6 +46,7 @@ export default function RootLayout({
   return (
     <html lang="fr" className={`${dmSans.variable} ${cormorant.variable} ${jetbrains.variable}`}>
       <body className="font-sans bg-[#ede9e2] text-[#16130e] antialiased">
+        <NoZoom />
         {children}
       </body>
     </html>

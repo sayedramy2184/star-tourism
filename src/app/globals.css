@@ -10,6 +10,8 @@ body {
   color: #16130e;
   -webkit-font-smoothing: antialiased;
   font-size: 13px;
+  /* Désactive le pincement-zoom et le double-tap-zoom (le scroll reste possible) */
+  touch-action: pan-x pan-y;
 }
 
 /* ── Scrollbar ── */
