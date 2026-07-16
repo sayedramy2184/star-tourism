@@ -72,7 +72,7 @@ export default function DossiersPage() {
       </div>
 
       {/* Header */}
-      <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom:'12px' }}>
+      <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', gap:'10px', flexWrap:'wrap', marginBottom:'12px' }}>
         <span className="section-title">Tous les dossiers</span>
         <Link href="/dashboard/dossiers/nouveau" className="btn-primary">
           + Nouveau dossier
@@ -92,8 +92,43 @@ export default function DossiersPage() {
         <SearchBar value={sp.query} onChange={sp.setQuery} placeholder="Rechercher un dossier, client…" onExport={handleExport} />
       </div>
 
-      {/* Table */}
-      <div className="table-container">
+      {/* Liste mobile (cartes) */}
+      <div className="md:hidden" style={{ display:'flex', flexDirection:'column', gap:'10px' }}>
+        {loadingData ? (
+          <div style={{ padding:'40px', textAlign:'center', color:'#8a8478', fontSize:'12px' }}>Chargement…</div>
+        ) : sp.total === 0 ? (
+          <div style={{ padding:'40px', textAlign:'center', color:'#8a8478', fontSize:'12px' }}>
+            {dossiers.length === 0 ? 'Aucun dossier — créez le premier !' : 'Aucun résultat.'}
+          </div>
+        ) : sp.pageItems.map((d: any) => {
+          const types = d.prestations?.reduce((acc: any, p: any) => { acc[p.type] = (acc[p.type] ?? 0) + 1; return acc }, {}) ?? {}
+          return (
+            <div key={d.id} style={{ background:'#fff', border:'1.5px solid #b8b0a4', boxShadow:'0 1px 4px rgba(0,0,0,0.06)' }}>
+              <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', padding:'10px 12px', borderBottom:'1px solid #ede9e2' }}>
+                <span className="mono" style={{ fontSize:'11px', color:'#9a7a28' }}>{d.numero}</span>
+                <StatutDossierSelector key={d.id + d.statut} dossierId={d.id} statut={d.statut} onStatutChange={(ns) => setDossiers(prev => prev.map(x => x.id === d.id ? {...x, statut: ns} : x))} />
+              </div>
+              <Link href={`/dashboard/dossiers/${d.id}`} style={{ display:'block', padding:'10px 12px', textDecoration:'none', color:'inherit' }}>
+                <div style={{ fontWeight:600, color:'#16130e', fontSize:'14px' }}>{d.client?.nom}</div>
+                {d.client?.contact_nom && <div style={{ fontSize:'11px', color:'#5a564e' }}>{d.client.contact_nom}</div>}
+                <div className="mono" style={{ fontSize:'11px', color:'#5a564e', marginTop:'6px' }}>
+                  {format(new Date(d.date_debut),'dd/MM/yy',{locale:fr})} → {format(new Date(d.date_fin),'dd/MM/yy',{locale:fr})} · {d.nb_jours} j
+                </div>
+                <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', marginTop:'8px', gap:'8px', flexWrap:'wrap' }}>
+                  <div style={{ display:'flex', gap:'4px', flexWrap:'wrap' }}>
+                    {types.mad && <span className="pill-mad">MAD ×{types.mad}</span>}
+                    {types.transfert && <span className="pill-transfer">Transfert ×{types.transfert}</span>}
+                  </div>
+                  <span className="mono" style={{ fontSize:'13px', fontWeight:700, color:'#16130e' }}>{formatMontant(d.montant_ht)}</span>
+                </div>
+              </Link>
+            </div>
+          )
+        })}
+      </div>
+
+      {/* Table (desktop) */}
+      <div className="table-container hidden md:block">
         <table style={{ width:'100%', borderCollapse:'collapse' }}>
           <thead className="table-head">
             <tr>

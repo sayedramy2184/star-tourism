@@ -106,8 +106,17 @@ export default function DispatchPage() {
         <SearchBar value={sp.query} onChange={sp.setQuery} placeholder="Rechercher mission, client, adresse, vol…" />
       </div>
 
-      {/* Tableau missions */}
-      <div className="table-container">
+      {/* Liste mobile (cartes) */}
+      <div className="md:hidden" style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+        {loading ? (
+          <div style={{ padding: '40px', textAlign: 'center', color: '#8a8478', fontSize: '12px' }}>Chargement…</div>
+        ) : sp.total === 0 ? (
+          <div style={{ padding: '40px', textAlign: 'center', color: '#8a8478', fontSize: '12px' }}>Aucune mission sur cette période</div>
+        ) : sp.pageItems.map((m: any) => <MissionCard key={m.id} m={m} onOpen={() => router.push(`/dashboard/dossiers/${one(m.dossier)?.id}`)} />)}
+      </div>
+
+      {/* Tableau missions (desktop) */}
+      <div className="table-container hidden md:block">
         <table style={{ width: '100%', borderCollapse: 'collapse', minWidth: '900px' }}>
           <thead className="table-head">
             <tr>{['Mission', 'Type', 'Date · Heure', 'Client', 'Itinéraire', 'Véhicule', 'Chauffeur / Partenaire', 'Statut'].map((h, i) => (
@@ -195,6 +204,53 @@ function MissionRow({ m, onOpen }: { m: any; onOpen: () => void }) {
         </span>
       </td>
     </tr>
+  )
+}
+
+function MissionCard({ m, onOpen }: { m: any; onOpen: () => void }) {
+  const dossier = one(m.dossier); const client = one(dossier?.client)
+  const veh = one(m.vehicule); const ch = one(m.chauffeur); const st = one(m.sous_traitant)
+  const isMad = m.type === 'mad'
+  const eff = effectif(m); const si = STATUT_MAP[eff]
+  const typeCol = isMad ? '#7a5c10' : '#1e3f70'
+  const heure = isMad ? m.heure_debut_journee : m.heure_depart
+
+  let aff: React.ReactNode
+  if (st) aff = <span style={{ color: '#4a2a6e', fontWeight: 700 }}>ST · {st.societe}{m.st_chauffeur_nom ? ` · ${m.st_chauffeur_nom}` : ''}</span>
+  else if (isMad) { const j = m.jours ?? []; const a = j.filter((x: any) => x.chauffeur_id || x.sous_traitant_id).length; aff = <span style={{ color: a === j.length && j.length > 0 ? '#1e5e3a' : '#7a5c10' }}>{a}/{j.length} affectés</span> }
+  else if (ch) aff = <span style={{ fontWeight: 600 }}>{ch.prenom} {ch.nom}</span>
+  else aff = <span style={{ color: '#9e2a2a', fontWeight: 600 }}>⚠ À affecter</span>
+
+  return (
+    <div onClick={onOpen} style={{ background: '#fff', border: '1.5px solid #b8b0a4', borderLeft: `3px solid ${typeCol}`, boxShadow: '0 1px 4px rgba(0,0,0,0.06)', cursor: 'pointer' }}>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '9px 12px', borderBottom: '1px solid #ede9e2', gap: '8px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', minWidth: 0 }}>
+          <span style={{ fontSize: '9px', fontWeight: 700, color: typeCol }}>{isMad ? 'MAD' : 'TRANSF'}</span>
+          <span style={{ fontFamily: 'JetBrains Mono,monospace', fontSize: '11px', color: '#9a7a28' }}>{dossier?.numero}</span>
+        </div>
+        <span style={{ display: 'inline-flex', alignItems: 'center', gap: '5px', fontSize: '10px', fontWeight: 700, padding: '2px 8px', color: si.color, background: si.bg, border: `1px solid ${si.border}`, flexShrink: 0 }}>
+          <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: si.dot }} />{si.label}
+        </span>
+      </div>
+      <div style={{ padding: '10px 12px' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', gap: '8px' }}>
+          <div style={{ fontWeight: 600, color: '#16130e', fontSize: '14px', minWidth: 0 }}>{client?.nom ?? '—'}</div>
+          <div style={{ fontFamily: 'JetBrains Mono,monospace', fontSize: '12px', color: '#16130e', fontWeight: 600, flexShrink: 0 }}>
+            {format(parseISO(m.date_debut), 'dd/MM', { locale: fr })}{heure ? ` · ${heure.slice(0, 5)}` : ''}
+          </div>
+        </div>
+        <div style={{ fontSize: '12px', color: '#5a564e', marginTop: '4px' }}>
+          {isMad ? (m.adresse_depart ?? 'Mise à disposition') : `${m.adresse_depart ?? '—'} → ${m.adresse_arrivee ?? '—'}`}
+        </div>
+        {(m.vol_numero || m.vol_ville || m.vol_terminal) && (
+          <FlightBlock numero={m.vol_numero} heure={m.vol_heure} ville={m.vol_ville} terminal={m.vol_terminal} arrivee={m.vol_arrivee} compact />
+        )}
+        <div style={{ display: 'flex', justifyContent: 'space-between', gap: '8px', marginTop: '8px', fontSize: '11px', color: '#5a564e', flexWrap: 'wrap' }}>
+          <span>{veh ? `${veh.marque} ${veh.modele}` : m.st_vehicule_marque ? m.st_vehicule_marque : m.modele_souhaite ? m.modele_souhaite : '—'}</span>
+          <span>{aff}</span>
+        </div>
+      </div>
+    </div>
   )
 }
 
