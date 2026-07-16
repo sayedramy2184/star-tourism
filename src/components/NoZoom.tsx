@@ -13,25 +13,19 @@ export default function NoZoom() {
     document.addEventListener('gesturechange', prevent, { passive: false })
     document.addEventListener('gestureend', prevent, { passive: false })
 
-    // Pincement générique (2 doigts) + double-tap
+    // Pincement générique à 2 doigts (ne touche pas aux taps à 1 doigt).
+    // NB : pas de preventDefault sur touchend — ça annulerait les clics/mousedown.
+    // Le double-tap-zoom est déjà neutralisé par `touch-action` en CSS.
     const onTouchMove = (e: TouchEvent) => {
       if (e.touches.length > 1) e.preventDefault()
     }
-    let lastTouchEnd = 0
-    const onTouchEnd = (e: TouchEvent) => {
-      const now = Date.now()
-      if (now - lastTouchEnd <= 300) e.preventDefault()
-      lastTouchEnd = now
-    }
     document.addEventListener('touchmove', onTouchMove, { passive: false })
-    document.addEventListener('touchend', onTouchEnd, { passive: false })
 
     return () => {
       document.removeEventListener('gesturestart', prevent)
       document.removeEventListener('gesturechange', prevent)
       document.removeEventListener('gestureend', prevent)
       document.removeEventListener('touchmove', onTouchMove)
-      document.removeEventListener('touchend', onTouchEnd)
     }
   }, [])
 
