@@ -50,7 +50,34 @@ export default async function LoueursPage() {
         ))}
       </div>
 
-      <div className="table-container">
+      {/* Liste mobile (cartes) */}
+      <div className="md:hidden" style={{ display:'flex', flexDirection:'column', gap:'10px' }}>
+        {rows.length === 0 ? (
+          <div style={{ padding:'40px', textAlign:'center', color:'#8a8478', fontSize:'12px' }}>Aucun loueur — ajoutez-en un puis rattachez vos véhicules loués.</div>
+        ) : rows.map(r => {
+          const solde = Math.round(r.solde * 100) / 100
+          const statut = solde > 0 ? { label:'À payer', color:'#9e2a2a', bg:'#faeaea' } : { label:'Soldé', color:'#1e5e3a', bg:'#eaf4ee' }
+          return (
+            <Link key={r.id} href={`/dashboard/loueurs/${r.id}`} style={{ display:'block', background:'#fff', border:'1.5px solid #b8b0a4', boxShadow:'0 1px 4px rgba(0,0,0,0.06)', padding:'12px', textDecoration:'none', color:'inherit' }}>
+              <div style={{ display:'flex', alignItems:'flex-start', justifyContent:'space-between', gap:'8px' }}>
+                <div style={{ minWidth:0 }}>
+                  <div style={{ fontFamily:'Cormorant Garamond,serif', fontSize:'16px', fontWeight:500, color:'#16130e' }}>{r.nom}</div>
+                  <div style={{ fontSize:'11px', color:'#8a8478' }}>{r.nbVehicules} véhicule{r.nbVehicules > 1 ? 's' : ''}{r.contact_nom ? ` · ${r.contact_nom}` : ''}</div>
+                </div>
+                <span style={{ flexShrink:0, padding:'3px 10px', fontSize:'10px', fontWeight:700, background:statut.bg, color:statut.color, border:`1px solid ${statut.color}33` }}>{statut.label}</span>
+              </div>
+              <div style={{ display:'flex', justifyContent:'space-between', gap:'8px', marginTop:'10px', paddingTop:'8px', borderTop:'1px solid #ede9e2' }}>
+                <div><div style={{ fontSize:'8px', textTransform:'uppercase', letterSpacing:'1px', color:'#8a8478' }}>Coût couru</div><div className="mono" style={{ fontSize:'12px', color:'#9a7a28' }}>{fmt(r.coutCouru)}</div></div>
+                <div><div style={{ fontSize:'8px', textTransform:'uppercase', letterSpacing:'1px', color:'#8a8478' }}>Payé</div><div className="mono" style={{ fontSize:'12px', color:'#1e5e3a' }}>{fmt(r.paye)}</div></div>
+                <div style={{ textAlign:'right' }}><div style={{ fontSize:'8px', textTransform:'uppercase', letterSpacing:'1px', color:'#8a8478' }}>Solde dû</div><div className="mono" style={{ fontSize:'13px', fontWeight:700, color: solde > 0 ? '#9e2a2a' : '#1e5e3a' }}>{fmt(solde)}</div></div>
+              </div>
+            </Link>
+          )
+        })}
+      </div>
+
+      {/* Table (desktop) */}
+      <div className="table-container hidden md:block">
         <table style={{ width:'100%', borderCollapse:'collapse' }}>
           <thead className="table-head">
             <tr>

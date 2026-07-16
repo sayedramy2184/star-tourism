@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
+import Link from 'next/link'
 import toast from 'react-hot-toast'
 import { Plus, AlertTriangle } from 'lucide-react'
 import { differenceInDays, parseISO, format } from 'date-fns'
@@ -243,8 +244,40 @@ export default function VehiculesPage() {
         <SearchBar value={sp.query} onChange={sp.setQuery} placeholder="Rechercher un véhicule, plaque, catégorie…" onExport={handleExport} />
       </div>
 
-      {/* Table */}
-      <div className="table-container">
+      {/* Liste mobile (cartes) */}
+      <div className="md:hidden" style={{ display:'flex', flexDirection:'column', gap:'10px' }}>
+        {loading ? (
+          <div style={{ padding:'40px', textAlign:'center', color:'#8a8478', fontSize:'12px' }}>Chargement…</div>
+        ) : sp.total === 0 ? (
+          <div style={{ padding:'40px', textAlign:'center', color:'#8a8478', fontSize:'12px' }}>{vehicules.length === 0 ? 'Aucun véhicule — ajoutez le premier !' : 'Aucun résultat'}</div>
+        ) : sp.pageItems.map((v: any) => {
+          const stt = STATUTS[v.statut]; const m = MODES[v.mode_acquisition] ?? MODES.propriete
+          const ct = docAlert(v.ct_date); const ass = docAlert(v.assurance_date); const ca = contratAlert(v.contrat_fin)
+          return (
+            <Link key={v.id} href={`/dashboard/vehicules/${v.id}`} style={{ display:'block', background:'#fff', border:'1.5px solid #b8b0a4', boxShadow:'0 1px 4px rgba(0,0,0,0.06)', padding:'12px', textDecoration:'none', color:'inherit' }}>
+              <div style={{ display:'flex', alignItems:'flex-start', justifyContent:'space-between', gap:'8px' }}>
+                <div style={{ minWidth:0 }}>
+                  <div style={{ fontFamily:'Cormorant Garamond,serif', fontSize:'16px', fontWeight:500, color:'#16130e' }}>{v.marque} {v.modele}</div>
+                  <div className="mono" style={{ fontSize:'11px', color:'#5a564e', marginTop:'2px' }}>{v.immatriculation} · {CATEGORIES[v.categorie]}</div>
+                </div>
+                <span style={{ flexShrink:0, display:'inline-flex', alignItems:'center', gap:'5px', padding:'3px 10px', fontSize:'10px', fontWeight:700, background:stt.bg, color:stt.color, border:`1px solid ${stt.color}33` }}>
+                  <span style={{ width:'6px', height:'6px', borderRadius:'50%', background:stt.color }} />{stt.label}
+                </span>
+              </div>
+              <div style={{ display:'flex', alignItems:'center', gap:'8px', marginTop:'10px', flexWrap:'wrap' }}>
+                <span style={{ padding:'2px 8px', fontSize:'9px', fontWeight:700, textTransform:'uppercase', background:m.bg, color:m.color, border:`1px solid ${m.color}33` }}>{m.short}</span>
+                {v.mode_acquisition !== 'propriete' && v.loyer_ht ? <span className="mono" style={{ fontSize:'10px', color:'#9a7a28' }}>{fmtEur(v.loyer_ht)}{PERIODES[v.loyer_periode]?.suffix ?? '/mois'}</span> : null}
+                {(ct.level === 'danger' || ct.level === 'warn') && <span style={{ fontSize:'9px', fontWeight:700, color:'#9e2a2a' }}>CT {ct.label}</span>}
+                {(ass.level === 'danger' || ass.level === 'warn') && <span style={{ fontSize:'9px', fontWeight:700, color:'#9e2a2a' }}>Assur. {ass.label}</span>}
+                {ca && <span style={{ fontSize:'9px', fontWeight:700, color:ca.color }}>{ca.label}</span>}
+              </div>
+            </Link>
+          )
+        })}
+      </div>
+
+      {/* Table (desktop) */}
+      <div className="table-container hidden md:block">
         <table style={{ width:'100%', borderCollapse:'collapse' }}>
           <thead className="table-head">
             <tr>

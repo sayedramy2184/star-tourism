@@ -139,8 +139,36 @@ export default function ClientsPage() {
         </div>
       )}
 
-      {/* Table */}
-      <div className="table-container">
+      {/* Liste mobile (cartes) */}
+      <div className="md:hidden" style={{ display:'flex', flexDirection:'column', gap:'10px' }}>
+        {loading ? (
+          <div style={{ padding:'40px', textAlign:'center', color:'#8a8478', fontSize:'12px' }}>Chargement…</div>
+        ) : sp.total === 0 ? (
+          <div style={{ padding:'40px', textAlign:'center', color:'#8a8478', fontSize:'12px' }}>{clients.length === 0 ? 'Aucun client — créez le premier !' : 'Aucun résultat.'}</div>
+        ) : sp.pageItems.map((c: any) => {
+          const typeStyle = c.type === 'agence' ? { background:'#fdf6e3', color:'#9a7a28' } : c.type === 'entreprise' ? { background:'#e8eef8', color:'#1e3f70' } : { background:'#eaf4ee', color:'#1e5e3a' }
+          return (
+            <Link key={c.id} href={`/dashboard/clients/${c.id}`} style={{ display:'block', background:'#fff', border:'1.5px solid #b8b0a4', boxShadow:'0 1px 4px rgba(0,0,0,0.06)', padding:'12px', textDecoration:'none', color:'inherit' }}>
+              <div style={{ display:'flex', alignItems:'flex-start', justifyContent:'space-between', gap:'8px' }}>
+                <div style={{ minWidth:0 }}>
+                  <div style={{ fontWeight:600, color:'#16130e', fontSize:'14px' }}>{c.nom}</div>
+                  {c.contact_nom && <div style={{ fontSize:'11px', color:'#5a564e' }}>{c.contact_nom}</div>}
+                </div>
+                <span style={{ flexShrink:0, padding:'2px 8px', fontSize:'8px', fontWeight:700, letterSpacing:'1px', textTransform:'uppercase', border:'1px solid rgba(0,0,0,0.08)', ...typeStyle }}>
+                  {c.type === 'agence' ? 'Agence' : c.type === 'entreprise' ? 'Entreprise' : 'Particulier'}
+                </span>
+              </div>
+              <div className="mono" style={{ fontSize:'11px', color:'#5a564e', marginTop:'8px', display:'flex', flexDirection:'column', gap:'2px' }}>
+                {c.telephone && <span>{c.telephone}</span>}
+                {c.email && <span>{c.email}</span>}
+              </div>
+            </Link>
+          )
+        })}
+      </div>
+
+      {/* Table (desktop) */}
+      <div className="table-container hidden md:block">
         <table style={{ width:'100%', borderCollapse:'collapse' }}>
           <thead className="table-head">
             <tr>

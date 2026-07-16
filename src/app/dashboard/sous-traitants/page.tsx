@@ -136,7 +136,33 @@ export default function SousTraitantsPage() {
       </div>
 
       {/* Table */}
-      <div className="table-container">
+      {/* Liste mobile (cartes) */}
+      <div className="md:hidden" style={{ display:'flex', flexDirection:'column', gap:'10px' }}>
+        {loading ? (
+          <div style={{ padding:'40px', textAlign:'center', color:'#8a8478', fontSize:'12px' }}>Chargement…</div>
+        ) : sp.total === 0 ? (
+          <div style={{ padding:'40px', textAlign:'center', color:'#8a8478', fontSize:'12px' }}>{list.length === 0 ? 'Aucun sous-traitant — ajoutez le premier !' : 'Aucun résultat'}</div>
+        ) : sp.pageItems.map((st: any) => (
+          <div key={st.id} style={{ background:'#fff', border:'1.5px solid #b8b0a4', boxShadow:'0 1px 4px rgba(0,0,0,0.06)' }}>
+            <Link href={`/dashboard/sous-traitants/${st.id}`} style={{ display:'block', padding:'12px', textDecoration:'none', color:'inherit' }}>
+              <div style={{ fontFamily:'Cormorant Garamond,serif', fontSize:'16px', fontWeight:500, color:'#16130e' }}>{st.societe}</div>
+              {st.contact_nom && <div style={{ fontSize:'11px', color:'#5a564e', marginTop:'2px' }}>{st.contact_nom}</div>}
+              <div className="mono" style={{ fontSize:'11px', color:'#5a564e', marginTop:'8px', display:'flex', flexDirection:'column', gap:'2px' }}>
+                {st.telephone && <span>{st.telephone}</span>}
+                {st.email && <span>{st.email}</span>}
+                {st.siret && <span style={{ color:'#8a8478' }}>SIRET {st.siret}</span>}
+              </div>
+            </Link>
+            <div onClick={e => e.stopPropagation()} style={{ display:'flex', gap:'6px', padding:'0 12px 12px' }}>
+              <button className="btn-ghost" style={{ padding:'4px 10px', fontSize:'10px' }} onClick={() => openEdit(st)}><Edit size={11}/> Modifier</button>
+              <button style={{ background:'none', border:'1.5px solid rgba(158,42,42,0.3)', padding:'4px 8px', cursor:'pointer', color:'#9e2a2a', fontSize:'10px' }} onClick={() => handleDelete(st.id, st.societe)}><Trash2 size={11}/></button>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* Table (desktop) */}
+      <div className="table-container hidden md:block">
         <table style={{ width:'100%', borderCollapse:'collapse' }}>
           <thead className="table-head">
             <tr>
