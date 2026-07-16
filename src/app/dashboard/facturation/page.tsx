@@ -176,7 +176,7 @@ export default function FacturationPage() {
 
       {/* Table */}
       {/* Liste mobile (cartes) */}
-      <div className="md:hidden" style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+      <div className="only-mobile" style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
         {loading ? (
           <div style={{ padding: '40px', textAlign: 'center', color: '#8a8478', fontSize: '12px' }}>Chargement…</div>
         ) : sp.total === 0 ? (
@@ -223,7 +223,7 @@ export default function FacturationPage() {
       </div>
 
       {/* Table (desktop) */}
-      <div className="table-container hidden md:block">
+      <div className="table-container only-desktop">
         <table style={{ width: '100%', borderCollapse: 'collapse' }}>
           <thead className="table-head">
             <tr>

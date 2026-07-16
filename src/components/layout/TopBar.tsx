@@ -42,7 +42,7 @@ export default function TopBar({ profile, onBurger }: TopBarProps) {
       {/* Burger — mobile uniquement */}
       <button
         onClick={onBurger}
-        className="md:hidden text-noir p-1 -ml-1"
+        className="only-mobile text-noir p-1 -ml-1"
         aria-label="Ouvrir le menu">
         <Menu size={20} />
       </button>

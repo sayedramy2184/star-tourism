@@ -227,6 +227,12 @@ body {
 .detail-grid { display:grid; grid-template-columns: 1fr 300px; gap:20px; }
 /* min-width:0 : sans ça, une colonne au contenu large (tableau, grille) empêche le rétrécissement et déborde sur mobile */
 .detail-grid > * { min-width: 0; }
+
+/* ── Affichage mobile / desktop cohérent ──
+   Le !important bat les styles inline (display:flex) — contrairement à md:hidden.
+   On n'impose PAS de display : chaque élément garde le sien, on ne fait que masquer. */
+@media (min-width: 768px) { .only-mobile  { display: none !important; } }
+@media (max-width: 767px)  { .only-desktop { display: none !important; } }
 @media (max-width: 900px) { .detail-grid { grid-template-columns: 1fr; } }
 
 .form-grid-2 { display:grid; grid-template-columns: 1fr 1fr; gap:12px; }

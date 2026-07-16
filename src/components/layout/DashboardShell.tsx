@@ -20,7 +20,7 @@ export default function DashboardShell({ profile, children }: Props) {
       {/* Overlay mobile */}
       {mobileOpen && (
         <div
-          className="fixed inset-0 bg-black/50 z-40 md:hidden"
+          className="fixed inset-0 bg-black/50 z-40 only-mobile"
           onClick={() => setMobileOpen(false)}
           aria-hidden
         />

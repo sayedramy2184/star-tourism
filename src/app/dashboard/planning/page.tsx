@@ -204,12 +204,12 @@ export default function PlanningPage() {
         ) : (
           <>
             {/* ── Mobile : agenda jour par jour ── */}
-            <div className="md:hidden">
+            <div className="only-mobile">
               <PlanningMobile days={days} data={data} router={router} />
             </div>
 
             {/* ── Desktop : gantt ── */}
-            <div className="hidden md:block">
+            <div className="only-desktop">
               {tab === 'missions' ? (
                 <MissionsView days={days} viewMode={viewMode} data={data} onTooltip={setTooltip} onDragStart={setDragJourId} router={router} />
               ) : tab === 'chauffeurs' ? (

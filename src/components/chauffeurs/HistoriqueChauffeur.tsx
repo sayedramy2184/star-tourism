@@ -111,7 +111,7 @@ export default function HistoriqueChauffeur({ items }: { items: HistoItem[] }) {
       </div>
 
       {/* Liste mobile (cartes) */}
-      <div className="md:hidden" style={{ display:'flex', flexDirection:'column', gap:'10px' }}>
+      <div className="only-mobile" style={{ display:'flex', flexDirection:'column', gap:'10px' }}>
         {filtered.length === 0 ? (
           <div style={{ padding:'30px', textAlign:'center', color:'#8a8478', fontSize:'12px' }}>{items.length === 0 ? 'Aucune prestation pour ce chauffeur' : 'Aucune prestation ne correspond aux filtres'}</div>
         ) : filtered.map(i => {
@@ -139,7 +139,7 @@ export default function HistoriqueChauffeur({ items }: { items: HistoItem[] }) {
       </div>
 
       {/* Tableau (desktop) */}
-      <div className="table-container hidden md:block">
+      <div className="table-container only-desktop">
         <table style={{ width:'100%', borderCollapse:'collapse' }}>
           <thead className="table-head">
             <tr>

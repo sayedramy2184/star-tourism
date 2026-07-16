@@ -94,7 +94,7 @@ export default async function ClientDetailPage({ params }: { params: { id: strin
             <Link href="/dashboard/dossiers/nouveau" className="btn-ghost" style={{ padding: '5px 12px', fontSize: '11px', textDecoration: 'none' }}>+ Nouveau dossier</Link>
           </div>
           {/* Liste mobile (cartes) */}
-          <div className="md:hidden" style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+          <div className="only-mobile" style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
             {D.length === 0 ? (
               <div style={{ padding: '30px', textAlign: 'center', color: '#8a8478', fontSize: '12px' }}>Aucun dossier pour ce client</div>
             ) : D.map((d: any) => {
@@ -116,7 +116,7 @@ export default async function ClientDetailPage({ params }: { params: { id: strin
           </div>
 
           {/* Table (desktop) */}
-          <div className="table-container hidden md:block">
+          <div className="table-container only-desktop">
             <table style={{ width: '100%', borderCollapse: 'collapse' }}>
               <thead className="table-head">
                 <tr>{['N°', 'Période', 'Prestations', 'Montant HT', 'Statut', ''].map((h, i) => (

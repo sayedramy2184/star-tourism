@@ -66,7 +66,7 @@ export default async function LoueurDetailPage({ params }: { params: { id: strin
           </div>
 
           {/* Liste mobile (cartes) */}
-          <div className="md:hidden" style={{ display:'flex', flexDirection:'column', gap:'10px' }}>
+          <div className="only-mobile" style={{ display:'flex', flexDirection:'column', gap:'10px' }}>
             {vehs.length === 0 ? (
               <div style={{ padding:'30px', textAlign:'center', color:'#8a8478', fontSize:'12px' }}>Aucun véhicule rattaché à ce loueur.</div>
             ) : vehs.map(({ v, c }) => (
@@ -88,7 +88,7 @@ export default async function LoueurDetailPage({ params }: { params: { id: strin
           </div>
 
           {/* Table (desktop) */}
-          <div className="table-container hidden md:block">
+          <div className="table-container only-desktop">
             <table style={{ width:'100%', borderCollapse:'collapse' }}>
               <thead className="table-head">
                 <tr>
