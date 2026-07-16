@@ -455,23 +455,23 @@ export default function NouveauDossierPage() {
             </p>
             {passagers.length > 0 && (
               <div style={{ display:'flex', flexDirection:'column', gap:'8px' }}>
-                {passagers.map((pax, i) => (
-                  <div key={pax.id} style={{ display:'grid', gridTemplateColumns:'24px 1fr 90px 150px 90px 32px', gap:'8px', alignItems:'end', background:'#f5f2ed', border:'1.5px solid #b8b0a4', padding:'10px' }}>
-                    <span style={{ fontSize:'18px', textAlign:'center', paddingBottom:'6px' }}>{flag(pax.nationalite) || '👤'}</span>
-                    <div>
-                      {i === 0 && <label className="form-label">Nom du passager *</label>}
+                {passagers.map((pax) => (
+                  <div key={pax.id} style={{ display:'flex', flexWrap:'wrap', gap:'8px', alignItems:'flex-end', background:'#f5f2ed', border:'1.5px solid #b8b0a4', padding:'10px' }}>
+                    <span style={{ fontSize:'18px', paddingBottom:'6px' }}>{flag(pax.nationalite) || '👤'}</span>
+                    <div style={{ flex:'2 1 150px', minWidth:'130px' }}>
+                      <label className="form-label">Nom du passager *</label>
                       <input className="input" value={pax.nom} onChange={e => updatePassager(pax.id, { nom: e.target.value })} placeholder="M. Ahmed AL FALASI" />
                     </div>
-                    <div>
-                      {i === 0 && <label className="form-label">Pays</label>}
+                    <div style={{ flex:'0 1 72px', minWidth:'64px' }}>
+                      <label className="form-label">Pays</label>
                       <input className="input" value={pax.nationalite} maxLength={2} onChange={e => updatePassager(pax.id, { nationalite: e.target.value.toUpperCase() })} placeholder="AE" />
                     </div>
-                    <div>
-                      {i === 0 && <label className="form-label">Téléphone</label>}
+                    <div style={{ flex:'1 1 120px', minWidth:'110px' }}>
+                      <label className="form-label">Téléphone</label>
                       <input className="input" value={pax.telephone} onChange={e => updatePassager(pax.id, { telephone: e.target.value })} placeholder="+971 …" />
                     </div>
-                    <div>
-                      {i === 0 && <label className="form-label">Bagages</label>}
+                    <div style={{ flex:'0 1 80px', minWidth:'64px' }}>
+                      <label className="form-label">Bagages</label>
                       <input type="number" className="input" min={0} value={pax.nb_bagages} onChange={e => updatePassager(pax.id, { nb_bagages: Number(e.target.value) })} />
                     </div>
                     <button type="button" onClick={() => removePassager(pax.id)}

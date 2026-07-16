@@ -366,7 +366,7 @@ export default function PrestationCard({ p, dossierId, passagers = [] }: { p: an
         {/* Véhicule */}
         <div style={{
           background:'#f5f2ed', border:'1px solid #b8b0a4', padding:'10px 14px',
-          display:'flex', alignItems:'center', gap:'12px', marginBottom:'10px',
+          display:'flex', alignItems:'center', gap:'12px', marginBottom:'10px', flexWrap:'wrap',
           borderLeft: p.vehicule_ext ? '3px solid #4a2a6e' : stLocal.sous_traitant_id ? '3px solid #7a2a8a' : p.affectation_differee ? '3px solid #7a5c10' : '3px solid #1e5e3a',
         }}>
           <span style={{ fontSize:'16px' }}>🚗</span>
