@@ -266,6 +266,38 @@ export default function PrestationCard({ p, dossierId, passagers = [] }: { p: an
     finally { setSavingJour(null) }
   }
 
+  // ── Appliquer à TOUS les jours ──────────────
+  async function affecterTous(value: string) {
+    const chauffeur_id     = value.startsWith('ch:') ? value.slice(3) : null
+    const sous_traitant_id = value.startsWith('st:') ? value.slice(3) : null
+    setSavingJour('ALL')
+    setJoursState(Object.fromEntries(jours.map((j: any) => [j.id, chauffeur_id ?? ''])))
+    setJoursST(Object.fromEntries(jours.map((j: any) => [j.id, sous_traitant_id ?? ''])))
+    try {
+      await Promise.all(jours.map((j: any) => fetch(`/api/jours-mad/${j.id}`, {
+        method: 'PATCH', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ chauffeur_id, sous_traitant_id }),
+      })))
+      toast.success('Affectation appliquée à tous les jours')
+      router.refresh()
+    } catch { toast.error('Erreur') }
+    finally { setSavingJour(null) }
+  }
+
+  async function affecterVehiculeTous(vehiculeId: string) {
+    setSavingJour('ALL')
+    setJoursVeh(Object.fromEntries(jours.map((j: any) => [j.id, vehiculeId])))
+    try {
+      await Promise.all(jours.map((j: any) => fetch(`/api/jours-mad/${j.id}`, {
+        method: 'PATCH', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ vehicule_id: vehiculeId || null }),
+      })))
+      toast.success('Véhicule appliqué à tous les jours')
+      router.refresh()
+    } catch { toast.error('Erreur') }
+    finally { setSavingJour(null) }
+  }
+
   async function affecterChauffeurTransfert(chauffeurId: string) {
     setChauffeurTransfert(chauffeurId)
     try {
@@ -480,8 +512,43 @@ export default function PrestationCard({ p, dossierId, passagers = [] }: { p: an
         {/* Jours MAD */}
         {p.type === 'mad' && jours.length > 0 && (
           <div>
-            <div style={{ fontSize:'8px', fontWeight:600, letterSpacing:'2.5px', textTransform:'uppercase', color:'#9a7a28', marginBottom:'6px' }}>
-              Détail journalier
+            <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', gap:'8px', flexWrap:'wrap', marginBottom:'8px' }}>
+              <div style={{ fontSize:'8px', fontWeight:600, letterSpacing:'2.5px', textTransform:'uppercase', color:'#9a7a28' }}>
+                Détail journalier
+              </div>
+              {jours.length > 1 && (
+                <div style={{ display:'flex', alignItems:'center', gap:'6px', flexWrap:'wrap' }}>
+                  <span style={{ fontSize:'9px', fontWeight:700, letterSpacing:'0.5px', textTransform:'uppercase', color:'#9a7a28', display:'inline-flex', alignItems:'center', gap:'3px' }}>
+                    ⇊ Appliquer à tous
+                  </span>
+                  <select
+                    defaultValue=""
+                    disabled={savingJour === 'ALL'}
+                    onChange={e => { const v = e.target.value; e.currentTarget.value = ''; if (v) affecterTous(v) }}
+                    title="Affecter tous les jours au même chauffeur / sous-traitant"
+                    style={{ background:'#fdf6e3', border:'1px solid #9a7a28', padding:'4px 8px', fontSize:'11px', color:'#16130e', outline:'none', cursor:'pointer', maxWidth:'170px' }}>
+                    <option value="">Affecté à…</option>
+                    <optgroup label="Chauffeurs">
+                      {chauffeurs.map((c: any) => <option key={c.id} value={`ch:${c.id}`}>{c.prenom} {c.nom}</option>)}
+                    </optgroup>
+                    {sousTraitants.length > 0 && (
+                      <optgroup label="Sous-traitants">
+                        {sousTraitants.map((s: any) => <option key={s.id} value={`st:${s.id}`}>🤝 {s.societe}</option>)}
+                      </optgroup>
+                    )}
+                  </select>
+                  <select
+                    defaultValue="__none"
+                    disabled={savingJour === 'ALL'}
+                    onChange={e => { const v = e.target.value; e.currentTarget.value = '__none'; if (v !== '__none') affecterVehiculeTous(v === '__prest' ? '' : v) }}
+                    title="Mettre tous les jours sur le même véhicule"
+                    style={{ background:'#eef4fb', border:'1px solid #1e3f70', padding:'4px 8px', fontSize:'11px', color:'#16130e', outline:'none', cursor:'pointer', maxWidth:'190px' }}>
+                    <option value="__none">Véhicule…</option>
+                    <option value="__prest">↳ Véhicule de la prestation</option>
+                    {vehicules.map((v: any) => <option key={v.id} value={v.id}>{v.marque} {v.modele} · {v.immatriculation}</option>)}
+                  </select>
+                </div>
+              )}
             </div>
             <div style={{ display:'grid', gridTemplateColumns:'84px 1fr 1fr 74px', gap:'6px', padding:'4px 8px', background:'#faf9f7', marginBottom:'2px' }}>
               {['Date','Affecté à','Véhicule','Tarif HT'].map(h => (
@@ -511,7 +578,7 @@ export default function PrestationCard({ p, dossierId, passagers = [] }: { p: an
                     <select
                       value={affVal}
                       onChange={e => affecterJour(j.id, e.target.value)}
-                      disabled={savingJour === j.id}
+                      disabled={savingJour === j.id || savingJour === 'ALL'}
                       title={stJour ? 'Jour sous-traité' : ''}
                       style={{
                         background: stJour ? '#f0ebfa' : missing ? '#fff8e8' : '#fff',
@@ -536,7 +603,7 @@ export default function PrestationCard({ p, dossierId, passagers = [] }: { p: an
                     <select
                       value={vehJour}
                       onChange={e => affecterVehiculeJour(j.id, e.target.value)}
-                      disabled={savingJour === j.id}
+                      disabled={savingJour === j.id || savingJour === 'ALL'}
                       title={overridden ? 'Véhicule spécifique à ce jour' : 'Utilise le véhicule de la prestation'}
                       style={{
                         background: overridden ? '#eef4fb' : '#fff',
