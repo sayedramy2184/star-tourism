@@ -10,6 +10,7 @@ const COLUMN: Record<string, string> = {
   attestation: 'attestation_assurance_path',
   licence: 'licence_evtc_path',
   signature: 'signature_path',
+  logo: 'logo_path',
 }
 const ALLOWED_EXT = ['pdf', 'png', 'jpg', 'jpeg', 'webp']
 
@@ -43,7 +44,7 @@ export async function GET() {
 
   const { data: societe } = await admin
     .from('societe_parametres')
-    .select('attestation_assurance_path, licence_evtc_path, signature_path')
+    .select('attestation_assurance_path, licence_evtc_path, signature_path, logo_path')
     .eq('company_id', auth.companyId)
     .maybeSingle()
 
@@ -51,10 +52,11 @@ export async function GET() {
     attestation: societe?.attestation_assurance_path ?? null,
     licence: societe?.licence_evtc_path ?? null,
     signature: societe?.signature_path ?? null,
+    logo: societe?.logo_path ?? null,
   }
 
   const out: Record<string, { url: string; kind: 'pdf' | 'image'; name: string } | null> = {
-    attestation: null, licence: null, signature: null,
+    attestation: null, licence: null, signature: null, logo: null,
   }
   for (const [key, path] of Object.entries(paths)) {
     if (!path) continue
@@ -84,6 +86,9 @@ export async function POST(req: NextRequest) {
   const ext = (file.name.split('.').pop() ?? '').toLowerCase()
   if (!ALLOWED_EXT.includes(ext)) {
     return NextResponse.json({ error: 'Format non supporté (PDF, PNG, JPG, WEBP)' }, { status: 400 })
+  }
+  if (type === 'logo' && ext === 'pdf') {
+    return NextResponse.json({ error: 'Le logo doit être une image (PNG, JPG, WEBP)' }, { status: 400 })
   }
   if (file.size > 15 * 1024 * 1024) {
     return NextResponse.json({ error: 'Fichier trop volumineux (max 15 Mo)' }, { status: 400 })

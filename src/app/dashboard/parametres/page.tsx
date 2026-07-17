@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import toast from 'react-hot-toast'
 import { Plus, Trash2, Edit, Save, Building2, CreditCard, FileText, Tag } from 'lucide-react'
 import DocumentsOfficiels from '@/components/parametres/DocumentsOfficiels'
+import LogoUploader from '@/components/parametres/LogoUploader'
 
 interface Societe {
   nom?: string; forme_juridique?: string; siret?: string; numero_tva?: string
@@ -124,6 +125,11 @@ export default function ParametresPage() {
         <div className="card">
           <div className="card-header"><span className="card-header-title">Informations société</span></div>
           <div style={{ padding:'22px 24px' }}>
+            <Section label="Logo" />
+            <div style={{ marginBottom:'20px' }}>
+              <LogoUploader />
+            </div>
+
             <Section label="Identité" />
             <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:'12px', marginBottom:'12px' }}>
               <div><label className="form-label">Nom / Raison sociale</label>
