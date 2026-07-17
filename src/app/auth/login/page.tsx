@@ -39,10 +39,9 @@ export default function LoginPage() {
 
         {/* Logo */}
         <div className="flex items-center gap-3 mb-10 justify-center">
-          <div className="w-10 h-10 border-2 border-or flex items-center justify-center
-                          font-display text-xl text-or font-semibold">
-            ✦
-          </div>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src="/logo.png" alt="Star Tourism Services"
+               className="w-14 h-14 object-contain" />
           <div>
             <div className="font-display text-2xl font-medium text-noir tracking-[2px]">
               STAR TOURISM

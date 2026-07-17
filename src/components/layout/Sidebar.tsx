@@ -74,10 +74,9 @@ export default function Sidebar({ profile, mobileOpen = false, onClose }: Sideba
       {/* Logo */}
       <div className="px-5 py-6 border-b border-white/[0.08]">
         <div className="flex items-center gap-2.5">
-          <div className="w-7 h-7 border border-or flex items-center justify-center
-                          text-sm text-or font-semibold flex-shrink-0">
-            ✦
-          </div>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src="/logo.png" alt="Star Tourism Services"
+               className="w-9 h-9 object-contain flex-shrink-0" />
           <span className="font-display text-[15px] font-medium text-white tracking-[2px]">
             STAR TOURISM
           </span>

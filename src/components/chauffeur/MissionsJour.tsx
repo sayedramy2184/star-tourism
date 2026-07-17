@@ -79,7 +79,8 @@ export default function MissionsJour({ chauffeurNom }: { chauffeurNom: string })
       <header style={{ background: '#16130e', padding: 'max(env(safe-area-inset-top), 14px) 18px 14px', position: 'sticky', top: 0, zIndex: 20 }}>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-            <div style={{ width: '30px', height: '30px', border: '1.5px solid #9a7a28', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '15px', color: '#9a7a28', fontWeight: 600 }}>✦</div>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src="/logo.png" alt="" style={{ width: '34px', height: '34px', objectFit: 'contain' }} />
             <div>
               <div style={{ fontSize: '13px', fontWeight: 600, color: '#fff', lineHeight: 1.1 }}>{chauffeurNom}</div>
               <div style={{ fontSize: '9px', letterSpacing: '2px', color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase' }}>Espace chauffeur</div>
