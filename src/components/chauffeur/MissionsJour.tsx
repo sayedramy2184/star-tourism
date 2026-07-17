@@ -35,6 +35,19 @@ function flag(code?: string | null) {
   return String.fromCodePoint(0x1f1e6 + c.charCodeAt(0) - 65, 0x1f1e6 + c.charCodeAt(1) - 65)
 }
 
+// Passagers affectés (agence masquée côté chauffeur — on montre le passager)
+function paxList(dossier: any, ids?: string[] | null) {
+  const all = dossier?.passagers ?? []
+  return (ids?.length ? all.filter((p: any) => ids.includes(p.id)) : all)
+}
+function paxTitre(list: any[]): string | null {
+  if (!list?.length) return null
+  return list.length === 1 ? list[0].nom : `${list[0].nom} +${list.length - 1}`
+}
+function paxTel(list: any[]): string | null {
+  return list.find((p: any) => p.telephone)?.telephone ?? null
+}
+
 const STATUTS: Record<string, { label: string; color: string; bg: string }> = {
   en_attente: { label: 'À venir',   color: '#7a5c10', bg: '#fdf3dc' },
   confirme:   { label: 'Confirmée', color: '#1e5e3a', bg: '#eaf4ee' },
@@ -306,19 +319,19 @@ function TabRange({ mode }: { mode: 'avenir' | 'historique' }) {
 }
 
 function normTransfert(t: any) {
-  const dossier = one(t.dossier); const client = one(dossier?.client)
+  const dossier = one(t.dossier)
   return {
     id: t.id, kind: 'transfert' as const, raw: t, date: t.date_debut, heure: t.heure_depart?.slice(0, 5) ?? null,
-    clientNom: client?.nom ?? '—', dossierNum: dossier?.numero, statut: t.statut,
+    clientNom: paxTitre(paxList(dossier, t.passager_ids)) ?? dossier?.numero ?? 'Mission', dossierNum: dossier?.numero, statut: t.statut,
     lieu: [t.adresse_depart, t.adresse_arrivee].filter(Boolean).join(' → '),
     heuresReelles: null,
   }
 }
 function normJour(j: any) {
-  const prest = one(j.prestation); const dossier = one(prest?.dossier); const client = one(dossier?.client)
+  const prest = one(j.prestation); const dossier = one(prest?.dossier)
   return {
     id: j.id, kind: 'mad' as const, raw: j, date: j.date, heure: prest?.heure_debut_journee?.slice(0, 5) ?? null,
-    clientNom: client?.nom ?? '—', dossierNum: dossier?.numero, statut: prest?.statut ?? 'en_attente',
+    clientNom: paxTitre(paxList(dossier, prest?.passager_ids)) ?? dossier?.numero ?? 'Mission', dossierNum: dossier?.numero, statut: prest?.statut ?? 'en_attente',
     lieu: prest?.adresse_depart ?? 'Mise à disposition',
     heuresReelles: j.heures_reelles ?? null,
   }
@@ -482,8 +495,9 @@ function CardHeader({ kind }: { kind: 'mad' | 'transfert' }) {
 }
 
 function TransfertCard({ t }: { t: any }) {
-  const dossier = one(t.dossier); const client = one(dossier?.client)
+  const dossier = one(t.dossier)
   const veh = one(t.vehicule) || one(t.vehicule_ext)
+  const pax = paxList(dossier, t.passager_ids)
   const [open, setOpen] = useState(false)
   const nbPax = (t.passager_ids?.length) || (dossier?.passagers?.length) || t.nb_passagers || 0
   return (
@@ -495,10 +509,10 @@ function TransfertCard({ t }: { t: any }) {
           <StatutChip statut={t.statut} />
         </div>
         <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', gap: '10px' }}>
-          <div style={{ fontFamily: 'Cormorant Garamond,serif', fontSize: '20px', fontWeight: 600, color: INK, lineHeight: 1.1, minWidth: 0 }}>{client?.nom}</div>
+          <div style={{ fontFamily: 'Cormorant Garamond,serif', fontSize: '20px', fontWeight: 600, color: INK, lineHeight: 1.1, minWidth: 0 }}>{paxTitre(pax) ?? dossier?.numero ?? 'Mission'}</div>
           {t.heure_depart && <div style={{ fontFamily: 'JetBrains Mono,monospace', fontSize: '17px', color: TRANS, fontWeight: 700, flexShrink: 0 }}>{t.heure_depart.slice(0, 5)}</div>}
         </div>
-        <MetaLine dossierNum={dossier?.numero} veh={veh} modele={t.modele_souhaite} tel={client?.telephone} />
+        <MetaLine dossierNum={dossier?.numero} veh={veh} modele={t.modele_souhaite} tel={paxTel(pax)} />
       </div>
       {(t.vol_numero || t.vol_ville || t.vol_terminal) && <div style={{ padding: '0 15px' }}><FlightInfo m={t} /></div>}
       <div style={{ padding: '0 15px 8px' }}>
@@ -525,8 +539,9 @@ function DetailButton({ onClick, nbPax }: { onClick: () => void; nbPax: number }
 }
 
 function MadCard({ j, onSaved }: { j: any; onSaved: () => void }) {
-  const prest = one(j.prestation); const dossier = one(prest?.dossier); const client = one(dossier?.client)
+  const prest = one(j.prestation); const dossier = one(prest?.dossier)
   const veh = one(j.vehicule) || one(j.vehicule_ext) || one(prest?.vehicule) || one(prest?.vehicule_ext)
+  const pax = paxList(dossier, prest?.passager_ids)
   const locked = !!dossier?.valide_at   // dossier validé par le dispatch → heures figées
   const [open, setOpen] = useState(false)
   const nbPax = (prest?.passager_ids?.length) || (dossier?.passagers?.length) || prest?.nb_passagers || 0
@@ -539,14 +554,14 @@ function MadCard({ j, onSaved }: { j: any; onSaved: () => void }) {
           <TypeTag kind="mad" />
           <StatutChip statut={prest?.statut ?? 'en_attente'} />
         </div>
-        <div style={{ fontFamily: 'Cormorant Garamond,serif', fontSize: '20px', fontWeight: 600, color: INK, lineHeight: 1.1 }}>{client?.nom}</div>
+        <div style={{ fontFamily: 'Cormorant Garamond,serif', fontSize: '20px', fontWeight: 600, color: INK, lineHeight: 1.1 }}>{paxTitre(pax) ?? dossier?.numero ?? 'Mission'}</div>
         {(prest?.heure_debut_journee || prest?.heure_fin_journee) && (
           <div style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', marginTop: '6px', fontSize: '12px', color: MAD, fontWeight: 600, background: MAD_SOFT, padding: '4px 11px', borderRadius: '999px' }}>
             <Clock size={12} />
             {prest.heure_debut_journee?.slice(0, 5)} → {prest.heure_fin_journee?.slice(0, 5)}
           </div>
         )}
-        <MetaLine dossierNum={dossier?.numero} veh={veh} modele={prest?.modele_souhaite} tel={client?.telephone} />
+        <MetaLine dossierNum={dossier?.numero} veh={veh} modele={prest?.modele_souhaite} tel={paxTel(pax)} />
       </div>
 
       {prest?.adresse_depart && (
@@ -661,10 +676,12 @@ function MissionDetail({ mission, kind, onClose, onSaved }: { mission: any; kind
   const isMad = kind === 'mad'
   const prest = isMad ? one(mission.prestation) : mission
   const dossier = one(prest?.dossier ?? mission.dossier)
-  const client = one(dossier?.client)
   const veh = one(mission.vehicule) || one(mission.vehicule_ext) || one(prest?.vehicule) || one(prest?.vehicule_ext)
   const locked = !!dossier?.valide_at
   const passagers = dossier?.passagers ?? []
+  const paxAffectes = paxList(dossier, isMad ? prest?.passager_ids : mission.passager_ids)
+  const titrePax = paxTitre(paxAffectes) ?? dossier?.numero ?? 'Mission'
+  const telPax = paxTel(paxAffectes)
   const col = isMad ? MAD : TRANS
   const notes = prest?.notes || dossier?.notes
   const nbBagages = prest?.nb_bagages ?? mission.nb_bagages ?? 0
@@ -710,7 +727,7 @@ function MissionDetail({ mission, kind, onClose, onSaved }: { mission: any; kind
           <StatutChip statut={statut} />
         </div>
         <div style={{ fontSize: '10px', letterSpacing: '2px', textTransform: 'uppercase', color: isMad ? '#e0a58f' : '#9fbde8', fontWeight: 800, marginBottom: '4px' }}>{isMad ? 'Mise à disposition' : 'Transfert'}</div>
-        <div style={{ fontFamily: 'Cormorant Garamond,serif', fontSize: '27px', fontWeight: 600, color: '#fff', lineHeight: 1.1 }}>{client?.nom ?? '—'}</div>
+        <div style={{ fontFamily: 'Cormorant Garamond,serif', fontSize: '27px', fontWeight: 600, color: '#fff', lineHeight: 1.1 }}>{titrePax}</div>
         {/* réf. StatutChip dynamique via l'état local */}
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', marginTop: '13px' }}>
           <span style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', fontSize: '12px', color: '#e8e2d6', background: 'rgba(255,255,255,0.08)', padding: '6px 12px', borderRadius: '999px', textTransform: 'capitalize' }}>
@@ -748,14 +765,14 @@ function MissionDetail({ mission, kind, onClose, onSaved }: { mission: any; kind
           </div>
         )}
 
-        {/* Appel client — action rapide */}
-        {client?.telephone && (
-          <a href={`tel:${client.telephone}`}
+        {/* Appel passager — action rapide */}
+        {telPax && (
+          <a href={`tel:${telPax}`}
             style={{ display: 'flex', alignItems: 'center', gap: '11px', textDecoration: 'none', ...CARD, padding: '14px 16px', marginBottom: '16px' }}>
             <span style={{ width: '42px', height: '42px', borderRadius: '999px', background: '#eaf4ee', display: 'flex', alignItems: 'center', justifyContent: 'center', color: GREEN, flexShrink: 0 }}><Phone size={19} /></span>
             <span style={{ flex: 1, minWidth: 0 }}>
-              <span style={{ display: 'block', fontSize: '13px', fontWeight: 700, color: INK }}>Appeler le client</span>
-              <span style={{ display: 'block', fontSize: '12px', color: SUB, fontFamily: 'JetBrains Mono,monospace' }}>{client.telephone}</span>
+              <span style={{ display: 'block', fontSize: '13px', fontWeight: 700, color: INK }}>Appeler le passager</span>
+              <span style={{ display: 'block', fontSize: '12px', color: SUB, fontFamily: 'JetBrains Mono,monospace' }}>{telPax}</span>
             </span>
             <ChevronRight size={18} color={MUTE} />
           </a>

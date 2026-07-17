@@ -52,30 +52,38 @@ function vehLabel(v: any): string | null {
   return v.immatriculation ? `${base} · ${v.immatriculation}` : (base || null)
 }
 
+// Titre passager (agence masquée côté chauffeur)
+function paxTitre(list: any[]): string | null {
+  if (!list?.length) return null
+  return list.length === 1 ? list[0].nom : `${list[0].nom} +${list.length - 1}`
+}
+
 function normalize(jours: any[], transferts: any[]): Mission[] {
   const t = transferts.map((x): Mission => {
-    const d = one(x.dossier); const c = one(d?.client)
+    const d = one(x.dossier)
     const v = one(x.vehicule) || one(x.vehicule_ext)
+    const pax = resolvePax(d, x.passager_ids)
     return {
       id: x.id, kind: 'Transfert',
-      dossierNum: d?.numero, clientNom: c?.nom,
+      dossierNum: d?.numero, clientNom: paxTitre(pax) ?? d?.numero ?? 'Mission',
       vehicule: vehLabel(v) ?? x.modele_souhaite ?? null,
       date: x.date_debut, heureDebut: x.heure_depart?.slice(0, 5) ?? null, heureFin: null,
       adresse: x.adresse_depart ?? null,
-      passagers: resolvePax(d, x.passager_ids),
+      passagers: pax,
     }
   })
   const m = jours.map((x): Mission => {
-    const p = one(x.prestation); const d = one(p?.dossier); const c = one(d?.client)
+    const p = one(x.prestation); const d = one(p?.dossier)
     // Véhicule effectif du jour : jour (interne/externe) sinon prestation (interne/externe)
     const v = one(x.vehicule) || one(x.vehicule_ext) || one(p?.vehicule) || one(p?.vehicule_ext)
+    const pax = resolvePax(d, p?.passager_ids)
     return {
       id: x.id, kind: 'Mise à disposition',
-      dossierNum: d?.numero, clientNom: c?.nom,
+      dossierNum: d?.numero, clientNom: paxTitre(pax) ?? d?.numero ?? 'Mission',
       vehicule: vehLabel(v) ?? p?.modele_souhaite ?? null,
       date: x.date, heureDebut: p?.heure_debut_journee?.slice(0, 5) ?? null, heureFin: p?.heure_fin_journee?.slice(0, 5) ?? null,
       adresse: p?.adresse_depart ?? null,
-      passagers: resolvePax(d, p?.passager_ids),
+      passagers: pax,
     }
   })
   return [...t, ...m]
@@ -354,7 +362,6 @@ function OrdreMission({ mission, chauffeur, docs }: { mission: Mission; chauffeu
       <Field label="Chauffeur" value={`${chauffeur.prenom} ${chauffeur.nom}`} />
       <Field label="Carte professionnelle VTC" value={chauffeur.vtc_card_numero} mono />
       <Field label="Véhicule" value={mission.vehicule} />
-      <Field label="Client" value={mission.clientNom} />
       {(mission.passagers?.length ?? 0) > 0 && (
         <Field label="Passager(s)" value={mission.passagers!.map(p => `${flagE(p.nationalite)} ${p.nom}`.trim()).join(', ')} />
       )}

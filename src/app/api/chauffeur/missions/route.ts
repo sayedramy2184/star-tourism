@@ -37,7 +37,7 @@ export async function GET(req: NextRequest) {
         st_chauffeur_nom, st_chauffeur_telephone, st_vehicule_marque, st_vehicule_modele, st_vehicule_immat,
         vehicule:vehicules(marque, modele, immatriculation),
         vehicule_ext:vehicules_ext(marque, modele, immatriculation),
-        dossier:dossiers(numero, valide_at, notes, client:clients(nom, telephone),
+        dossier:dossiers(numero, valide_at, notes,
           passagers(id, nom, nationalite, telephone, nb_bagages))
       )
     `)
@@ -55,7 +55,7 @@ export async function GET(req: NextRequest) {
       st_chauffeur_nom, st_chauffeur_telephone, st_vehicule_marque, st_vehicule_modele, st_vehicule_immat,
       vehicule:vehicules(marque, modele, immatriculation),
       vehicule_ext:vehicules_ext(marque, modele, immatriculation),
-      dossier:dossiers(numero, valide_at, notes, client:clients(nom, telephone),
+      dossier:dossiers(numero, valide_at, notes,
         passagers(id, nom, nationalite, telephone, nb_bagages))
     `)
     .eq(filterCol, account.id)
