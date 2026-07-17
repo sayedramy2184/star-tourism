@@ -184,8 +184,12 @@ export default function PrestationCard({ p, dossierId, passagers = [] }: { p: an
   const jours     = p.jours ?? []
   const joursManquants = jours.filter((j: any) => !j.chauffeur_id).length
   const [chauffeurs, setChauffeurs] = useState<any[]>([])
+  const [vehicules, setVehicules] = useState<any[]>([])
   const [joursState, setJoursState] = useState<Record<string, string>>(
     Object.fromEntries(jours.map((j: any) => [j.id, j.chauffeur_id ?? '']))
+  )
+  const [joursVeh, setJoursVeh] = useState<Record<string, string>>(
+    Object.fromEntries(jours.map((j: any) => [j.id, j.vehicule_id ?? '']))
   )
   const [chauffeurTransfert, setChauffeurTransfert] = useState(p.chauffeur_id ?? '')
   const [stLocal, setStLocal] = useState(() => ({
@@ -202,6 +206,7 @@ export default function PrestationCard({ p, dossierId, passagers = [] }: { p: an
 
   useEffect(() => {
     fetch('/api/chauffeurs').then(r => r.json()).then(d => setChauffeurs(d.data ?? []))
+    fetch('/api/vehicules').then(r => r.json()).then(d => setVehicules(d.data ?? []))
   }, [])
 
   // Resync depuis les props quand la prestation est rechargée
@@ -228,6 +233,22 @@ export default function PrestationCard({ p, dossierId, passagers = [] }: { p: an
         body: JSON.stringify({ chauffeur_id: chauffeurId || null }),
       })
       toast.success('Chauffeur affecté !')
+      router.push(`/dashboard/dossiers/${dossierId}`)
+    } catch { toast.error('Erreur') }
+    finally { setSavingJour(null) }
+  }
+
+  // Changement de véhicule pour UN jour précis (une MAD peut changer de véhicule en cours)
+  async function affecterVehiculeJour(jourId: string, vehiculeId: string) {
+    setSavingJour(jourId)
+    setJoursVeh(prev => ({ ...prev, [jourId]: vehiculeId }))
+    try {
+      await fetch(`/api/jours-mad/${jourId}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ vehicule_id: vehiculeId || null }),
+      })
+      toast.success('Véhicule du jour mis à jour')
       router.push(`/dashboard/dossiers/${dossierId}`)
     } catch { toast.error('Erreur') }
     finally { setSavingJour(null) }
@@ -449,42 +470,63 @@ export default function PrestationCard({ p, dossierId, passagers = [] }: { p: an
             <div style={{ fontSize:'8px', fontWeight:600, letterSpacing:'2.5px', textTransform:'uppercase', color:'#9a7a28', marginBottom:'6px' }}>
               Détail journalier
             </div>
-            <div style={{ display:'grid', gridTemplateColumns:'90px 1fr 1fr 80px', gap:'6px', padding:'4px 8px', background:'#faf9f7', marginBottom:'2px' }}>
-              {['Date','Chauffeur','Note','Tarif HT'].map(h => (
+            <div style={{ display:'grid', gridTemplateColumns:'84px 1fr 1fr 74px', gap:'6px', padding:'4px 8px', background:'#faf9f7', marginBottom:'2px' }}>
+              {['Date','Chauffeur','Véhicule','Tarif HT'].map(h => (
                 <div key={h} style={{ fontSize:'8px', fontWeight:600, letterSpacing:'1.5px', textTransform:'uppercase', color:'#8a8478' }}>{h}</div>
               ))}
             </div>
             {jours.map((j: any) => {
               const missing = !j.chauffeur_id
+              // Véhicule effectif du jour : celui du jour sinon celui de la prestation
+              const vehJour = joursVeh[j.id] ?? ''
+              const overridden = !!vehJour && vehJour !== (p.vehicule?.id ?? '')
+              const prestVehLabel = p.vehicule ? `${p.vehicule.marque} ${p.vehicule.modele}` : 'véhicule prestation'
               return (
                 <div key={j.id} style={{
-                  display:'grid', gridTemplateColumns:'90px 1fr 1fr 80px', gap:'6px',
-                  alignItems:'center', padding:'6px 8px', marginBottom:'2px',
+                  marginBottom:'2px', padding:'6px 8px',
                   background: missing ? '#fdf3dc' : '#f5f2ed',
                   border: missing ? '1px solid rgba(122,92,16,0.3)' : '1px solid #d8d2c8',
                 }}>
-                  <span style={{ fontFamily:'JetBrains Mono,monospace', fontSize:'10px', color: missing ? '#7a5c10' : '#2e2b25' }}>
-                    {j.jour_semaine} {format(new Date(j.date),'dd/MM',{locale:fr})}
-                  </span>
-                  <select
-                    value={joursState[j.id] ?? ''}
-                    onChange={e => affecterChauffeurJour(j.id, e.target.value)}
-                    disabled={savingJour === j.id}
-                    style={{
-                      background: missing ? '#fff8e8' : '#fff',
-                      border: `1px solid ${missing ? '#9a7a28' : '#b8b0a4'}`,
-                      padding:'4px 8px', fontSize:'11px', color:'#16130e',
-                      outline:'none', width:'100%', cursor:'pointer',
-                    }}>
-                    <option value="">— Non affecté —</option>
-                    {chauffeurs.map((c: any) => (
-                      <option key={c.id} value={c.id}>{c.prenom} {c.nom}</option>
-                    ))}
-                  </select>
-                  <span style={{ fontSize:'10px', color:'#8a8478', fontStyle:'italic' }}>{j.note || '—'}</span>
-                  <span style={{ fontFamily:'JetBrains Mono,monospace', fontSize:'11px', color:'#9a7a28', textAlign:'right' }}>
-                    {fmt(j.tarif_ht)}
-                  </span>
+                  <div style={{ display:'grid', gridTemplateColumns:'84px 1fr 1fr 74px', gap:'6px', alignItems:'center' }}>
+                    <span style={{ fontFamily:'JetBrains Mono,monospace', fontSize:'10px', color: missing ? '#7a5c10' : '#2e2b25' }}>
+                      {j.jour_semaine} {format(new Date(j.date),'dd/MM',{locale:fr})}
+                    </span>
+                    <select
+                      value={joursState[j.id] ?? ''}
+                      onChange={e => affecterChauffeurJour(j.id, e.target.value)}
+                      disabled={savingJour === j.id}
+                      style={{
+                        background: missing ? '#fff8e8' : '#fff',
+                        border: `1px solid ${missing ? '#9a7a28' : '#b8b0a4'}`,
+                        padding:'4px 8px', fontSize:'11px', color:'#16130e',
+                        outline:'none', width:'100%', cursor:'pointer',
+                      }}>
+                      <option value="">— Non affecté —</option>
+                      {chauffeurs.map((c: any) => (
+                        <option key={c.id} value={c.id}>{c.prenom} {c.nom}</option>
+                      ))}
+                    </select>
+                    <select
+                      value={vehJour}
+                      onChange={e => affecterVehiculeJour(j.id, e.target.value)}
+                      disabled={savingJour === j.id}
+                      title={overridden ? 'Véhicule spécifique à ce jour' : 'Utilise le véhicule de la prestation'}
+                      style={{
+                        background: overridden ? '#eef4fb' : '#fff',
+                        border: `1px solid ${overridden ? '#1e3f70' : '#b8b0a4'}`,
+                        padding:'4px 8px', fontSize:'11px', color:'#16130e',
+                        outline:'none', width:'100%', cursor:'pointer',
+                      }}>
+                      <option value="">↳ {prestVehLabel}</option>
+                      {vehicules.map((v: any) => (
+                        <option key={v.id} value={v.id}>{v.marque} {v.modele} · {v.immatriculation}</option>
+                      ))}
+                    </select>
+                    <span style={{ fontFamily:'JetBrains Mono,monospace', fontSize:'11px', color:'#9a7a28', textAlign:'right' }}>
+                      {fmt(j.tarif_ht)}
+                    </span>
+                  </div>
+                  {j.note && <div style={{ fontSize:'10px', color:'#8a8478', fontStyle:'italic', marginTop:'3px' }}>{j.note}</div>}
                 </div>
               )
             })}
