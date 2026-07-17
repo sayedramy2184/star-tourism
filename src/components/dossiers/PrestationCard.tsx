@@ -209,12 +209,17 @@ export default function PrestationCard({ p, dossierId, passagers = [] }: { p: an
     sous_traitant:      p.sous_traitant      ?? null as { societe: string } | null,
   }))
   const [savingJour, setSavingJour] = useState<string|null>(null)
+  // Disponibilités par date (chauffeurs/véhicules déjà pris ailleurs)
+  const [dispo, setDispo] = useState<{ chauffeurs: Record<string, string[]>; vehicules: Record<string, string[]> }>({ chauffeurs: {}, vehicules: {} })
 
   useEffect(() => {
     fetch('/api/chauffeurs').then(r => r.json()).then(d => setChauffeurs(d.data ?? []))
     fetch('/api/vehicules').then(r => r.json()).then(d => setVehicules(d.data ?? []))
     fetch('/api/sous-traitants').then(r => r.json()).then(d => setSousTraitants(d.data ?? []))
-  }, [])
+    const from = p.date_debut, to = p.date_fin || p.date_debut
+    fetch(`/api/disponibilites?from=${from}&to=${to}&exclude_prestation=${p.id}`)
+      .then(r => r.json()).then(d => setDispo(d.data ?? { chauffeurs: {}, vehicules: {} })).catch(() => {})
+  }, [p.id, p.date_debut, p.date_fin])
 
   // Resync depuis les props quand la prestation est rechargée
   useEffect(() => {
@@ -375,9 +380,10 @@ export default function PrestationCard({ p, dossierId, passagers = [] }: { p: an
                 onChange={e => affecterChauffeurTransfert(e.target.value)}
                 style={{ background: !chauffeurTransfert ? '#fff8e8' : '#fff', border:`1px solid ${!chauffeurTransfert ? '#9a7a28' : '#b8b0a4'}`, padding:'5px 8px', fontSize:'11px', color:'#16130e', outline:'none', width:'100%', cursor:'pointer' }}>
                 <option value="">— Non affecté —</option>
-                {chauffeurs.map((c: any) => (
-                  <option key={c.id} value={c.id}>{c.prenom} {c.nom}</option>
-                ))}
+                {chauffeurs.map((c: any) => {
+                  const busy = (dispo.chauffeurs[p.date_debut]?.includes(c.id) ?? false) && c.id !== chauffeurTransfert
+                  return <option key={c.id} value={c.id} disabled={busy}>{c.prenom} {c.nom}{busy ? ' · occupé' : ''}</option>
+                })}
               </select>
             </div>
           </>}
@@ -588,9 +594,10 @@ export default function PrestationCard({ p, dossierId, passagers = [] }: { p: an
                       }}>
                       <option value="">{p.sous_traitant_id ? '↳ ST prestation' : '— Non affecté —'}</option>
                       <optgroup label="Chauffeurs">
-                        {chauffeurs.map((c: any) => (
-                          <option key={c.id} value={`ch:${c.id}`}>{c.prenom} {c.nom}</option>
-                        ))}
+                        {chauffeurs.map((c: any) => {
+                          const busy = (dispo.chauffeurs[j.date]?.includes(c.id) ?? false) && c.id !== chJour
+                          return <option key={c.id} value={`ch:${c.id}`} disabled={busy}>{c.prenom} {c.nom}{busy ? ' · occupé' : ''}</option>
+                        })}
                       </optgroup>
                       {sousTraitants.length > 0 && (
                         <optgroup label="Sous-traitants">
@@ -612,9 +619,10 @@ export default function PrestationCard({ p, dossierId, passagers = [] }: { p: an
                         outline:'none', width:'100%', cursor:'pointer',
                       }}>
                       <option value="">↳ {prestVehLabel}</option>
-                      {vehicules.map((v: any) => (
-                        <option key={v.id} value={v.id}>{v.marque} {v.modele} · {v.immatriculation}</option>
-                      ))}
+                      {vehicules.map((v: any) => {
+                        const busy = (dispo.vehicules[j.date]?.includes(v.id) ?? false) && v.id !== vehJour
+                        return <option key={v.id} value={v.id} disabled={busy}>{v.marque} {v.modele} · {v.immatriculation}{busy ? ' · occupé' : ''}</option>
+                      })}
                     </select>
                     <span style={{ fontFamily:'JetBrains Mono,monospace', fontSize:'11px', color:'#9a7a28', textAlign:'right' }}>
                       {fmt(j.tarif_ht)}
