@@ -68,7 +68,11 @@ export const STATUT_MAP: Record<PrestationStatut, StatutInfo> = {
   },
 }
 
-// Calcule le statut réel côté client
+// Calcule le statut réel côté client.
+// Règle simple, prévisible : la mission avance toute seule selon la DATE.
+//  - avant la mission        → statut manuel (en attente / confirmé)
+//  - pendant (aujourd'hui)   → EN COURS (toute la journée)
+//  - après la date de fin    → TERMINÉ
 export function calcStatutClient(prestation: {
   statut: string
   type: string
@@ -78,42 +82,31 @@ export function calcStatutClient(prestation: {
   heure_debut_journee?: string | null
   heure_fin_journee?: string | null
 }): PrestationStatut {
-  const { statut, type, date_debut, date_fin, heure_depart, heure_debut_journee, heure_fin_journee } = prestation
+  const { statut, type, date_debut, date_fin } = prestation
 
   // Statuts manuels toujours prioritaires
   if (statut === 'annule') return 'annule'
   if (statut === 'termine') return 'termine'
 
-  const now     = new Date()
-  const today   = now.toISOString().slice(0, 10)
-  const timeNow = `${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`
+  // Date du jour en heure LOCALE (cohérent avec les dates stockées 'YYYY-MM-DD')
+  const now = new Date()
+  const p2  = (n: number) => String(n).padStart(2, '0')
+  const today = `${now.getFullYear()}-${p2(now.getMonth() + 1)}-${p2(now.getDate())}`
 
   if (type === 'transfert') {
     if (!date_debut) return statut as PrestationStatut
-    // Terminé uniquement quand la date est dépassée (date_fin = date_debut pour un transfert)
-    if (date_debut < today) return 'termine'
-    // En cours le jour J dès que l'heure de départ est atteinte
-    if (date_debut === today && heure_depart) {
-      const [h, m]  = heure_depart.split(':').map(Number)
-      const depart  = h * 60 + m
-      const current = now.getHours() * 60 + now.getMinutes()
-      if (current >= depart) return 'en_cours'
-    }
+    if (date_debut < today) return 'termine'        // date passée
+    if (date_debut === today) return 'en_cours'     // aujourd'hui = en cours toute la journée
+    return statut as PrestationStatut               // futur → statut manuel
   }
 
   if (type === 'mad') {
     if (!date_debut || !date_fin) return statut as PrestationStatut
-    if (date_fin < today) return 'termine'
-    if (date_debut <= today && date_fin >= today) {
-      if (heure_debut_journee && heure_fin_journee) {
-        if (timeNow >= heure_debut_journee && timeNow <= heure_fin_journee) return 'en_cours'
-      } else {
-        return 'en_cours'
-      }
-    }
+    if (date_fin < today) return 'termine'                            // période terminée
+    if (date_debut <= today && date_fin >= today) return 'en_cours'   // en cours (multi-jours)
+    return statut as PrestationStatut                                 // futur → statut manuel
   }
 
-  // Statuts manuels conservés si pas de règle auto applicable
   return statut as PrestationStatut
 }
 
