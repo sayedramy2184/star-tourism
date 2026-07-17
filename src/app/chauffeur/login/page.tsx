@@ -33,7 +33,9 @@ export default function ChauffeurLoginPage() {
       {/* Logo */}
       <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginBottom: '40px' }}>
         {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src="/logo.png" alt="Star Tourism Services" style={{ width: '72px', height: '72px', objectFit: 'contain' }} />
+        <div style={{ width: '84px', height: '84px', background: '#fff', borderRadius: '16px', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '8px' }}>
+          <img src="/logo.png" alt="Star Tourism Services" style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
+        </div>
         <div style={{ fontFamily: 'Cormorant Garamond,serif', fontSize: '22px', color: '#fff', letterSpacing: '2px', marginTop: '14px' }}>STAR TOURISM</div>
         <div style={{ fontSize: '10px', letterSpacing: '3px', color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase', marginTop: '4px' }}>Espace chauffeur</div>
       </div>

@@ -40,8 +40,9 @@ export default function LoginPage() {
         {/* Logo */}
         <div className="flex items-center gap-3 mb-10 justify-center">
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="/logo.png" alt="Star Tourism Services"
-               className="w-14 h-14 object-contain" />
+          <div className="w-16 h-16 bg-white rounded-xl flex items-center justify-center p-1.5 shadow-sm border border-border-dk">
+            <img src="/logo.png" alt="Star Tourism Services" className="w-full h-full object-contain" />
+          </div>
           <div>
             <div className="font-display text-2xl font-medium text-noir tracking-[2px]">
               STAR TOURISM
