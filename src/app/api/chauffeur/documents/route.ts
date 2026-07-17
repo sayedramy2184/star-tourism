@@ -20,6 +20,21 @@ export async function GET() {
     .from('chauffeurs').select('id, company_id').eq('profile_id', user.id).maybeSingle()
   if (!chauffeur) return NextResponse.json({ error: 'Aucune fiche chauffeur liée' }, { status: 404 })
 
+  // Restriction : documents accessibles UNIQUEMENT s'il a une mission aujourd'hui.
+  const today = new Date().toISOString().slice(0, 10)
+  const [{ count: nbJours }, { count: nbTransferts }] = await Promise.all([
+    supabase.from('jours_mad').select('id', { count: 'exact', head: true })
+      .eq('chauffeur_id', chauffeur.id).eq('date', today),
+    supabase.from('prestations').select('id', { count: 'exact', head: true })
+      .eq('chauffeur_id', chauffeur.id).eq('type', 'transfert').eq('date_debut', today),
+  ])
+  if ((nbJours ?? 0) + (nbTransferts ?? 0) === 0) {
+    return NextResponse.json(
+      { error: 'Documents accessibles uniquement les jours où vous avez une mission.' },
+      { status: 403 },
+    )
+  }
+
   const admin = createAdminClient()
   const { data: s } = await admin
     .from('societe_parametres')

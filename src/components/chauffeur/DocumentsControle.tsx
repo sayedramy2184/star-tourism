@@ -156,11 +156,11 @@ export default function DocumentsControle({ jours, transferts, chauffeur }: {
 
   return (
     <>
-      {/* ── Bouton déclencheur — barre fixe très visible ── */}
-      <div style={{ position: 'fixed', bottom: 0, left: '50%', transform: 'translateX(-50%)', width: '100%', maxWidth: '480px', padding: '10px 12px calc(env(safe-area-inset-bottom, 0px) + 10px)', background: 'linear-gradient(to top, #ede9e2 70%, transparent)', zIndex: 30 }}>
+      {/* ── Bouton déclencheur — dans le flux (au-dessus de la barre d'onglets) ── */}
+      <div style={{ padding: '4px 14px 18px' }}>
         <button onClick={openCenter}
-          style={{ width: '100%', background: '#16130e', color: '#fff', border: '1.5px solid #9a7a28', padding: '15px', fontSize: '15px', fontWeight: 700, letterSpacing: '0.5px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px', boxShadow: '0 4px 16px rgba(0,0,0,0.25)' }}>
-          <ShieldCheck size={20} style={{ color: '#9a7a28' }} /> Documents de contrôle
+          style={{ width: '100%', background: 'linear-gradient(155deg,#221b11,#16130e)', color: '#fff', border: '1.5px solid #9a7a28', borderRadius: '14px', padding: '15px', fontSize: '15px', fontWeight: 700, letterSpacing: '0.3px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px', boxShadow: '0 4px 16px rgba(0,0,0,0.18)' }}>
+          <ShieldCheck size={20} style={{ color: '#c9a457' }} /> Documents de contrôle
         </button>
       </div>
 

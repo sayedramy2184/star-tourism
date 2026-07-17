@@ -225,9 +225,18 @@ function TabJour() {
         )}
       </div>
 
-      {chauffeurInfo && (
+      {/* Documents de contrôle : accessibles uniquement le jour même ET s'il y a
+          une mission (le chauffeur est « en mission ») — sinon masqués. */}
+      {chauffeurInfo && isToday(dObj) && total > 0 ? (
         <DocumentsControle jours={data?.jours ?? []} transferts={data?.transferts ?? []} chauffeur={chauffeurInfo} />
-      )}
+      ) : chauffeurInfo && isToday(dObj) && !loading ? (
+        <div style={{ padding: '0 14px 18px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '9px', padding: '13px 14px', background: '#f2f0ec', border: '1px solid ' + LINE, borderRadius: '12px', color: MUTE, fontSize: '12px', lineHeight: 1.4 }}>
+            <Lock size={15} style={{ color: '#b0a894', flexShrink: 0 }} />
+            <span>Les documents de contrôle (ordre de mission, assurance, licence) seront disponibles ici dès qu'une mission vous est affectée aujourd'hui.</span>
+          </div>
+        </div>
+      ) : null}
     </>
   )
 }
