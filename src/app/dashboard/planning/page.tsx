@@ -15,7 +15,16 @@ import toast from 'react-hot-toast'
 // ── Types ─────────────────────────────────────
 
 interface Chauffeur { id: string; nom: string; prenom: string; statut: string }
-interface Vehicule  { id: string; marque: string; modele: string; immatriculation: string; statut: string }
+interface Vehicule  { id: string; marque: string; modele: string; immatriculation: string; statut: string; categorie?: string | null }
+
+const CAT_LABELS: Record<string, string> = {
+  berline_standard: 'Berline standard', berline_premium: 'Berline premium', berline_prestige: 'Berline prestige',
+  van_minibus: 'Van / Minibus', suv_premium: 'SUV premium', electrique: 'Électrique',
+}
+const CAT_SHORT: Record<string, string> = {
+  berline_standard: 'Berline', berline_premium: 'Berline +', berline_prestige: 'Prestige',
+  van_minibus: 'Van', suv_premium: 'SUV', electrique: 'Élec.',
+}
 
 interface JourMad {
   id: string; date: string; tarif_ht: number; statut: string; note: string | null
@@ -62,6 +71,7 @@ type PlanningTab = 'missions' | 'chauffeurs' | 'vehicules'
 export default function PlanningPage() {
   const router = useRouter()
   const [tab,         setTab]         = useState<PlanningTab>('missions')
+  const [vehCat,      setVehCat]      = useState<string>('')   // filtre catégorie (onglet véhicules)
   const [viewMode,    setViewMode]    = useState<ViewMode>('semaine')
   const [currentDate, setCurrentDate] = useState(new Date())
   const [data,        setData]        = useState<{ chauffeurs: Chauffeur[]; vehicules: Vehicule[]; jours: JourMad[]; transferts: Transfert[] } | null>(null)
@@ -182,6 +192,20 @@ export default function PlanningPage() {
           ))}
         </div>
 
+        {/* Filtre par type de véhicule (onglet Véhicules) */}
+        {tab === 'vehicules' && (
+          <select
+            value={vehCat}
+            onChange={e => setVehCat(e.target.value)}
+            className="hidden md:block"
+            style={{ padding:'5px 10px', fontSize:'11px', border:'1.5px solid #b8b0a4', background: vehCat ? '#fdf6e3' : '#fff', color:'#16130e', outline:'none', cursor:'pointer' }}>
+            <option value="">Tous les types</option>
+            {Object.entries(CAT_LABELS).map(([val, label]) => (
+              <option key={val} value={val}>{label}</option>
+            ))}
+          </select>
+        )}
+
         {/* Alertes */}
         <div style={{ marginLeft:'auto', display:'flex', gap:'6px', alignItems:'center', flexWrap:'wrap' }}>
           {joursSansChauf.length > 0 && (
@@ -222,7 +246,7 @@ export default function PlanningPage() {
               ) : tab === 'chauffeurs' ? (
                 <ChauffeursView days={days} viewMode={viewMode} data={data} onTooltip={setTooltip} dragJourId={dragJourId} dragOver={dragOver} onDragStart={setDragJourId} onDragOver={setDragOver} onDrop={handleDrop} conflits={conflits} router={router} />
               ) : (
-                <VehiculesView days={days} viewMode={viewMode} data={data} onTooltip={setTooltip} router={router} />
+                <VehiculesView days={days} viewMode={viewMode} data={data} onTooltip={setTooltip} router={router} vehCat={vehCat} />
               )}
             </div>
           </>
@@ -524,23 +548,24 @@ function ChauffeursView({ days, viewMode, data, onTooltip, dragJourId, dragOver,
 //  VUE VÉHICULES
 // ══════════════════════════════════════════════
 
-function VehiculesView({ days, viewMode, data, onTooltip, router }: any) {
+function VehiculesView({ days, viewMode, data, onTooltip, router, vehCat }: any) {
   if (!data) return null
 
   const colW = viewMode === 'semaine' ? 104 : 46
-  const minWidth = 160 + days.length * colW
+  const minWidth = 200 + days.length * colW
+  const vehicules = (data.vehicules as Vehicule[]).filter((v) => !vehCat || v.categorie === vehCat)
 
   return (
     <table style={{ borderCollapse:'collapse', width:'100%', minWidth, tableLayout:'fixed' }}>
       <colgroup>
-        <col style={{ width:'160px' }} />
+        <col style={{ width:'200px' }} />
         {days.map((_: any, i: number) => <col key={i} />)}
       </colgroup>
       <GanttHeader days={days} viewMode={viewMode} firstColLabel="Véhicule" />
       <tbody>
-        {data.vehicules.length === 0 ? (
-          <tr><td colSpan={days.length+1} style={{ padding:'60px', textAlign:'center', color:'#8a8478' }}>Aucun véhicule</td></tr>
-        ) : data.vehicules.map((v: Vehicule, idx: number) => {
+        {vehicules.length === 0 ? (
+          <tr><td colSpan={days.length+1} style={{ padding:'60px', textAlign:'center', color:'#8a8478' }}>{vehCat ? 'Aucun véhicule de ce type sur la période' : 'Aucun véhicule'}</td></tr>
+        ) : vehicules.map((v: Vehicule, idx: number) => {
           const ST: Record<string,string> = { disponible:'#1e5e3a', en_mission:'#1e3f70', maintenance:'#7a5c10', inactif:'#8a8478' }
 
           // Statut dynamique : nombre de jours occupés sur la période affichée
@@ -558,11 +583,16 @@ function VehiculesView({ days, viewMode, data, onTooltip, router }: any) {
 
           return (
             <tr key={v.id} style={{ borderBottom:'1px solid #d8d2c8' }}>
-              <td style={{ padding:'8px 12px', background: idx%2===0 ? '#faf9f7' : '#fff', borderRight:'2px solid #b8b0a4', position:'sticky', left:0, zIndex:10 }}>
-                <div style={{ fontFamily:'Cormorant Garamond,serif', fontSize:'14px', fontWeight:500, color:'#16130e', whiteSpace:'nowrap', overflow:'hidden', textOverflow:'ellipsis' }}>{v.marque} {v.modele}</div>
-                <div style={{ display:'flex', gap:'6px', alignItems:'center', marginTop:'2px' }}>
-                  <span style={{ fontFamily:'JetBrains Mono,monospace', fontSize:'9px', color:'#8a8478', letterSpacing:'1px' }}>{v.immatriculation}</span>
-                  <span style={{ fontSize:'8px', fontWeight:700, color, textTransform:'uppercase' }}>● {statutLabel}</span>
+              <td style={{ padding:'9px 12px', background: idx%2===0 ? '#faf9f7' : '#fff', borderRight:'2px solid #b8b0a4', position:'sticky', left:0, zIndex:10 }}>
+                <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', gap:'6px' }}>
+                  <span title={`${v.marque} ${v.modele}`} style={{ fontFamily:'Cormorant Garamond,serif', fontSize:'15px', fontWeight:600, color:'#16130e', whiteSpace:'nowrap', overflow:'hidden', textOverflow:'ellipsis' }}>{v.marque} {v.modele}</span>
+                  {v.categorie && (
+                    <span style={{ flexShrink:0, fontSize:'8px', fontWeight:700, letterSpacing:'0.3px', textTransform:'uppercase', color:'#4a2a6e', background:'#f0ebfa', border:'1px solid rgba(74,42,110,0.2)', padding:'1px 6px', borderRadius:'999px' }}>{CAT_SHORT[v.categorie] ?? v.categorie}</span>
+                  )}
+                </div>
+                <div style={{ display:'flex', gap:'8px', alignItems:'center', marginTop:'4px', flexWrap:'wrap' }}>
+                  <span style={{ fontFamily:'JetBrains Mono,monospace', fontSize:'10px', color:'#5a564e', letterSpacing:'0.5px' }}>{v.immatriculation}</span>
+                  <span style={{ fontSize:'9px', fontWeight:700, color, textTransform:'uppercase' }}>● {statutLabel}</span>
                 </div>
               </td>
 
