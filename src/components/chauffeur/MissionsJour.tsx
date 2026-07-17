@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, createContext, useContext } from 'react'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import { format, addDays, parseISO, isToday } from 'date-fns'
@@ -9,8 +9,12 @@ import toast from 'react-hot-toast'
 import {
   ChevronLeft, ChevronRight, MapPin, Phone, Navigation, Clock, LogOut, Car, CalendarDays,
   CalendarClock, History, User, Lock, ShieldCheck, Briefcase, Info, Users, Plane, ArrowLeft,
+  Check, Flag, Play, Building2,
 } from 'lucide-react'
 import DocumentsControle from './DocumentsControle'
+
+type AppMode = 'chauffeur' | 'sous_traitant'
+const AppModeContext = createContext<AppMode>('chauffeur')
 
 // ── Design tokens ─────────────────────────────
 const GOLD = '#9a7a28', DARK = '#16130e', INK = '#16130e', MUTE = '#8a8478', SUB = '#6f6a60'
@@ -87,7 +91,7 @@ function LocationRow({ label, addr, tone = 'dep' }: { label: string; addr: strin
 
 type Tab = 'jour' | 'avenir' | 'historique' | 'profil'
 
-export default function MissionsJour({ chauffeurNom }: { chauffeurNom: string }) {
+export default function MissionsJour({ label, mode = 'chauffeur' }: { label: string; mode?: AppMode }) {
   const router = useRouter()
   const supabase = createClient()
   const [tab, setTab] = useState<Tab>('jour')
@@ -99,6 +103,7 @@ export default function MissionsJour({ chauffeurNom }: { chauffeurNom: string })
   }
 
   return (
+    <AppModeContext.Provider value={mode}>
     <div style={{ minHeight: '100dvh', display: 'flex', flexDirection: 'column', background: CREAM }}>
       {/* En-tête */}
       <header style={{ background: 'linear-gradient(155deg,#221b11,#16130e)', padding: 'max(env(safe-area-inset-top), 14px) 18px 15px', position: 'sticky', top: 0, zIndex: 20, boxShadow: '0 2px 12px rgba(0,0,0,0.18)' }}>
@@ -109,8 +114,8 @@ export default function MissionsJour({ chauffeurNom }: { chauffeurNom: string })
               <img src="/logo.png" alt="" style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
             </div>
             <div>
-              <div style={{ fontSize: '14px', fontWeight: 600, color: '#fff', lineHeight: 1.15 }}>{chauffeurNom}</div>
-              <div style={{ fontSize: '9px', letterSpacing: '2.5px', color: 'rgba(212,180,110,0.75)', textTransform: 'uppercase', marginTop: '1px' }}>Espace chauffeur</div>
+              <div style={{ fontSize: '14px', fontWeight: 600, color: '#fff', lineHeight: 1.15 }}>{label}</div>
+              <div style={{ fontSize: '9px', letterSpacing: '2.5px', color: 'rgba(212,180,110,0.75)', textTransform: 'uppercase', marginTop: '1px' }}>{mode === 'sous_traitant' ? 'Sous-traitant' : 'Espace chauffeur'}</div>
             </div>
           </div>
           <button onClick={logout} aria-label="Déconnexion"
@@ -147,6 +152,7 @@ export default function MissionsJour({ chauffeurNom }: { chauffeurNom: string })
         })}
       </nav>
     </div>
+    </AppModeContext.Provider>
   )
 }
 
@@ -358,13 +364,37 @@ function docState(dateStr: string | null) {
 }
 
 function TabProfil() {
-  const [d, setD] = useState<{ chauffeur: any; stats: any } | null>(null)
+  const [d, setD] = useState<{ type?: string; chauffeur?: any; sousTraitant?: any; stats: any } | null>(null)
 
   useEffect(() => {
     fetch('/api/chauffeur/profil').then(r => r.json()).then(({ data }) => setD(data)).catch(() => setD(null))
   }, [])
 
   if (!d) return <LoadingState />
+
+  // Mode sous-traitant : fiche société + stats (pas de documents personnels)
+  if (d.type === 'sous_traitant') {
+    const s = d.sousTraitant ?? {}
+    return (
+      <div style={{ padding: '18px 14px 20px' }}>
+        <div style={{ ...CARD, padding: '20px 18px', marginBottom: '14px', textAlign: 'center' }}>
+          <div style={{ width: '68px', height: '68px', borderRadius: '999px', margin: '0 auto 12px', background: 'linear-gradient(155deg,#221b11,#16130e)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#e8cf92', boxShadow: '0 4px 16px rgba(22,19,14,0.22)' }}><Building2 size={28} /></div>
+          <div style={{ fontFamily: 'Cormorant Garamond,serif', fontSize: '24px', fontWeight: 600, color: INK, lineHeight: 1.1 }}>{s.societe}</div>
+          <div style={{ fontSize: '10px', letterSpacing: '2.5px', color: MUTE, textTransform: 'uppercase', marginTop: '4px' }}>Sous-traitant</div>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginTop: '14px', alignItems: 'center' }}>
+            {s.telephone && <a href={`tel:${s.telephone}`} style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', fontSize: '13px', color: GREEN, textDecoration: 'none', fontWeight: 600, background: '#eaf4ee', padding: '8px 16px', borderRadius: '999px' }}><Phone size={14} /> {s.telephone}</a>}
+            {s.contact_nom && <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '12px', color: MUTE }}><User size={13} /> {s.contact_nom}</div>}
+            {s.email && <div style={{ fontSize: '12px', color: MUTE }}>{s.email}</div>}
+          </div>
+        </div>
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
+          <StatCard icon={<Briefcase size={16} />} label="Missions ce mois" value={String(d.stats.missionsMois)} />
+          <StatCard icon={<Clock size={16} />} label="Heures ce mois" value={`${d.stats.heuresMois} h`} />
+        </div>
+      </div>
+    )
+  }
+
   const c = d.chauffeur
   const docs = [
     { label: 'Carte VTC', num: c.vtc_card_numero, st: docState(c.vtc_card_expiry) },
@@ -632,16 +662,45 @@ function MissionDetail({ mission, kind, onClose, onSaved }: { mission: any; kind
     ? (prest?.heure_debut_journee ? `${prest.heure_debut_journee.slice(0, 5)} → ${prest.heure_fin_journee?.slice(0, 5) ?? ''}` : null)
     : (mission.heure_depart?.slice(0, 5) ?? null)
 
+  const mode = useContext(AppModeContext)
+  const stChauffeurNom = prest?.st_chauffeur_nom || mission.st_chauffeur_nom
+  const stChauffeurTel = prest?.st_chauffeur_telephone || mission.st_chauffeur_telephone
+  const prestationId = prest?.id
+  const [statut, setStatut] = useState<string>(isMad ? (prest?.statut ?? 'en_attente') : mission.statut)
+  const [savingStatut, setSavingStatut] = useState(false)
+
+  async function changeStatut(next: string) {
+    if (!prestationId) return
+    setSavingStatut(true)
+    try {
+      const res = await fetch('/api/chauffeur/statut', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ prestation_id: prestationId, statut: next }),
+      })
+      const json = await res.json()
+      if (!res.ok) throw new Error(json.error ?? 'Erreur')
+      setStatut(next); toast.success('Statut mis à jour'); onSaved?.()
+    } catch (err: any) { toast.error(err.message) }
+    finally { setSavingStatut(false) }
+  }
+
+  const STATUT_ACTIONS = [
+    { val: 'confirme', label: 'Accepter', icon: <Check size={16} /> },
+    { val: 'en_cours', label: 'Démarrer', icon: <Play size={16} /> },
+    { val: 'termine',  label: 'Terminer', icon: <Flag size={16} /> },
+  ] as const
+
   return (
     <div style={{ position: 'fixed', inset: 0, background: CREAM, zIndex: 60, display: 'flex', flexDirection: 'column' }}>
       {/* En-tête riche */}
       <div style={{ background: 'linear-gradient(160deg,#241d12 0%,#16130e 100%)', padding: 'max(env(safe-area-inset-top), 12px) 18px 20px', position: 'sticky', top: 0, borderBottom: `3px solid ${col}` }}>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '14px' }}>
           <button onClick={onClose} aria-label="Fermer" style={{ background: 'rgba(255,255,255,0.1)', border: 'none', borderRadius: '10px', color: '#fff', cursor: 'pointer', display: 'flex', padding: '9px' }}><ArrowLeft size={19} /></button>
-          <StatutChip statut={isMad ? (prest?.statut ?? 'en_attente') : mission.statut} />
+          <StatutChip statut={statut} />
         </div>
         <div style={{ fontSize: '10px', letterSpacing: '2px', textTransform: 'uppercase', color: isMad ? '#e0a58f' : '#9fbde8', fontWeight: 800, marginBottom: '4px' }}>{isMad ? 'Mise à disposition' : 'Transfert'}</div>
         <div style={{ fontFamily: 'Cormorant Garamond,serif', fontSize: '27px', fontWeight: 600, color: '#fff', lineHeight: 1.1 }}>{client?.nom ?? '—'}</div>
+        {/* réf. StatutChip dynamique via l'état local */}
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', marginTop: '13px' }}>
           <span style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', fontSize: '12px', color: '#e8e2d6', background: 'rgba(255,255,255,0.08)', padding: '6px 12px', borderRadius: '999px', textTransform: 'capitalize' }}>
             <CalendarDays size={13} style={{ color: '#c9a457' }} /> {dateStr}
@@ -660,6 +719,24 @@ function MissionDetail({ mission, kind, onClose, onSaved }: { mission: any; kind
       </div>
 
       <div style={{ flex: 1, overflowY: 'auto', padding: '16px 14px calc(28px + env(safe-area-inset-bottom))' }}>
+        {/* Statut — actions rapides (sous-traitant) */}
+        {mode === 'sous_traitant' && (
+          <div style={{ display: 'flex', gap: '8px', marginBottom: '16px' }}>
+            {STATUT_ACTIONS.map(a => {
+              const active = statut === a.val
+              return (
+                <button key={a.val} onClick={() => changeStatut(a.val)} disabled={savingStatut}
+                  style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '5px', padding: '13px 4px', borderRadius: RS, cursor: 'pointer',
+                    border: active ? `1.5px solid ${GOLD}` : '1px solid ' + LINE,
+                    background: active ? 'rgba(154,122,40,0.12)' : '#fff',
+                    color: active ? GOLD : SUB, fontWeight: 700, fontSize: '12px' }}>
+                  {a.icon}{a.label}
+                </button>
+              )
+            })}
+          </div>
+        )}
+
         {/* Appel client — action rapide */}
         {client?.telephone && (
           <a href={`tel:${client.telephone}`}
@@ -679,6 +756,8 @@ function MissionDetail({ mission, kind, onClose, onSaved }: { mission: any; kind
           {isMad
             ? <InfoRow label="Horaires prévus" value={heureStr ?? '—'} mono />
             : <InfoRow label="Heure de départ" value={mission.heure_depart?.slice(0, 5) ?? '—'} mono />}
+          {stChauffeurNom && <InfoRow label="Chauffeur affecté" value={stChauffeurNom} />}
+          {stChauffeurTel && <InfoRow label="Tél. chauffeur" value={stChauffeurTel} mono />}
           <InfoRow label="Dossier" value={dossier?.numero} mono last />
         </Section>
 

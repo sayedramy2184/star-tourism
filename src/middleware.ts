@@ -69,8 +69,8 @@ export async function middleware(request: NextRequest) {
       .eq('id', user.id)
       .single()
 
-    // Chauffeur → redirigé vers la PWA chauffeur dédiée
-    if (profile?.role === 'chauffeur') {
+    // Chauffeur / sous-traitant → redirigé vers la PWA mobile dédiée
+    if (profile?.role === 'chauffeur' || profile?.role === 'sous_traitant') {
       return NextResponse.redirect(new URL('/chauffeur', request.url))
     }
 

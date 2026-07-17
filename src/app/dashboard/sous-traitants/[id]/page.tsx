@@ -8,10 +8,12 @@ import { fr } from 'date-fns/locale'
 import toast from 'react-hot-toast'
 import { ArrowLeft, Phone, Mail, CheckCircle, Clock, Euro, TrendingUp, X } from 'lucide-react'
 import PaiementsPanel from '@/components/loueurs/PaiementsPanel'
+import AccesSousTraitant from '@/components/sous-traitants/AccesSousTraitant'
 
 interface SousTraitant {
   id: string; societe: string; contact_nom: string | null
   telephone: string | null; email: string | null; siret: string | null; notes: string | null
+  profile_id: string | null
 }
 
 interface Prestation {
@@ -211,6 +213,9 @@ export default function SousTraitantDetailPage() {
           )}
         </div>
       </div>
+
+      {/* Accès application */}
+      <AccesSousTraitant sousTraitantId={st.id} hasAccess={!!st.profile_id} email={st.email} />
 
       {/* KPIs */}
       <div className="kpi-grid" style={{ marginBottom:'20px' }}>
