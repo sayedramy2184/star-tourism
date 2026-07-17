@@ -27,8 +27,10 @@ Repo GitHub : `sayedramy2184/star-tourism`. À réparer un jour via Vercel → S
 ## ⚠️ Migrations base de données
 Le projet **n'est pas lié à la CLI Supabase**. Les migrations `supabase/migrations/*.sql`
 s'appliquent **à la main** : copier-coller dans **Supabase → SQL Editor → Run**, dans l'ordre.
-Elles sont idempotentes. Dernière = **014**. Toujours vérifier que la prod est à jour
-(001→014) après avoir ajouté une migration.
+Elles sont idempotentes. Dernière = **016**. Toujours vérifier que la prod est à jour
+(001→016) après avoir ajouté une migration.
+⚠️ Historique : la **003** avait été oubliée en prod (table `societe_parametres`) — appliquée le 2026-07-17.
+015 = logo société (`logo_path`). 016 = comptes sous-traitants + RLS restrictive.
 
 ## Conventions importantes
 - **Responsive** : sur chaque liste, un tableau (desktop) + des cartes (mobile).
@@ -52,7 +54,11 @@ Elles sont idempotentes. Dernière = **014**. Toujours vérifier que la prod est
 - **Véhicules / Loueurs** : parc + location (migration 011), loyer par période (jour/sem/mois).
   Loueurs = compta fournisseur : décompte (coût couru) − versements = solde (migrations 012).
 - **Sous-traitants** : même principe décompte + versements (migration 013), en plus du
-  paiement par prestation existant.
+  paiement par prestation existant. **Comptes de connexion** (migration 016) : un sous-traitant
+  peut avoir un accès à l'app mobile `/chauffeur` (fiche → « Créer l'accès »). L'app détecte
+  le type de compte (chauffeur interne OU sous-traitant) via `getAppAccount` et filtre par
+  `chauffeur_id` ou `sous_traitant_id`. RLS **restrictive** : un sous-traitant ne voit QUE
+  ses missions. Il peut changer le statut (`/api/chauffeur/statut`) et saisir ses heures.
 - **App chauffeur (PWA)** `/chauffeur` : 4 onglets (Aujourd'hui, À venir, Historique, Profil),
   détail mission complet (passagers, vol, notes, maps), saisie des heures réelles
   **verrouillée quand le dossier est validé** (`dossiers.valide_at`).
