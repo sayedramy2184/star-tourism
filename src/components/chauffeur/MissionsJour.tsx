@@ -703,8 +703,8 @@ function MissionDetail({ mission, kind, onClose, onSaved }: { mission: any; kind
 
   return (
     <div style={{ position: 'fixed', inset: 0, background: CREAM, zIndex: 60, display: 'flex', flexDirection: 'column' }}>
-      {/* En-tête riche */}
-      <div style={{ background: 'linear-gradient(160deg,#241d12 0%,#16130e 100%)', padding: 'max(env(safe-area-inset-top), 12px) 18px 20px', position: 'sticky', top: 0, borderBottom: `3px solid ${col}` }}>
+      {/* En-tête riche (conteneur déjà fixed → pas de sticky, sinon décalage) */}
+      <div style={{ background: 'linear-gradient(160deg,#241d12 0%,#16130e 100%)', padding: 'max(env(safe-area-inset-top), 12px) 18px 20px', flexShrink: 0, borderBottom: `3px solid ${col}` }}>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '14px' }}>
           <button onClick={onClose} aria-label="Fermer" style={{ background: 'rgba(255,255,255,0.1)', border: 'none', borderRadius: '10px', color: '#fff', cursor: 'pointer', display: 'flex', padding: '9px' }}><ArrowLeft size={19} /></button>
           <StatutChip statut={statut} />
