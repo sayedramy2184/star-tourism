@@ -245,7 +245,7 @@ export default function PrestationCard({ p, dossierId, passagers = [] }: { p: an
         body: JSON.stringify({ chauffeur_id, sous_traitant_id }),
       })
       toast.success('Affectation mise à jour')
-      router.push(`/dashboard/dossiers/${dossierId}`)
+      router.refresh()
     } catch { toast.error('Erreur') }
     finally { setSavingJour(null) }
   }
@@ -261,7 +261,7 @@ export default function PrestationCard({ p, dossierId, passagers = [] }: { p: an
         body: JSON.stringify({ vehicule_id: vehiculeId || null }),
       })
       toast.success('Véhicule du jour mis à jour')
-      router.push(`/dashboard/dossiers/${dossierId}`)
+      router.refresh()
     } catch { toast.error('Erreur') }
     finally { setSavingJour(null) }
   }
@@ -275,7 +275,7 @@ export default function PrestationCard({ p, dossierId, passagers = [] }: { p: an
         body: JSON.stringify({ chauffeur_id: chauffeurId || null }),
       })
       toast.success('Chauffeur affecté !')
-      router.push(`/dashboard/dossiers/${dossierId}`)
+      router.refresh()
     } catch { toast.error('Erreur') }
   }
 
