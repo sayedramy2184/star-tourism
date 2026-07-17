@@ -9,9 +9,23 @@ import { fr } from 'date-fns/locale'
 import { useSearchPaginate } from '@/lib/useSearchPaginate'
 import { SearchBar, Pager } from '@/components/ui/ListControls'
 import { exportCsv } from '@/lib/exportCsv'
+import { Users } from 'lucide-react'
 
 function formatMontant(n: number) {
   return new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' }).format(n)
+}
+
+// Noms des passagers du dossier (affichés sous les prestations pour distinguer
+// plusieurs dossiers d'un même client).
+function PassagersLine({ passagers }: { passagers?: any[] }) {
+  const noms = (passagers ?? []).map((p: any) => p?.nom).filter(Boolean)
+  if (!noms.length) return null
+  return (
+    <div style={{ display:'flex', alignItems:'flex-start', gap:'4px', marginTop:'5px', fontSize:'11px', color:'#5a564e', lineHeight:1.35 }}>
+      <Users size={11} style={{ color:'#8a8478', flexShrink:0, marginTop:'2px' }} />
+      <span>{noms.join(', ')}</span>
+    </div>
+  )
 }
 
 export default function DossiersPage() {
@@ -124,6 +138,7 @@ export default function DossiersPage() {
                   </div>
                   <span className="mono" style={{ fontSize:'13px', fontWeight:700, color:'#16130e' }}>{formatMontant(d.montant_ht)}</span>
                 </div>
+                <PassagersLine passagers={d.passagers} />
               </Link>
             </div>
           )
@@ -176,6 +191,7 @@ export default function DossiersPage() {
                       {types.mad      && <span className="pill-mad">MAD ×{types.mad}</span>}
                       {types.transfert && <span className="pill-transfer">Transfert ×{types.transfert}</span>}
                     </div>
+                    <PassagersLine passagers={d.passagers} />
                   </td>
                   <td className="td">
                     <span className="mono" style={{ fontSize:'12px' }}>{formatMontant(d.montant_ht)}</span>
