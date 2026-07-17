@@ -12,6 +12,16 @@ import {
 } from 'lucide-react'
 import DocumentsControle from './DocumentsControle'
 
+// ── Design tokens ─────────────────────────────
+const GOLD = '#9a7a28', DARK = '#16130e', INK = '#16130e', MUTE = '#8a8478', SUB = '#6f6a60'
+const CREAM = '#ede9e2', LINE = 'rgba(22,19,14,0.08)'
+const MAD = '#a6432a', MAD_SOFT = '#f8ece7', TRANS = '#1e3f70', TRANS_SOFT = '#e8eef8', GREEN = '#1e5e3a'
+const R = 16, RS = 11
+const CARD: React.CSSProperties = {
+  background: '#fff', borderRadius: R, border: '1px solid rgba(22,19,14,0.06)',
+  boxShadow: '0 2px 14px rgba(22,19,14,0.05)', overflow: 'hidden',
+}
+
 function one(v: any) { return Array.isArray(v) ? v[0] : v }
 function todayStr() { return new Date().toISOString().slice(0, 10) }
 function flag(code?: string | null) {
@@ -36,22 +46,37 @@ function mapsHref(addr: string) {
 function StatutChip({ statut }: { statut: string }) {
   const s = STATUTS[statut] ?? STATUTS.en_attente
   return (
-    <span style={{ fontSize: '10px', fontWeight: 700, letterSpacing: '0.5px', padding: '3px 9px', color: s.color, background: s.bg, borderRadius: '2px' }}>
+    <span style={{ fontSize: '10px', fontWeight: 700, letterSpacing: '0.4px', padding: '4px 11px', color: s.color, background: s.bg, borderRadius: '999px', whiteSpace: 'nowrap' }}>
       {s.label}
     </span>
   )
 }
 
-function AddressRow({ label, addr }: { label: string; addr: string }) {
+function TypeTag({ kind }: { kind: 'mad' | 'transfert' }) {
+  const mad = kind === 'mad'
+  return (
+    <span style={{ display: 'inline-flex', alignItems: 'center', gap: '5px', fontSize: '10px', fontWeight: 800, letterSpacing: '0.8px', textTransform: 'uppercase', color: mad ? MAD : TRANS, background: mad ? MAD_SOFT : TRANS_SOFT, padding: '4px 10px', borderRadius: '999px' }}>
+      {mad ? <Clock size={11} /> : <Navigation size={11} />} {mad ? 'Mise à disposition' : 'Transfert'}
+    </span>
+  )
+}
+
+function LocationRow({ label, addr, tone = 'dep' }: { label: string; addr: string; tone?: 'dep' | 'arr' }) {
+  const color = tone === 'arr' ? TRANS : GOLD
+  const soft = tone === 'arr' ? 'rgba(30,63,112,0.12)' : 'rgba(154,122,40,0.13)'
   return (
     <a href={mapsHref(addr)} target="_blank" rel="noreferrer"
-      style={{ display: 'flex', alignItems: 'flex-start', gap: '8px', textDecoration: 'none', padding: '8px 0', borderTop: '1px solid #e6e0d6' }}>
-      <MapPin size={15} style={{ color: '#9a7a28', flexShrink: 0, marginTop: '1px' }} />
+      style={{ display: 'flex', alignItems: 'flex-start', gap: '12px', textDecoration: 'none', padding: '10px 0' }}>
+      <span style={{ width: '30px', height: '30px', borderRadius: '999px', background: soft, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, marginTop: '1px' }}>
+        <MapPin size={15} style={{ color }} />
+      </span>
       <div style={{ flex: 1, minWidth: 0 }}>
-        <div style={{ fontSize: '9px', letterSpacing: '1.5px', textTransform: 'uppercase', color: '#8a8478' }}>{label}</div>
-        <div style={{ fontSize: '14px', color: '#16130e', lineHeight: 1.35 }}>{addr}</div>
+        <div style={{ fontSize: '9px', letterSpacing: '1.5px', textTransform: 'uppercase', color: MUTE, fontWeight: 700 }}>{label}</div>
+        <div style={{ fontSize: '14px', color: INK, lineHeight: 1.35, marginTop: '1px' }}>{addr}</div>
       </div>
-      <Navigation size={16} style={{ color: '#1e3f70', flexShrink: 0, marginTop: '2px' }} />
+      <span style={{ width: '34px', height: '34px', borderRadius: '999px', background: TRANS_SOFT, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+        <Navigation size={16} style={{ color: TRANS }} />
+      </span>
     </a>
   )
 }
@@ -74,29 +99,29 @@ export default function MissionsJour({ chauffeurNom }: { chauffeurNom: string })
   }
 
   return (
-    <div style={{ minHeight: '100dvh', display: 'flex', flexDirection: 'column', background: '#ede9e2' }}>
+    <div style={{ minHeight: '100dvh', display: 'flex', flexDirection: 'column', background: CREAM }}>
       {/* En-tête */}
-      <header style={{ background: '#16130e', padding: 'max(env(safe-area-inset-top), 14px) 18px 14px', position: 'sticky', top: 0, zIndex: 20 }}>
+      <header style={{ background: 'linear-gradient(155deg,#221b11,#16130e)', padding: 'max(env(safe-area-inset-top), 14px) 18px 15px', position: 'sticky', top: 0, zIndex: 20, boxShadow: '0 2px 12px rgba(0,0,0,0.18)' }}>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '11px' }}>
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <div style={{ width: '38px', height: '38px', background: '#fff', borderRadius: '9px', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '4px', flexShrink: 0 }}>
+            <div style={{ width: '40px', height: '40px', background: '#fff', borderRadius: '11px', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '4px', flexShrink: 0, boxShadow: '0 2px 8px rgba(0,0,0,0.25)' }}>
               <img src="/logo.png" alt="" style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
             </div>
             <div>
-              <div style={{ fontSize: '13px', fontWeight: 600, color: '#fff', lineHeight: 1.1 }}>{chauffeurNom}</div>
-              <div style={{ fontSize: '9px', letterSpacing: '2px', color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase' }}>Espace chauffeur</div>
+              <div style={{ fontSize: '14px', fontWeight: 600, color: '#fff', lineHeight: 1.15 }}>{chauffeurNom}</div>
+              <div style={{ fontSize: '9px', letterSpacing: '2.5px', color: 'rgba(212,180,110,0.75)', textTransform: 'uppercase', marginTop: '1px' }}>Espace chauffeur</div>
             </div>
           </div>
           <button onClick={logout} aria-label="Déconnexion"
-            style={{ background: 'none', border: 'none', color: 'rgba(255,255,255,0.5)', cursor: 'pointer', padding: '6px' }}>
+            style={{ background: 'rgba(255,255,255,0.08)', border: 'none', borderRadius: '10px', color: 'rgba(255,255,255,0.7)', cursor: 'pointer', padding: '9px', display: 'flex' }}>
             <LogOut size={18} />
           </button>
         </div>
       </header>
 
       {/* Contenu selon l'onglet */}
-      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', paddingBottom: 'calc(64px + env(safe-area-inset-bottom))' }}>
+      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', paddingBottom: 'calc(68px + env(safe-area-inset-bottom))' }}>
         {tab === 'jour'       && <TabJour />}
         {tab === 'avenir'     && <TabRange mode="avenir" />}
         {tab === 'historique' && <TabRange mode="historique" />}
@@ -104,19 +129,22 @@ export default function MissionsJour({ chauffeurNom }: { chauffeurNom: string })
       </div>
 
       {/* Barre d'onglets fixe */}
-      <nav style={{ position: 'fixed', bottom: 0, left: 0, right: 0, background: '#fff', borderTop: '1.5px solid #d8d2c8', display: 'flex', paddingBottom: 'env(safe-area-inset-bottom)', zIndex: 30 }}>
+      <nav style={{ position: 'fixed', bottom: 0, left: 0, right: 0, background: 'rgba(255,255,255,0.94)', backdropFilter: 'blur(10px)', WebkitBackdropFilter: 'blur(10px)', borderTop: '1px solid ' + LINE, display: 'flex', padding: '8px 8px calc(8px + env(safe-area-inset-bottom))', gap: '4px', zIndex: 30 }}>
         {([
           ['jour', 'Aujourd\'hui', <CalendarDays size={19} key="a" />],
           ['avenir', 'À venir', <CalendarClock size={19} key="b" />],
           ['historique', 'Historique', <History size={19} key="c" />],
           ['profil', 'Profil', <User size={19} key="d" />],
-        ] as const).map(([v, label, icon]) => (
-          <button key={v} onClick={() => setTab(v)}
-            style={{ flex: 1, background: 'none', border: 'none', cursor: 'pointer', padding: '9px 4px 8px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '3px', color: tab === v ? '#9a7a28' : '#8a8478' }}>
-            {icon}
-            <span style={{ fontSize: '9px', fontWeight: tab === v ? 700 : 500, letterSpacing: '0.3px' }}>{label}</span>
-          </button>
-        ))}
+        ] as const).map(([v, label, icon]) => {
+          const active = tab === v
+          return (
+            <button key={v} onClick={() => setTab(v)}
+              style={{ flex: 1, background: active ? 'rgba(154,122,40,0.11)' : 'none', border: 'none', borderRadius: '12px', cursor: 'pointer', padding: '8px 4px 7px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '3px', color: active ? GOLD : MUTE, transition: 'background 0.15s' }}>
+              {icon}
+              <span style={{ fontSize: '9px', fontWeight: active ? 700 : 500, letterSpacing: '0.2px' }}>{label}</span>
+            </button>
+          )
+        })}
       </nav>
     </div>
   )
@@ -153,40 +181,37 @@ function TabJour() {
   return (
     <>
       {/* Navigation jour */}
-      <div style={{ background: '#fff', borderBottom: '1.5px solid #d8d2c8', padding: '10px 12px', display: 'flex', alignItems: 'center', gap: '8px', position: 'sticky', top: '62px', zIndex: 15 }}>
+      <div style={{ background: 'rgba(255,255,255,0.9)', backdropFilter: 'blur(8px)', WebkitBackdropFilter: 'blur(8px)', borderBottom: '1px solid ' + LINE, padding: '11px 12px', display: 'flex', alignItems: 'center', gap: '10px', position: 'sticky', top: '69px', zIndex: 15 }}>
         <button onClick={() => shiftDay(-1)} aria-label="Jour précédent"
-          style={{ background: '#f5f2ed', border: '1.5px solid #d8d2c8', width: '40px', height: '40px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', flexShrink: 0 }}>
-          <ChevronLeft size={18} color="#5a564e" />
+          style={{ background: '#fff', border: '1px solid ' + LINE, borderRadius: '12px', width: '42px', height: '42px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', flexShrink: 0, boxShadow: '0 1px 4px rgba(22,19,14,0.05)' }}>
+          <ChevronLeft size={19} color={SUB} />
         </button>
         <div style={{ flex: 1, textAlign: 'center' }}>
-          <div style={{ fontFamily: 'Cormorant Garamond,serif', fontSize: '18px', color: '#16130e', lineHeight: 1.1, textTransform: 'capitalize' }}>
+          <div style={{ fontFamily: 'Cormorant Garamond,serif', fontSize: '20px', fontWeight: 600, color: INK, lineHeight: 1.05, textTransform: 'capitalize' }}>
             {format(dObj, 'EEEE d MMMM', { locale: fr })}
           </div>
           <button onClick={() => setDate(todayStr())}
-            style={{ background: 'none', border: 'none', fontSize: '11px', color: isToday(dObj) ? '#9a7a28' : '#8a8478', cursor: 'pointer', marginTop: '1px', display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+            style={{ background: 'none', border: 'none', fontSize: '11px', color: isToday(dObj) ? GOLD : MUTE, cursor: 'pointer', marginTop: '2px', display: 'inline-flex', alignItems: 'center', gap: '4px', fontWeight: isToday(dObj) ? 700 : 500 }}>
             <CalendarDays size={11} /> {isToday(dObj) ? "Aujourd'hui" : "Revenir à aujourd'hui"}
           </button>
         </div>
         <button onClick={() => shiftDay(1)} aria-label="Jour suivant"
-          style={{ background: '#f5f2ed', border: '1.5px solid #d8d2c8', width: '40px', height: '40px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', flexShrink: 0 }}>
-          <ChevronRight size={18} color="#5a564e" />
+          style={{ background: '#fff', border: '1px solid ' + LINE, borderRadius: '12px', width: '42px', height: '42px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', flexShrink: 0, boxShadow: '0 1px 4px rgba(22,19,14,0.05)' }}>
+          <ChevronRight size={19} color={SUB} />
         </button>
       </div>
 
-      <div style={{ flex: 1, padding: '14px 12px 20px' }}>
+      <div style={{ flex: 1, padding: '16px 14px 20px' }}>
         {loading ? (
-          <div style={{ textAlign: 'center', padding: '60px 0', color: '#8a8478', fontSize: '13px' }}>Chargement…</div>
+          <LoadingState />
         ) : total === 0 ? (
-          <div style={{ textAlign: 'center', padding: '70px 20px', color: '#8a8478' }}>
-            <CalendarDays size={30} style={{ color: '#c2bdb4', marginBottom: '12px' }} />
-            <div style={{ fontSize: '14px', color: '#5a564e' }}>Aucune mission ce jour</div>
-          </div>
+          <EmptyState icon={<CalendarDays size={34} />} text="Aucune mission ce jour" />
         ) : (
           <>
-            <div style={{ fontSize: '11px', letterSpacing: '1px', textTransform: 'uppercase', color: '#8a8478', marginBottom: '10px' }}>
+            <div style={{ fontSize: '11px', letterSpacing: '1px', textTransform: 'uppercase', color: MUTE, marginBottom: '12px', fontWeight: 600 }}>
               {total} mission{total > 1 ? 's' : ''}
             </div>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
               {(data?.transferts ?? []).map((t: any) => <TransfertCard key={t.id} t={t} />)}
               {(data?.jours ?? []).map((j: any) => <MadCard key={j.id} j={j} onSaved={() => load(date)} />)}
             </div>
@@ -201,6 +226,18 @@ function TabJour() {
   )
 }
 
+function LoadingState() {
+  return <div style={{ textAlign: 'center', padding: '70px 0', color: MUTE, fontSize: '13px' }}>Chargement…</div>
+}
+function EmptyState({ icon, text }: { icon: React.ReactNode; text: string }) {
+  return (
+    <div style={{ textAlign: 'center', padding: '70px 20px', color: MUTE }}>
+      <div style={{ width: '72px', height: '72px', borderRadius: '999px', background: '#fff', border: '1px solid ' + LINE, display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 16px', color: '#c2bdb4', boxShadow: '0 2px 12px rgba(22,19,14,0.05)' }}>{icon}</div>
+      <div style={{ fontSize: '14px', color: SUB }}>{text}</div>
+    </div>
+  )
+}
+
 // ══════════════════════════════════════════════
 //  ONGLET À VENIR / HISTORIQUE — liste groupée par jour
 // ══════════════════════════════════════════════
@@ -209,7 +246,6 @@ function TabRange({ mode }: { mode: 'avenir' | 'historique' }) {
   const [items, setItems] = useState<any[] | null>(null)
 
   useEffect(() => {
-    const t = todayStr()
     const from = mode === 'avenir' ? format(addDays(new Date(), 1), 'yyyy-MM-dd') : format(addDays(new Date(), -30), 'yyyy-MM-dd')
     const to   = mode === 'avenir' ? format(addDays(new Date(), 21), 'yyyy-MM-dd') : format(addDays(new Date(), -1), 'yyyy-MM-dd')
     fetch(`/api/chauffeur/missions?from=${from}&to=${to}`)
@@ -224,12 +260,11 @@ function TabRange({ mode }: { mode: 'avenir' | 'historique' }) {
       .catch(() => setItems([]))
   }, [mode])
 
-  if (items === null) return <div style={{ textAlign: 'center', padding: '60px 0', color: '#8a8478', fontSize: '13px' }}>Chargement…</div>
+  if (items === null) return <LoadingState />
   if (items.length === 0) return (
-    <div style={{ textAlign: 'center', padding: '70px 20px', color: '#8a8478' }}>
-      {mode === 'avenir' ? <CalendarClock size={30} style={{ color: '#c2bdb4', marginBottom: '12px' }} /> : <History size={30} style={{ color: '#c2bdb4', marginBottom: '12px' }} />}
-      <div style={{ fontSize: '14px', color: '#5a564e' }}>{mode === 'avenir' ? 'Aucune mission à venir' : 'Aucune mission passée'}</div>
-    </div>
+    <EmptyState
+      icon={mode === 'avenir' ? <CalendarClock size={34} /> : <History size={34} />}
+      text={mode === 'avenir' ? 'Aucune mission à venir' : 'Aucune mission passée'} />
   )
 
   // Groupement par date
@@ -237,13 +272,16 @@ function TabRange({ mode }: { mode: 'avenir' | 'historique' }) {
   for (const it of items) { (groups[it.date] ??= []).push(it) }
 
   return (
-    <div style={{ padding: '14px 12px 20px' }}>
+    <div style={{ padding: '16px 14px 20px' }}>
       {Object.entries(groups).map(([d, list]) => (
-        <div key={d} style={{ marginBottom: '18px' }}>
-          <div style={{ fontSize: '11px', fontWeight: 700, letterSpacing: '1px', textTransform: 'capitalize', color: '#9a7a28', marginBottom: '8px' }}>
-            {format(parseISO(d), 'EEEE d MMMM', { locale: fr })}
+        <div key={d} style={{ marginBottom: '20px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '10px' }}>
+            <span style={{ fontSize: '11px', fontWeight: 700, letterSpacing: '0.8px', textTransform: 'capitalize', color: GOLD }}>
+              {format(parseISO(d), 'EEEE d MMMM', { locale: fr })}
+            </span>
+            <span style={{ flex: 1, height: '1px', background: LINE }} />
           </div>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
             {list.map(it => <MissionListItem key={it.id} it={it} />)}
           </div>
         </div>
@@ -273,26 +311,31 @@ function normJour(j: any) {
 
 function MissionListItem({ it }: { it: any }) {
   const [open, setOpen] = useState(false)
-  const col = it.kind === 'mad' ? '#7a5c10' : '#1e3f70'
+  const mad = it.kind === 'mad'
+  const col = mad ? MAD : TRANS
   return (
     <>
       <button onClick={() => setOpen(true)}
-        style={{ textAlign: 'left', width: '100%', cursor: 'pointer', background: '#fff', border: '1.5px solid #d8d2c8', borderLeft: `3px solid ${col}`, padding: '10px 12px' }}>
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '8px', marginBottom: '3px' }}>
-          <span style={{ display: 'flex', alignItems: 'center', gap: '6px', minWidth: 0 }}>
-            <span style={{ fontSize: '9px', fontWeight: 700, textTransform: 'uppercase', color: col }}>{it.kind === 'mad' ? 'MAD' : 'Transfert'}</span>
-            {it.heure && <span style={{ fontFamily: 'JetBrains Mono,monospace', fontSize: '13px', color: '#16130e', fontWeight: 600 }}>{it.heure}</span>}
+        style={{ textAlign: 'left', width: '100%', cursor: 'pointer', display: 'flex', alignItems: 'stretch', gap: '0', padding: 0, ...CARD }}>
+        <span style={{ width: '5px', background: col, flexShrink: 0 }} />
+        <span style={{ flex: 1, minWidth: 0, padding: '12px 14px' }}>
+          <span style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '8px', marginBottom: '5px' }}>
+            <span style={{ display: 'flex', alignItems: 'center', gap: '7px', minWidth: 0 }}>
+              <span style={{ fontSize: '9px', fontWeight: 800, letterSpacing: '0.6px', textTransform: 'uppercase', color: col }}>{mad ? 'MAD' : 'Transfert'}</span>
+              {it.heure && <span style={{ fontFamily: 'JetBrains Mono,monospace', fontSize: '13px', color: INK, fontWeight: 700 }}>{it.heure}</span>}
+            </span>
+            <StatutChip statut={it.statut} />
           </span>
-          <StatutChip statut={it.statut} />
-        </div>
-        <div style={{ fontFamily: 'Cormorant Garamond,serif', fontSize: '16px', color: '#16130e', lineHeight: 1.15 }}>{it.clientNom}</div>
-        <div style={{ fontSize: '12px', color: '#5a564e', marginTop: '2px' }}>{it.lieu}</div>
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: '4px' }}>
-          {it.dossierNum && <span style={{ fontFamily: 'JetBrains Mono,monospace', fontSize: '10px', color: '#9a7a28' }}>{it.dossierNum}</span>}
-          {it.heuresReelles != null && Number(it.heuresReelles) > 0 && (
-            <span style={{ fontSize: '11px', color: '#1e5e3a', fontWeight: 600 }}>{it.heuresReelles}h faites</span>
-          )}
-        </div>
+          <span style={{ display: 'block', fontFamily: 'Cormorant Garamond,serif', fontSize: '18px', fontWeight: 600, color: INK, lineHeight: 1.1 }}>{it.clientNom}</span>
+          <span style={{ display: 'block', fontSize: '12px', color: SUB, marginTop: '3px' }}>{it.lieu}</span>
+          <span style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: '6px' }}>
+            {it.dossierNum && <span style={{ fontFamily: 'JetBrains Mono,monospace', fontSize: '10px', color: GOLD }}>{it.dossierNum}</span>}
+            {it.heuresReelles != null && Number(it.heuresReelles) > 0 && (
+              <span style={{ fontSize: '11px', color: GREEN, fontWeight: 600 }}>{it.heuresReelles}h faites</span>
+            )}
+          </span>
+        </span>
+        <span style={{ display: 'flex', alignItems: 'center', paddingRight: '10px', color: '#c2bdb4' }}><ChevronRight size={18} /></span>
       </button>
       {open && <MissionDetail mission={it.raw} kind={it.kind} onClose={() => setOpen(false)} />}
     </>
@@ -309,9 +352,9 @@ const COMP_LBL: Record<string, string> = { bodyguard: 'Bodyguard', guide: 'Guide
 function docState(dateStr: string | null) {
   if (!dateStr) return null
   const days = Math.ceil((parseISO(dateStr).getTime() - Date.now()) / 86400000)
-  if (days < 0)  return { label: `Expiré le ${format(parseISO(dateStr), 'dd/MM/yyyy')}`, color: '#9e2a2a' }
-  if (days < 30) return { label: `Expire dans ${days} j`, color: '#7a5c10' }
-  return { label: `Valide → ${format(parseISO(dateStr), 'dd/MM/yyyy')}`, color: '#1e5e3a' }
+  if (days < 0)  return { label: `Expiré le ${format(parseISO(dateStr), 'dd/MM/yyyy')}`, color: '#9e2a2a', bg: '#faeaea' }
+  if (days < 30) return { label: `Expire dans ${days} j`, color: '#7a5c10', bg: '#fdf3dc' }
+  return { label: `Valide → ${format(parseISO(dateStr), 'dd/MM/yyyy')}`, color: '#1e5e3a', bg: '#eaf4ee' }
 }
 
 function TabProfil() {
@@ -321,7 +364,7 @@ function TabProfil() {
     fetch('/api/chauffeur/profil').then(r => r.json()).then(({ data }) => setD(data)).catch(() => setD(null))
   }, [])
 
-  if (!d) return <div style={{ textAlign: 'center', padding: '60px 0', color: '#8a8478', fontSize: '13px' }}>Chargement…</div>
+  if (!d) return <LoadingState />
   const c = d.chauffeur
   const docs = [
     { label: 'Carte VTC', num: c.vtc_card_numero, st: docState(c.vtc_card_expiry) },
@@ -331,41 +374,46 @@ function TabProfil() {
     { label: 'Carte de séjour', num: c.carte_sejour_numero, st: docState(c.carte_sejour_expiry) },
   ].filter(x => x.num || x.st)
 
-  return (
-    <div style={{ padding: '16px 12px 20px' }}>
-      {/* Stats du mois */}
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px', marginBottom: '16px' }}>
-        <StatCard icon={<Briefcase size={16} />} label="Missions ce mois" value={String(d.stats.missionsMois)} />
-        <StatCard icon={<Clock size={16} />} label="Heures ce mois" value={`${d.stats.heuresMois} h`} />
-      </div>
+  const initiales = `${(c.prenom?.[0] ?? '')}${(c.nom?.[0] ?? '')}`.toUpperCase()
 
-      {/* Fiche */}
-      <div style={{ background: '#fff', border: '1.5px solid #d8d2c8', padding: '16px', marginBottom: '14px' }}>
-        <div style={{ fontFamily: 'Cormorant Garamond,serif', fontSize: '22px', color: '#16130e' }}>{c.prenom} {c.nom}</div>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', marginTop: '10px' }}>
-          {c.telephone && <a href={`tel:${c.telephone}`} style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '13px', color: '#16130e', textDecoration: 'none' }}><Phone size={14} color="#8a8478" /> {c.telephone}</a>}
-          {c.email && <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '13px', color: '#5a564e' }}><User size={14} color="#8a8478" /> {c.email}</div>}
+  return (
+    <div style={{ padding: '18px 14px 20px' }}>
+      {/* Carte identité avec avatar */}
+      <div style={{ ...CARD, padding: '20px 18px', marginBottom: '14px', textAlign: 'center' }}>
+        <div style={{ width: '68px', height: '68px', borderRadius: '999px', margin: '0 auto 12px', background: 'linear-gradient(155deg,#221b11,#16130e)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#e8cf92', fontFamily: 'Cormorant Garamond,serif', fontSize: '26px', fontWeight: 600, boxShadow: '0 4px 16px rgba(22,19,14,0.22)' }}>
+          {initiales || <User size={26} />}
+        </div>
+        <div style={{ fontFamily: 'Cormorant Garamond,serif', fontSize: '24px', fontWeight: 600, color: INK, lineHeight: 1.1 }}>{c.prenom} {c.nom}</div>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginTop: '14px', alignItems: 'center' }}>
+          {c.telephone && <a href={`tel:${c.telephone}`} style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', fontSize: '13px', color: GREEN, textDecoration: 'none', fontWeight: 600, background: '#eaf4ee', padding: '8px 16px', borderRadius: '999px' }}><Phone size={14} /> {c.telephone}</a>}
+          {c.email && <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '12px', color: MUTE }}><User size={13} /> {c.email}</div>}
         </div>
         {((c.langues?.length ?? 0) > 0 || (c.competences?.length ?? 0) > 0) && (
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px', marginTop: '12px' }}>
-            {(c.langues ?? []).map((l: string) => <span key={l} style={{ fontSize: '11px', fontWeight: 600, padding: '3px 9px', background: '#fdf6e3', color: '#9a7a28', border: '1px solid rgba(154,122,40,0.25)' }}>{LANGUES_LBL[l] ?? l}</span>)}
-            {(c.competences ?? []).map((k: string) => <span key={k} style={{ fontSize: '11px', fontWeight: 600, padding: '3px 9px', background: '#e8eef8', color: '#1e3f70', border: '1px solid rgba(30,63,112,0.25)' }}>{COMP_LBL[k] ?? k}</span>)}
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px', marginTop: '14px', justifyContent: 'center' }}>
+            {(c.langues ?? []).map((l: string) => <span key={l} style={{ fontSize: '11px', fontWeight: 600, padding: '4px 11px', borderRadius: '999px', background: '#fdf6e3', color: GOLD, border: '1px solid rgba(154,122,40,0.22)' }}>{LANGUES_LBL[l] ?? l}</span>)}
+            {(c.competences ?? []).map((k: string) => <span key={k} style={{ fontSize: '11px', fontWeight: 600, padding: '4px 11px', borderRadius: '999px', background: TRANS_SOFT, color: TRANS, border: '1px solid rgba(30,63,112,0.22)' }}>{COMP_LBL[k] ?? k}</span>)}
           </div>
         )}
       </div>
 
+      {/* Stats du mois */}
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px', marginBottom: '14px' }}>
+        <StatCard icon={<Briefcase size={16} />} label="Missions ce mois" value={String(d.stats.missionsMois)} />
+        <StatCard icon={<Clock size={16} />} label="Heures ce mois" value={`${d.stats.heuresMois} h`} />
+      </div>
+
       {/* Documents */}
       {docs.length > 0 && (
-        <div style={{ background: '#fff', border: '1.5px solid #d8d2c8', padding: '14px 16px' }}>
-          <div style={{ fontSize: '9px', letterSpacing: '2px', textTransform: 'uppercase', color: '#9a7a28', fontWeight: 700, marginBottom: '10px' }}>Mes documents</div>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+        <div style={{ ...CARD, padding: '16px 18px' }}>
+          <div style={{ fontSize: '9px', letterSpacing: '2px', textTransform: 'uppercase', color: GOLD, fontWeight: 800, marginBottom: '12px' }}>Mes documents</div>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
             {docs.map(doc => (
               <div key={doc.label} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '8px' }}>
                 <div>
-                  <div style={{ fontSize: '13px', fontWeight: 600, color: '#16130e' }}>{doc.label}</div>
-                  {doc.num && <div style={{ fontFamily: 'JetBrains Mono,monospace', fontSize: '10px', color: '#8a8478' }}>{doc.num}</div>}
+                  <div style={{ fontSize: '13px', fontWeight: 600, color: INK }}>{doc.label}</div>
+                  {doc.num && <div style={{ fontFamily: 'JetBrains Mono,monospace', fontSize: '10px', color: MUTE, marginTop: '1px' }}>{doc.num}</div>}
                 </div>
-                {doc.st && <span style={{ fontSize: '11px', fontWeight: 600, color: doc.st.color, textAlign: 'right' }}>{doc.st.label}</span>}
+                {doc.st && <span style={{ fontSize: '10px', fontWeight: 700, color: doc.st.color, background: doc.st.bg, padding: '4px 10px', borderRadius: '999px', textAlign: 'right', whiteSpace: 'nowrap' }}>{doc.st.label}</span>}
               </div>
             ))}
           </div>
@@ -377,10 +425,10 @@ function TabProfil() {
 
 function StatCard({ icon, label, value }: { icon: React.ReactNode; label: string; value: string }) {
   return (
-    <div style={{ background: '#fff', border: '1.5px solid #d8d2c8', padding: '14px' }}>
-      <div style={{ color: '#9a7a28', marginBottom: '6px' }}>{icon}</div>
-      <div style={{ fontFamily: 'Cormorant Garamond,serif', fontSize: '26px', color: '#16130e', lineHeight: 1 }}>{value}</div>
-      <div style={{ fontSize: '10px', letterSpacing: '0.5px', textTransform: 'uppercase', color: '#8a8478', marginTop: '4px' }}>{label}</div>
+    <div style={{ ...CARD, padding: '15px 16px' }}>
+      <div style={{ width: '32px', height: '32px', borderRadius: '10px', background: 'rgba(154,122,40,0.11)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: GOLD, marginBottom: '10px' }}>{icon}</div>
+      <div style={{ fontFamily: 'Cormorant Garamond,serif', fontSize: '28px', fontWeight: 600, color: INK, lineHeight: 1 }}>{value}</div>
+      <div style={{ fontSize: '10px', letterSpacing: '0.4px', textTransform: 'uppercase', color: MUTE, marginTop: '4px' }}>{label}</div>
     </div>
   )
 }
@@ -389,26 +437,33 @@ function StatCard({ icon, label, value }: { icon: React.ReactNode; label: string
 //  CARTES (aujourd'hui)
 // ══════════════════════════════════════════════
 
+function CardHeader({ kind }: { kind: 'mad' | 'transfert' }) {
+  const col = kind === 'mad' ? MAD : TRANS
+  return <span style={{ display: 'block', height: '4px', background: `linear-gradient(90deg, ${col}, ${col}66)` }} />
+}
+
 function TransfertCard({ t }: { t: any }) {
   const dossier = one(t.dossier); const client = one(dossier?.client); const veh = one(t.vehicule)
   const [open, setOpen] = useState(false)
   const nbPax = (t.passager_ids?.length) || (dossier?.passagers?.length) || t.nb_passagers || 0
   return (
-    <div style={{ background: '#fff', border: '1.5px solid #d8d2c8', borderLeft: '3px solid #1e3f70', boxShadow: '0 1px 4px rgba(0,0,0,0.05)' }}>
-      <div style={{ padding: '12px 14px 10px' }}>
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '8px' }}>
-          <span style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '11px', fontWeight: 700, letterSpacing: '1px', textTransform: 'uppercase', color: '#1e3f70' }}>
-            → Transfert {t.heure_depart && <span style={{ fontFamily: 'JetBrains Mono,monospace', fontSize: '14px', color: '#16130e' }}>{t.heure_depart.slice(0, 5)}</span>}
-          </span>
+    <div style={CARD}>
+      <CardHeader kind="transfert" />
+      <div style={{ padding: '13px 15px 10px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '8px', marginBottom: '9px' }}>
+          <TypeTag kind="transfert" />
           <StatutChip statut={t.statut} />
         </div>
-        <div style={{ fontFamily: 'Cormorant Garamond,serif', fontSize: '18px', color: '#16130e', lineHeight: 1.15 }}>{client?.nom}</div>
+        <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', gap: '10px' }}>
+          <div style={{ fontFamily: 'Cormorant Garamond,serif', fontSize: '20px', fontWeight: 600, color: INK, lineHeight: 1.1, minWidth: 0 }}>{client?.nom}</div>
+          {t.heure_depart && <div style={{ fontFamily: 'JetBrains Mono,monospace', fontSize: '17px', color: TRANS, fontWeight: 700, flexShrink: 0 }}>{t.heure_depart.slice(0, 5)}</div>}
+        </div>
         <MetaLine dossierNum={dossier?.numero} veh={veh} modele={t.modele_souhaite} tel={client?.telephone} />
       </div>
-      {(t.vol_numero || t.vol_ville || t.vol_terminal) && <div style={{ padding: '0 14px' }}><FlightInfo m={t} /></div>}
-      <div style={{ padding: '0 14px 10px' }}>
-        {t.adresse_depart && <AddressRow label="Départ" addr={t.adresse_depart} />}
-        {t.adresse_arrivee && <AddressRow label="Arrivée" addr={t.adresse_arrivee} />}
+      {(t.vol_numero || t.vol_ville || t.vol_terminal) && <div style={{ padding: '0 15px' }}><FlightInfo m={t} /></div>}
+      <div style={{ padding: '0 15px 8px' }}>
+        {t.adresse_depart && <LocationRow label="Départ" addr={t.adresse_depart} tone="dep" />}
+        {t.adresse_arrivee && <LocationRow label="Arrivée" addr={t.adresse_arrivee} tone="arr" />}
       </div>
       <DetailButton onClick={() => setOpen(true)} nbPax={nbPax} />
       {open && <MissionDetail mission={t} kind="transfert" onClose={() => setOpen(false)} />}
@@ -419,12 +474,12 @@ function TransfertCard({ t }: { t: any }) {
 function DetailButton({ onClick, nbPax }: { onClick: () => void; nbPax: number }) {
   return (
     <button onClick={onClick}
-      style={{ width: '100%', background: '#faf9f7', border: 'none', borderTop: '1px solid #e6e0d6', padding: '11px 14px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', cursor: 'pointer', fontSize: '12px', fontWeight: 600, color: '#16130e' }}>
+      style={{ width: '100%', background: '#faf8f5', border: 'none', borderTop: '1px solid ' + LINE, padding: '12px 15px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', cursor: 'pointer', fontSize: '12px', fontWeight: 700, color: INK }}>
       <span style={{ display: 'flex', alignItems: 'center', gap: '7px' }}>
-        <Info size={14} color="#9a7a28" /> Détails de la mission
-        {nbPax > 0 && <span style={{ display: 'inline-flex', alignItems: 'center', gap: '3px', fontSize: '11px', color: '#5a564e', fontWeight: 500 }}><Users size={12} /> {nbPax}</span>}
+        <Info size={14} color={GOLD} /> Détails de la mission
+        {nbPax > 0 && <span style={{ display: 'inline-flex', alignItems: 'center', gap: '3px', fontSize: '11px', color: SUB, fontWeight: 600, background: '#fff', border: '1px solid ' + LINE, padding: '2px 8px', borderRadius: '999px' }}><Users size={11} /> {nbPax}</span>}
       </span>
-      <ChevronRight size={16} color="#8a8478" />
+      <ChevronRight size={16} color={MUTE} />
     </button>
   )
 }
@@ -436,24 +491,25 @@ function MadCard({ j, onSaved }: { j: any; onSaved: () => void }) {
   const nbPax = (prest?.passager_ids?.length) || (dossier?.passagers?.length) || prest?.nb_passagers || 0
 
   return (
-    <div style={{ background: '#fff', border: '1.5px solid #d8d2c8', borderLeft: '3px solid #a6432a', boxShadow: '0 1px 4px rgba(0,0,0,0.05)' }}>
-      <div style={{ padding: '12px 14px 10px' }}>
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '8px' }}>
-          <span style={{ fontSize: '11px', fontWeight: 700, letterSpacing: '1px', textTransform: 'uppercase', color: '#a6432a' }}>◷ Mise à disposition</span>
+    <div style={CARD}>
+      <CardHeader kind="mad" />
+      <div style={{ padding: '13px 15px 10px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '8px', marginBottom: '9px' }}>
+          <TypeTag kind="mad" />
           <StatutChip statut={prest?.statut ?? 'en_attente'} />
         </div>
-        <div style={{ fontFamily: 'Cormorant Garamond,serif', fontSize: '18px', color: '#16130e', lineHeight: 1.15 }}>{client?.nom}</div>
+        <div style={{ fontFamily: 'Cormorant Garamond,serif', fontSize: '20px', fontWeight: 600, color: INK, lineHeight: 1.1 }}>{client?.nom}</div>
         {(prest?.heure_debut_journee || prest?.heure_fin_journee) && (
-          <div style={{ display: 'flex', alignItems: 'center', gap: '5px', marginTop: '4px', fontSize: '13px', color: '#5a564e' }}>
-            <Clock size={13} style={{ color: '#a6432a' }} />
-            Prévu : {prest.heure_debut_journee?.slice(0, 5)} → {prest.heure_fin_journee?.slice(0, 5)}
+          <div style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', marginTop: '6px', fontSize: '12px', color: MAD, fontWeight: 600, background: MAD_SOFT, padding: '4px 11px', borderRadius: '999px' }}>
+            <Clock size={12} />
+            {prest.heure_debut_journee?.slice(0, 5)} → {prest.heure_fin_journee?.slice(0, 5)}
           </div>
         )}
         <MetaLine dossierNum={dossier?.numero} veh={veh} modele={prest?.modele_souhaite} tel={client?.telephone} />
       </div>
 
       {prest?.adresse_depart && (
-        <div style={{ padding: '0 14px 4px' }}><AddressRow label="Lieu" addr={prest.adresse_depart} /></div>
+        <div style={{ padding: '0 15px 4px' }}><LocationRow label="Lieu" addr={prest.adresse_depart} tone="dep" /></div>
       )}
 
       <HoursEntry j={j} locked={locked} onSaved={onSaved} />
@@ -486,33 +542,33 @@ function HoursEntry({ j, locked, onSaved }: { j: any; locked: boolean; onSaved: 
   }
 
   return (
-    <div style={{ background: locked ? '#f0eeeb' : saisi ? '#eaf4ee' : '#faf9f7', borderTop: '1px solid #e6e0d6', padding: '12px 14px' }}>
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '8px' }}>
-        <span style={{ fontSize: '9px', letterSpacing: '2px', textTransform: 'uppercase', color: '#9a7a28', fontWeight: 700 }}>Mes heures réelles</span>
-        {locked && <span style={{ display: 'inline-flex', alignItems: 'center', gap: '4px', fontSize: '10px', fontWeight: 700, color: '#1e5e3a' }}><ShieldCheck size={12} /> Validé</span>}
+    <div style={{ background: locked ? '#f2f0ec' : saisi ? '#eef6f1' : '#faf8f5', borderTop: '1px solid ' + LINE, padding: '13px 15px' }}>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '9px' }}>
+        <span style={{ fontSize: '9px', letterSpacing: '2px', textTransform: 'uppercase', color: GOLD, fontWeight: 800 }}>Mes heures réelles</span>
+        {locked && <span style={{ display: 'inline-flex', alignItems: 'center', gap: '4px', fontSize: '10px', fontWeight: 700, color: GREEN, background: '#eaf4ee', padding: '3px 9px', borderRadius: '999px' }}><ShieldCheck size={12} /> Validé</span>}
       </div>
       {locked ? (
-        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontFamily: 'JetBrains Mono,monospace', fontSize: '16px', color: '#16130e' }}>
-          <Lock size={14} color="#8a8478" />
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontFamily: 'JetBrains Mono,monospace', fontSize: '16px', color: INK }}>
+          <Lock size={14} color={MUTE} />
           {saisi ? `${debut} → ${fin}` : 'Non saisies'}
-          {saisi && <span style={{ fontFamily: 'inherit', fontSize: '12px', color: '#1e5e3a', fontWeight: 600, marginLeft: 'auto' }}>{j.heures_reelles ?? 0}h{(j.heures_sup ?? 0) > 0 ? ` · +${j.heures_sup}h sup` : ''}</span>}
+          {saisi && <span style={{ fontFamily: 'inherit', fontSize: '12px', color: GREEN, fontWeight: 600, marginLeft: 'auto' }}>{j.heures_reelles ?? 0}h{(j.heures_sup ?? 0) > 0 ? ` · +${j.heures_sup}h sup` : ''}</span>}
         </div>
       ) : (
         <>
           <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
             <input type="time" value={debut} onChange={e => setDebut(e.target.value)} aria-label="Heure de début"
-              style={{ flex: 1, background: '#fff', border: '1.5px solid #b8b0a4', padding: '11px', fontSize: '16px', fontFamily: 'JetBrains Mono,monospace', textAlign: 'center', outline: 'none' }} />
-            <span style={{ color: '#8a8478' }}>→</span>
+              style={{ flex: 1, background: '#fff', border: '1px solid #c9c2b6', borderRadius: '11px', padding: '12px', fontSize: '16px', fontFamily: 'JetBrains Mono,monospace', textAlign: 'center', outline: 'none', color: INK }} />
+            <span style={{ color: MUTE }}>→</span>
             <input type="time" value={fin} onChange={e => setFin(e.target.value)} aria-label="Heure de fin"
-              style={{ flex: 1, background: '#fff', border: '1.5px solid #b8b0a4', padding: '11px', fontSize: '16px', fontFamily: 'JetBrains Mono,monospace', textAlign: 'center', outline: 'none' }} />
+              style={{ flex: 1, background: '#fff', border: '1px solid #c9c2b6', borderRadius: '11px', padding: '12px', fontSize: '16px', fontFamily: 'JetBrains Mono,monospace', textAlign: 'center', outline: 'none', color: INK }} />
           </div>
           {saisi && (
-            <div style={{ marginTop: '8px', fontSize: '12px', color: '#1e5e3a', fontWeight: 600 }}>
+            <div style={{ marginTop: '9px', fontSize: '12px', color: GREEN, fontWeight: 600 }}>
               {j.heures_reelles ?? 0}h réelles{(j.heures_sup ?? 0) > 0 ? ` · +${j.heures_sup}h sup` : ''}
             </div>
           )}
           <button onClick={save} disabled={saving}
-            style={{ width: '100%', marginTop: '10px', background: '#16130e', color: '#fff', border: 'none', padding: '13px', fontSize: '13px', fontWeight: 600, letterSpacing: '0.5px', cursor: 'pointer' }}>
+            style={{ width: '100%', marginTop: '11px', background: saving ? '#4a4438' : 'linear-gradient(155deg,#221b11,#16130e)', color: '#fff', border: 'none', borderRadius: '12px', padding: '14px', fontSize: '13px', fontWeight: 700, letterSpacing: '0.5px', cursor: 'pointer' }}>
             {saving ? 'Enregistrement…' : saisi ? 'Mettre à jour mes heures' : 'Enregistrer mes heures'}
           </button>
         </>
@@ -524,12 +580,14 @@ function HoursEntry({ j, locked, onSaved }: { j: any; locked: boolean; onSaved: 
 // Bloc vol / train
 function FlightInfo({ m }: { m: any }) {
   return (
-    <div style={{ background: '#e8eef8', border: '1px solid rgba(30,63,112,0.2)', borderLeft: '3px solid #1e3f70', padding: '8px 10px', margin: '2px 0 8px', display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
-      <Plane size={15} style={{ color: '#1e3f70' }} />
-      {m.vol_numero && <span style={{ fontFamily: 'JetBrains Mono,monospace', fontSize: '13px', fontWeight: 700, color: '#1e3f70' }}>{m.vol_numero}</span>}
-      {m.vol_heure && <span style={{ fontFamily: 'JetBrains Mono,monospace', fontSize: '13px', color: '#16130e' }}>{m.vol_heure.slice(0, 5)}</span>}
-      {m.vol_terminal && <span style={{ fontSize: '12px', color: '#5a564e' }}>{m.vol_terminal}</span>}
-      {m.vol_ville && <span style={{ fontSize: '12px', color: '#5a564e' }}>{m.vol_arrivee ? 'de' : 'vers'} {m.vol_ville}</span>}
+    <div style={{ background: TRANS_SOFT, border: '1px solid rgba(30,63,112,0.18)', borderRadius: RS, padding: '9px 12px', margin: '2px 0 8px', display: 'flex', alignItems: 'center', gap: '9px', flexWrap: 'wrap' }}>
+      <span style={{ width: '28px', height: '28px', borderRadius: '999px', background: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+        <Plane size={15} style={{ color: TRANS }} />
+      </span>
+      {m.vol_numero && <span style={{ fontFamily: 'JetBrains Mono,monospace', fontSize: '13px', fontWeight: 700, color: TRANS }}>{m.vol_numero}</span>}
+      {m.vol_heure && <span style={{ fontFamily: 'JetBrains Mono,monospace', fontSize: '13px', color: INK }}>{m.vol_heure.slice(0, 5)}</span>}
+      {m.vol_terminal && <span style={{ fontSize: '12px', color: SUB }}>{m.vol_terminal}</span>}
+      {m.vol_ville && <span style={{ fontSize: '12px', color: SUB }}>{m.vol_arrivee ? 'de' : 'vers'} {m.vol_ville}</span>}
     </div>
   )
 }
@@ -539,15 +597,15 @@ function PassagersList({ passagers, assignedIds }: { passagers: any[]; assignedI
   const list = (assignedIds?.length ? passagers.filter(p => assignedIds.includes(p.id)) : passagers)
   if (!list?.length) return null
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
       {list.map(p => (
-        <div key={p.id} style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '8px 10px', background: '#faf9f7', border: '1px solid #e6e0d6' }}>
-          <span style={{ fontSize: '16px' }}>{flag(p.nationalite) || '👤'}</span>
+        <div key={p.id} style={{ display: 'flex', alignItems: 'center', gap: '11px', padding: '9px 11px', background: '#faf8f5', border: '1px solid ' + LINE, borderRadius: RS }}>
+          <span style={{ width: '34px', height: '34px', borderRadius: '999px', background: '#fff', border: '1px solid ' + LINE, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '18px', flexShrink: 0 }}>{flag(p.nationalite) || '👤'}</span>
           <div style={{ flex: 1, minWidth: 0 }}>
-            <div style={{ fontSize: '14px', fontWeight: 500, color: '#16130e' }}>{p.nom}</div>
-            {p.nb_bagages > 0 && <div style={{ fontSize: '11px', color: '#8a8478' }}>{p.nb_bagages} bagage{p.nb_bagages > 1 ? 's' : ''}</div>}
+            <div style={{ fontSize: '14px', fontWeight: 600, color: INK }}>{p.nom}</div>
+            {p.nb_bagages > 0 && <div style={{ fontSize: '11px', color: MUTE, marginTop: '1px' }}>🧳 {p.nb_bagages} bagage{p.nb_bagages > 1 ? 's' : ''}</div>}
           </div>
-          {p.telephone && <a href={`tel:${p.telephone}`} style={{ color: '#1e5e3a' }}><Phone size={16} /></a>}
+          {p.telephone && <a href={`tel:${p.telephone}`} style={{ width: '38px', height: '38px', borderRadius: '999px', background: '#eaf4ee', display: 'flex', alignItems: 'center', justifyContent: 'center', color: GREEN, flexShrink: 0 }}><Phone size={16} /></a>}
         </div>
       ))}
     </div>
@@ -566,69 +624,97 @@ function MissionDetail({ mission, kind, onClose, onSaved }: { mission: any; kind
   const veh = one(mission.vehicule)
   const locked = !!dossier?.valide_at
   const passagers = dossier?.passagers ?? []
-  const col = isMad ? '#a6432a' : '#1e3f70'
+  const col = isMad ? MAD : TRANS
   const notes = prest?.notes || dossier?.notes
   const nbBagages = prest?.nb_bagages ?? mission.nb_bagages ?? 0
+  const dateStr = format(parseISO(isMad ? mission.date : mission.date_debut), 'EEE d MMM yyyy', { locale: fr })
+  const heureStr = isMad
+    ? (prest?.heure_debut_journee ? `${prest.heure_debut_journee.slice(0, 5)} → ${prest.heure_fin_journee?.slice(0, 5) ?? ''}` : null)
+    : (mission.heure_depart?.slice(0, 5) ?? null)
 
   return (
-    <div style={{ position: 'fixed', inset: 0, background: '#ede9e2', zIndex: 60, display: 'flex', flexDirection: 'column' }}>
-      {/* Barre */}
-      <div style={{ background: '#16130e', padding: 'max(env(safe-area-inset-top), 12px) 16px 12px', display: 'flex', alignItems: 'center', gap: '10px', position: 'sticky', top: 0 }}>
-        <button onClick={onClose} aria-label="Fermer" style={{ background: 'none', border: 'none', color: '#fff', cursor: 'pointer', display: 'flex' }}><ArrowLeft size={20} /></button>
-        <div style={{ flex: 1 }}>
-          <div style={{ fontSize: '10px', letterSpacing: '2px', textTransform: 'uppercase', color: col === '#a6432a' ? '#d98b73' : '#8fb0e0', fontWeight: 700 }}>{isMad ? 'Mise à disposition' : 'Transfert'}</div>
-          <div style={{ fontSize: '14px', fontWeight: 600, color: '#fff' }}>{client?.nom ?? '—'}</div>
+    <div style={{ position: 'fixed', inset: 0, background: CREAM, zIndex: 60, display: 'flex', flexDirection: 'column' }}>
+      {/* En-tête riche */}
+      <div style={{ background: 'linear-gradient(160deg,#241d12 0%,#16130e 100%)', padding: 'max(env(safe-area-inset-top), 12px) 18px 20px', position: 'sticky', top: 0, borderBottom: `3px solid ${col}` }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '14px' }}>
+          <button onClick={onClose} aria-label="Fermer" style={{ background: 'rgba(255,255,255,0.1)', border: 'none', borderRadius: '10px', color: '#fff', cursor: 'pointer', display: 'flex', padding: '9px' }}><ArrowLeft size={19} /></button>
+          <StatutChip statut={isMad ? (prest?.statut ?? 'en_attente') : mission.statut} />
         </div>
-        <StatutChip statut={isMad ? (prest?.statut ?? 'en_attente') : mission.statut} />
+        <div style={{ fontSize: '10px', letterSpacing: '2px', textTransform: 'uppercase', color: isMad ? '#e0a58f' : '#9fbde8', fontWeight: 800, marginBottom: '4px' }}>{isMad ? 'Mise à disposition' : 'Transfert'}</div>
+        <div style={{ fontFamily: 'Cormorant Garamond,serif', fontSize: '27px', fontWeight: 600, color: '#fff', lineHeight: 1.1 }}>{client?.nom ?? '—'}</div>
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', marginTop: '13px' }}>
+          <span style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', fontSize: '12px', color: '#e8e2d6', background: 'rgba(255,255,255,0.08)', padding: '6px 12px', borderRadius: '999px', textTransform: 'capitalize' }}>
+            <CalendarDays size={13} style={{ color: '#c9a457' }} /> {dateStr}
+          </span>
+          {heureStr && (
+            <span style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', fontSize: '12px', fontFamily: 'JetBrains Mono,monospace', color: '#fff', background: 'rgba(255,255,255,0.08)', padding: '6px 12px', borderRadius: '999px' }}>
+              <Clock size={13} style={{ color: '#c9a457' }} /> {heureStr}
+            </span>
+          )}
+          {dossier?.numero && (
+            <span style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', fontSize: '12px', fontFamily: 'JetBrains Mono,monospace', color: '#c9a457', background: 'rgba(201,164,87,0.12)', padding: '6px 12px', borderRadius: '999px' }}>
+              {dossier.numero}
+            </span>
+          )}
+        </div>
       </div>
 
-      <div style={{ flex: 1, overflowY: 'auto', padding: '14px 14px calc(24px + env(safe-area-inset-bottom))' }}>
+      <div style={{ flex: 1, overflowY: 'auto', padding: '16px 14px calc(28px + env(safe-area-inset-bottom))' }}>
+        {/* Appel client — action rapide */}
+        {client?.telephone && (
+          <a href={`tel:${client.telephone}`}
+            style={{ display: 'flex', alignItems: 'center', gap: '11px', textDecoration: 'none', ...CARD, padding: '14px 16px', marginBottom: '16px' }}>
+            <span style={{ width: '42px', height: '42px', borderRadius: '999px', background: '#eaf4ee', display: 'flex', alignItems: 'center', justifyContent: 'center', color: GREEN, flexShrink: 0 }}><Phone size={19} /></span>
+            <span style={{ flex: 1, minWidth: 0 }}>
+              <span style={{ display: 'block', fontSize: '13px', fontWeight: 700, color: INK }}>Appeler le client</span>
+              <span style={{ display: 'block', fontSize: '12px', color: SUB, fontFamily: 'JetBrains Mono,monospace' }}>{client.telephone}</span>
+            </span>
+            <ChevronRight size={18} color={MUTE} />
+          </a>
+        )}
+
         {/* Infos clés */}
-        <Section title="Informations">
-          <InfoRow label="Dossier" value={dossier?.numero} mono />
-          <InfoRow label="Date" value={format(parseISO(isMad ? mission.date : mission.date_debut), 'EEEE d MMMM yyyy', { locale: fr })} cap />
-          {isMad
-            ? <InfoRow label="Horaires prévus" value={prest?.heure_debut_journee ? `${prest.heure_debut_journee.slice(0,5)} → ${prest.heure_fin_journee?.slice(0,5) ?? ''}` : '—'} />
-            : <InfoRow label="Heure" value={mission.heure_depart?.slice(0, 5) ?? '—'} />}
+        <Section title="Informations" icon={<Info size={13} />}>
           <InfoRow label="Véhicule" value={veh ? `${veh.marque} ${veh.modele} · ${veh.immatriculation}` : (isMad ? prest?.modele_souhaite : mission.modele_souhaite) ?? '—'} />
-          {client?.telephone && (
-            <div style={{ paddingTop: '4px' }}>
-              <a href={`tel:${client.telephone}`} style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', fontSize: '13px', color: '#1e5e3a', textDecoration: 'none', fontWeight: 600 }}><Phone size={14} /> Appeler le client · {client.telephone}</a>
-            </div>
-          )}
+          {isMad
+            ? <InfoRow label="Horaires prévus" value={heureStr ?? '—'} mono />
+            : <InfoRow label="Heure de départ" value={mission.heure_depart?.slice(0, 5) ?? '—'} mono />}
+          <InfoRow label="Dossier" value={dossier?.numero} mono last />
         </Section>
 
         {/* Vol / train */}
         {(mission.vol_numero || mission.vol_ville || mission.vol_terminal) && (
-          <Section title="Vol / Train"><FlightInfo m={mission} /></Section>
+          <Section title="Vol / Train" icon={<Plane size={13} />}><FlightInfo m={mission} /></Section>
         )}
 
         {/* Itinéraire */}
-        <Section title="Itinéraire">
+        <Section title="Itinéraire" icon={<MapPin size={13} />}>
           {isMad
-            ? (prest?.adresse_depart ? <AddressRow label="Lieu" addr={prest.adresse_depart} /> : <Empty>Mise à disposition</Empty>)
+            ? (prest?.adresse_depart ? <LocationRow label="Lieu" addr={prest.adresse_depart} tone="dep" /> : <Empty>Mise à disposition</Empty>)
             : <>
-                {mission.adresse_depart && <AddressRow label="Départ" addr={mission.adresse_depart} />}
-                {mission.adresse_arrivee && <AddressRow label="Arrivée" addr={mission.adresse_arrivee} />}
+                {mission.adresse_depart && <LocationRow label="Départ" addr={mission.adresse_depart} tone="dep" />}
+                {mission.adresse_arrivee && <LocationRow label="Arrivée" addr={mission.adresse_arrivee} tone="arr" />}
               </>}
         </Section>
 
         {/* Passagers */}
-        <Section title={`Passagers${nbBagages ? ` · 🧳 ${nbBagages} bagage${nbBagages > 1 ? 's' : ''}` : ''}`}>
+        <Section title={`Passagers${nbBagages ? ` · 🧳 ${nbBagages}` : ''}`} icon={<Users size={13} />}>
           {passagers.length > 0
             ? <PassagersList passagers={passagers} assignedIds={isMad ? prest?.passager_ids : mission.passager_ids} />
             : <Empty>{(isMad ? prest?.nb_passagers : mission.nb_passagers) || 1} passager(s) — non nommés</Empty>}
         </Section>
 
         {/* Notes */}
-        {notes && <Section title="Instructions"><div style={{ fontSize: '13px', color: '#5a564e', lineHeight: 1.6, fontStyle: 'italic', background: '#faf9f7', border: '1px solid #e6e0d6', borderLeft: '3px solid #9a7a28', padding: '10px 12px' }}>{notes}</div></Section>}
+        {notes && (
+          <Section title="Instructions" icon={<Info size={13} />}>
+            <div style={{ fontSize: '13px', color: SUB, lineHeight: 1.6, fontStyle: 'italic', background: '#fdf9ef', border: '1px solid rgba(154,122,40,0.2)', borderLeft: `3px solid ${GOLD}`, borderRadius: RS, padding: '11px 13px' }}>{notes}</div>
+          </Section>
+        )}
 
         {/* Heures (MAD) */}
         {isMad && (
-          <Section title="Heures réelles">
-            <div style={{ border: '1px solid #e6e0d6' }}>
-              <HoursEntry j={mission} locked={locked} onSaved={() => onSaved?.()} />
-            </div>
+          <Section title="Heures réelles" icon={<Clock size={13} />} flush>
+            <HoursEntry j={mission} locked={locked} onSaved={() => onSaved?.()} />
           </Section>
         )}
       </div>
@@ -636,39 +722,41 @@ function MissionDetail({ mission, kind, onClose, onSaved }: { mission: any; kind
   )
 }
 
-function Section({ title, children }: { title: string; children: React.ReactNode }) {
+function Section({ title, icon, children, flush }: { title: string; icon?: React.ReactNode; children: React.ReactNode; flush?: boolean }) {
   return (
     <div style={{ marginBottom: '16px' }}>
-      <div style={{ fontSize: '9px', fontWeight: 700, letterSpacing: '2px', textTransform: 'uppercase', color: '#9a7a28', marginBottom: '8px' }}>{title}</div>
-      <div style={{ background: '#fff', border: '1.5px solid #d8d2c8', padding: '12px 14px' }}>{children}</div>
+      <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '9px', fontWeight: 800, letterSpacing: '2px', textTransform: 'uppercase', color: GOLD, marginBottom: '9px', paddingLeft: '2px' }}>
+        {icon}{title}
+      </div>
+      <div style={{ ...CARD, padding: flush ? 0 : '13px 15px' }}>{children}</div>
     </div>
   )
 }
-function InfoRow({ label, value, mono, cap }: { label: string; value?: string | null; mono?: boolean; cap?: boolean }) {
+function InfoRow({ label, value, mono, cap, last }: { label: string; value?: string | null; mono?: boolean; cap?: boolean; last?: boolean }) {
   return (
-    <div style={{ display: 'flex', justifyContent: 'space-between', gap: '12px', padding: '5px 0' }}>
-      <span style={{ fontSize: '11px', color: '#8a8478', textTransform: 'uppercase', letterSpacing: '0.5px', flexShrink: 0 }}>{label}</span>
-      <span style={{ fontSize: '13px', color: '#16130e', textAlign: 'right', fontFamily: mono ? 'JetBrains Mono,monospace' : 'inherit', textTransform: cap ? 'capitalize' : 'none' }}>{value ?? '—'}</span>
+    <div style={{ display: 'flex', justifyContent: 'space-between', gap: '12px', padding: '9px 0', borderBottom: last ? 'none' : '1px solid ' + LINE }}>
+      <span style={{ fontSize: '11px', color: MUTE, textTransform: 'uppercase', letterSpacing: '0.5px', flexShrink: 0 }}>{label}</span>
+      <span style={{ fontSize: '13px', fontWeight: 600, color: INK, textAlign: 'right', fontFamily: mono ? 'JetBrains Mono,monospace' : 'inherit', textTransform: cap ? 'capitalize' : 'none' }}>{value ?? '—'}</span>
     </div>
   )
 }
 function Empty({ children }: { children: React.ReactNode }) {
-  return <div style={{ fontSize: '13px', color: '#8a8478', fontStyle: 'italic' }}>{children}</div>
+  return <div style={{ fontSize: '13px', color: MUTE, fontStyle: 'italic' }}>{children}</div>
 }
 
 function MetaLine({ dossierNum, veh, modele, tel }: { dossierNum?: string; veh?: any; modele?: string | null; tel?: string | null }) {
   return (
-    <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap', marginTop: '6px' }}>
-      {dossierNum && <span style={{ fontFamily: 'JetBrains Mono,monospace', fontSize: '10px', color: '#9a7a28' }}>{dossierNum}</span>}
+    <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flexWrap: 'wrap', marginTop: '8px' }}>
+      {dossierNum && <span style={{ fontFamily: 'JetBrains Mono,monospace', fontSize: '10px', color: GOLD }}>{dossierNum}</span>}
       {(veh || modele) && (
-        <span style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '11px', color: '#5a564e' }}>
-          <Car size={12} style={{ color: '#8a8478' }} />
+        <span style={{ display: 'flex', alignItems: 'center', gap: '5px', fontSize: '11px', color: SUB }}>
+          <Car size={12} style={{ color: MUTE }} />
           {veh ? `${veh.marque} ${veh.modele}` : modele}
         </span>
       )}
       {tel && (
-        <a href={`tel:${tel}`} style={{ display: 'inline-flex', alignItems: 'center', gap: '4px', fontSize: '11px', color: '#1e5e3a', textDecoration: 'none', fontWeight: 600 }}>
-          <Phone size={12} /> Appeler le client
+        <a href={`tel:${tel}`} style={{ display: 'inline-flex', alignItems: 'center', gap: '5px', fontSize: '11px', color: GREEN, textDecoration: 'none', fontWeight: 700, background: '#eaf4ee', padding: '4px 10px', borderRadius: '999px' }}>
+          <Phone size={11} /> Appeler
         </a>
       )}
     </div>
