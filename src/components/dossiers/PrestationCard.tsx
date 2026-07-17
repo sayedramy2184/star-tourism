@@ -9,6 +9,7 @@ import toast from 'react-hot-toast'
 import { calcStatutClient, STATUT_MAP, STATUTS_MANUELS, type PrestationStatut } from '@/lib/statut'
 import { BoutonAffecterVehicule } from '@/components/dossiers/DossierActions'
 import HeuresReellesModal from '@/components/dossiers/HeuresReellesModal'
+import ModifierPrestationModal from '@/components/dossiers/ModifierPrestationModal'
 import AffecterSousTraitantModal from '@/components/dossiers/AffecterSousTraitantModal'
 import FlightBlock from '@/components/dossiers/FlightBlock'
 import { flag } from '@/components/dossiers/PassagersDossier'
@@ -314,6 +315,7 @@ export default function PrestationCard({ p, dossierId, passagers = [] }: { p: an
               tarifJournalier={p.tarif_journalier_ht ?? 0}
             />
           )}
+          <ModifierPrestationModal p={p} />
           <StatutSelector prestation={p} />
         </div>
       </div>
