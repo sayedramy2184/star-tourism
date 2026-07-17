@@ -65,8 +65,10 @@ export default function Sidebar({ profile, mobileOpen = false, onClose }: Sideba
   const initials = `${profile.prenom[0]}${profile.nom[0]}`.toUpperCase()
 
   return (
-    <aside className={clsx(
-      'fixed top-0 left-0 bottom-0 w-[232px] bg-noir flex flex-col z-50',
+    <aside
+      style={{ background: 'linear-gradient(180deg, #221b12 0%, #16130e 100%)' }}
+      className={clsx(
+      'fixed top-0 left-0 bottom-0 w-[232px] flex flex-col z-50',
       'transition-transform duration-200 ease-out md:translate-x-0',
       mobileOpen ? 'translate-x-0' : '-translate-x-full'
     )}>
@@ -82,7 +84,7 @@ export default function Sidebar({ profile, mobileOpen = false, onClose }: Sideba
             STAR TOURISM
           </span>
         </div>
-        <div className="text-[8px] tracking-[3px] text-white/25 uppercase mt-1.5">
+        <div className="text-[8px] tracking-[3px] text-[#c9a457]/70 uppercase mt-1.5">
           {profile.company?.nom ?? 'Star Tourism Services'}
         </div>
       </div>
@@ -91,7 +93,7 @@ export default function Sidebar({ profile, mobileOpen = false, onClose }: Sideba
       <nav className="flex-1 overflow-y-auto py-2">
         {navSections.map(section => (
           <div key={section.label} className="py-4">
-            <div className="px-5 mb-1 text-[8px] tracking-[3px] text-white/25 uppercase font-semibold">
+            <div className="px-5 mb-1.5 text-[9px] tracking-[2.5px] text-white/45 uppercase font-semibold">
               {section.label}
             </div>
             {section.items.map(item => {
@@ -107,7 +109,7 @@ export default function Sidebar({ profile, mobileOpen = false, onClose }: Sideba
                     active && 'nav-item-active'
                   )}
                 >
-                  <Icon size={13} className="flex-shrink-0 opacity-70" />
+                  <Icon size={14} className="flex-shrink-0 opacity-90" />
                   <span>{item.label}</span>
                   {item.badge && (
                     <span className="ml-auto bg-or text-white text-[9px] font-bold
@@ -134,11 +136,11 @@ export default function Sidebar({ profile, mobileOpen = false, onClose }: Sideba
             <div className="text-xs text-white font-medium truncate">
               {profile.prenom} {profile.nom}
             </div>
-            <div className="text-[10px] text-white/35 capitalize">{profile.role}</div>
+            <div className="text-[10px] text-white/55 capitalize">{profile.role}</div>
           </div>
           <button
             onClick={handleLogout}
-            className="text-white/25 hover:text-white/70 transition-colors p-1"
+            className="text-white/50 hover:text-white transition-colors p-1"
             title="Déconnexion"
           >
             <LogOut size={14} />
