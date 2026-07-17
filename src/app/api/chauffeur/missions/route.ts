@@ -30,10 +30,13 @@ export async function GET(req: NextRequest) {
       id, date, jour_semaine, tarif_ht, note,
       heure_debut_reelle, heure_fin_reelle, heures_reelles, heures_sup, montant_total,
       vehicule:vehicules(marque, modele, immatriculation),
+      vehicule_ext:vehicules_ext(marque, modele, immatriculation),
       prestation:prestations(
         id, adresse_depart, heure_debut_journee, heure_fin_journee, modele_souhaite, statut, passager_ids,
         notes, nb_passagers, nb_bagages,
         st_chauffeur_nom, st_chauffeur_telephone, st_vehicule_marque, st_vehicule_modele, st_vehicule_immat,
+        vehicule:vehicules(marque, modele, immatriculation),
+        vehicule_ext:vehicules_ext(marque, modele, immatriculation),
         dossier:dossiers(numero, valide_at, notes, client:clients(nom, telephone),
           passagers(id, nom, nationalite, telephone, nb_bagages))
       )
@@ -51,6 +54,7 @@ export async function GET(req: NextRequest) {
       notes, nb_passagers, nb_bagages, vol_numero, vol_heure, vol_ville, vol_terminal, vol_arrivee,
       st_chauffeur_nom, st_chauffeur_telephone, st_vehicule_marque, st_vehicule_modele, st_vehicule_immat,
       vehicule:vehicules(marque, modele, immatriculation),
+      vehicule_ext:vehicules_ext(marque, modele, immatriculation),
       dossier:dossiers(numero, valide_at, notes, client:clients(nom, telephone),
         passagers(id, nom, nationalite, telephone, nb_bagages))
     `)

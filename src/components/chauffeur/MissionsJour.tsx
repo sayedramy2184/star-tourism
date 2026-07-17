@@ -482,7 +482,8 @@ function CardHeader({ kind }: { kind: 'mad' | 'transfert' }) {
 }
 
 function TransfertCard({ t }: { t: any }) {
-  const dossier = one(t.dossier); const client = one(dossier?.client); const veh = one(t.vehicule)
+  const dossier = one(t.dossier); const client = one(dossier?.client)
+  const veh = one(t.vehicule) || one(t.vehicule_ext)
   const [open, setOpen] = useState(false)
   const nbPax = (t.passager_ids?.length) || (dossier?.passagers?.length) || t.nb_passagers || 0
   return (
@@ -524,7 +525,8 @@ function DetailButton({ onClick, nbPax }: { onClick: () => void; nbPax: number }
 }
 
 function MadCard({ j, onSaved }: { j: any; onSaved: () => void }) {
-  const prest = one(j.prestation); const dossier = one(prest?.dossier); const client = one(dossier?.client); const veh = one(j.vehicule)
+  const prest = one(j.prestation); const dossier = one(prest?.dossier); const client = one(dossier?.client)
+  const veh = one(j.vehicule) || one(j.vehicule_ext) || one(prest?.vehicule) || one(prest?.vehicule_ext)
   const locked = !!dossier?.valide_at   // dossier validé par le dispatch → heures figées
   const [open, setOpen] = useState(false)
   const nbPax = (prest?.passager_ids?.length) || (dossier?.passagers?.length) || prest?.nb_passagers || 0
@@ -660,7 +662,7 @@ function MissionDetail({ mission, kind, onClose, onSaved }: { mission: any; kind
   const prest = isMad ? one(mission.prestation) : mission
   const dossier = one(prest?.dossier ?? mission.dossier)
   const client = one(dossier?.client)
-  const veh = one(mission.vehicule)
+  const veh = one(mission.vehicule) || one(mission.vehicule_ext) || one(prest?.vehicule) || one(prest?.vehicule_ext)
   const locked = !!dossier?.valide_at
   const passagers = dossier?.passagers ?? []
   const col = isMad ? MAD : TRANS

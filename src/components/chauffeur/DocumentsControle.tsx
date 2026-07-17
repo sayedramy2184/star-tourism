@@ -45,24 +45,34 @@ interface DocsData {
 
 type View = 'menu' | 'pick' | 'ordre' | 'attestation' | 'licence'
 
+// Libellé véhicule (flotte interne ou véhicule externe/loueur)
+function vehLabel(v: any): string | null {
+  if (!v) return null
+  const base = [v.marque, v.modele].filter(Boolean).join(' ')
+  return v.immatriculation ? `${base} · ${v.immatriculation}` : (base || null)
+}
+
 function normalize(jours: any[], transferts: any[]): Mission[] {
   const t = transferts.map((x): Mission => {
-    const d = one(x.dossier); const c = one(d?.client); const v = one(x.vehicule)
+    const d = one(x.dossier); const c = one(d?.client)
+    const v = one(x.vehicule) || one(x.vehicule_ext)
     return {
       id: x.id, kind: 'Transfert',
       dossierNum: d?.numero, clientNom: c?.nom,
-      vehicule: v ? `${v.marque} ${v.modele} · ${v.immatriculation}` : (x.modele_souhaite ?? null),
+      vehicule: vehLabel(v) ?? x.modele_souhaite ?? null,
       date: x.date_debut, heureDebut: x.heure_depart?.slice(0, 5) ?? null, heureFin: null,
       adresse: x.adresse_depart ?? null,
       passagers: resolvePax(d, x.passager_ids),
     }
   })
   const m = jours.map((x): Mission => {
-    const p = one(x.prestation); const d = one(p?.dossier); const c = one(d?.client); const v = one(x.vehicule)
+    const p = one(x.prestation); const d = one(p?.dossier); const c = one(d?.client)
+    // Véhicule effectif du jour : jour (interne/externe) sinon prestation (interne/externe)
+    const v = one(x.vehicule) || one(x.vehicule_ext) || one(p?.vehicule) || one(p?.vehicule_ext)
     return {
       id: x.id, kind: 'Mise à disposition',
       dossierNum: d?.numero, clientNom: c?.nom,
-      vehicule: v ? `${v.marque} ${v.modele} · ${v.immatriculation}` : (p?.modele_souhaite ?? null),
+      vehicule: vehLabel(v) ?? p?.modele_souhaite ?? null,
       date: x.date, heureDebut: p?.heure_debut_journee?.slice(0, 5) ?? null, heureFin: p?.heure_fin_journee?.slice(0, 5) ?? null,
       adresse: p?.adresse_depart ?? null,
       passagers: resolvePax(d, p?.passager_ids),
