@@ -182,11 +182,16 @@ export default function PrestationCard({ p, dossierId, passagers = [] }: { p: an
   const typeColor = p.type === 'mad' ? '#a6432a' : '#1e3f70'
   const typeLabel = p.type === 'mad' ? 'Mise à disposition' : 'Transfert'
   const jours     = p.jours ?? []
-  const joursManquants = jours.filter((j: any) => !j.chauffeur_id).length
+  // Jour « couvert » = chauffeur OU sous-traitant (au jour), OU prestation entièrement sous-traitée
+  const joursManquants = p.sous_traitant_id ? 0 : jours.filter((j: any) => !j.chauffeur_id && !j.sous_traitant_id).length
   const [chauffeurs, setChauffeurs] = useState<any[]>([])
   const [vehicules, setVehicules] = useState<any[]>([])
+  const [sousTraitants, setSousTraitants] = useState<any[]>([])
   const [joursState, setJoursState] = useState<Record<string, string>>(
     Object.fromEntries(jours.map((j: any) => [j.id, j.chauffeur_id ?? '']))
+  )
+  const [joursST, setJoursST] = useState<Record<string, string>>(
+    Object.fromEntries(jours.map((j: any) => [j.id, j.sous_traitant_id ?? '']))
   )
   const [joursVeh, setJoursVeh] = useState<Record<string, string>>(
     Object.fromEntries(jours.map((j: any) => [j.id, j.vehicule_id ?? '']))
@@ -207,6 +212,7 @@ export default function PrestationCard({ p, dossierId, passagers = [] }: { p: an
   useEffect(() => {
     fetch('/api/chauffeurs').then(r => r.json()).then(d => setChauffeurs(d.data ?? []))
     fetch('/api/vehicules').then(r => r.json()).then(d => setVehicules(d.data ?? []))
+    fetch('/api/sous-traitants').then(r => r.json()).then(d => setSousTraitants(d.data ?? []))
   }, [])
 
   // Resync depuis les props quand la prestation est rechargée
@@ -223,16 +229,21 @@ export default function PrestationCard({ p, dossierId, passagers = [] }: { p: an
     })
   }, [p.sous_traitant_id])
 
-  async function affecterChauffeurJour(jourId: string, chauffeurId: string) {
+  // Affectation d'un jour à un chauffeur interne OU un sous-traitant (l'un exclut l'autre)
+  // value : '' | 'ch:<id>' | 'st:<id>'
+  async function affecterJour(jourId: string, value: string) {
+    const chauffeur_id     = value.startsWith('ch:') ? value.slice(3) : null
+    const sous_traitant_id = value.startsWith('st:') ? value.slice(3) : null
     setSavingJour(jourId)
-    setJoursState(prev => ({ ...prev, [jourId]: chauffeurId }))
+    setJoursState(prev => ({ ...prev, [jourId]: chauffeur_id ?? '' }))
+    setJoursST(prev => ({ ...prev, [jourId]: sous_traitant_id ?? '' }))
     try {
       await fetch(`/api/jours-mad/${jourId}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ chauffeur_id: chauffeurId || null }),
+        body: JSON.stringify({ chauffeur_id, sous_traitant_id }),
       })
-      toast.success('Chauffeur affecté !')
+      toast.success('Affectation mise à jour')
       router.push(`/dashboard/dossiers/${dossierId}`)
     } catch { toast.error('Erreur') }
     finally { setSavingJour(null) }
@@ -471,12 +482,16 @@ export default function PrestationCard({ p, dossierId, passagers = [] }: { p: an
               Détail journalier
             </div>
             <div style={{ display:'grid', gridTemplateColumns:'84px 1fr 1fr 74px', gap:'6px', padding:'4px 8px', background:'#faf9f7', marginBottom:'2px' }}>
-              {['Date','Chauffeur','Véhicule','Tarif HT'].map(h => (
+              {['Date','Affecté à','Véhicule','Tarif HT'].map(h => (
                 <div key={h} style={{ fontSize:'8px', fontWeight:600, letterSpacing:'1.5px', textTransform:'uppercase', color:'#8a8478' }}>{h}</div>
               ))}
             </div>
             {jours.map((j: any) => {
-              const missing = !j.chauffeur_id
+              const chJour = joursState[j.id] ?? ''
+              const stJour = joursST[j.id] ?? ''
+              const affVal = stJour ? `st:${stJour}` : chJour ? `ch:${chJour}` : ''
+              // « manquant » = ni chauffeur ni ST au jour, et prestation non sous-traitée
+              const missing = !chJour && !stJour && !p.sous_traitant_id
               // Véhicule effectif du jour : celui du jour sinon celui de la prestation
               const vehJour = joursVeh[j.id] ?? ''
               const overridden = !!vehJour && vehJour !== (p.vehicule?.id ?? '')
@@ -492,19 +507,29 @@ export default function PrestationCard({ p, dossierId, passagers = [] }: { p: an
                       {j.jour_semaine} {format(new Date(j.date),'dd/MM',{locale:fr})}
                     </span>
                     <select
-                      value={joursState[j.id] ?? ''}
-                      onChange={e => affecterChauffeurJour(j.id, e.target.value)}
+                      value={affVal}
+                      onChange={e => affecterJour(j.id, e.target.value)}
                       disabled={savingJour === j.id}
+                      title={stJour ? 'Jour sous-traité' : ''}
                       style={{
-                        background: missing ? '#fff8e8' : '#fff',
-                        border: `1px solid ${missing ? '#9a7a28' : '#b8b0a4'}`,
+                        background: stJour ? '#f0ebfa' : missing ? '#fff8e8' : '#fff',
+                        border: `1px solid ${stJour ? '#7a2a8a' : missing ? '#9a7a28' : '#b8b0a4'}`,
                         padding:'4px 8px', fontSize:'11px', color:'#16130e',
                         outline:'none', width:'100%', cursor:'pointer',
                       }}>
-                      <option value="">— Non affecté —</option>
-                      {chauffeurs.map((c: any) => (
-                        <option key={c.id} value={c.id}>{c.prenom} {c.nom}</option>
-                      ))}
+                      <option value="">{p.sous_traitant_id ? '↳ ST prestation' : '— Non affecté —'}</option>
+                      <optgroup label="Chauffeurs">
+                        {chauffeurs.map((c: any) => (
+                          <option key={c.id} value={`ch:${c.id}`}>{c.prenom} {c.nom}</option>
+                        ))}
+                      </optgroup>
+                      {sousTraitants.length > 0 && (
+                        <optgroup label="Sous-traitants">
+                          {sousTraitants.map((s: any) => (
+                            <option key={s.id} value={`st:${s.id}`}>🤝 {s.societe}</option>
+                          ))}
+                        </optgroup>
+                      )}
                     </select>
                     <select
                       value={vehJour}

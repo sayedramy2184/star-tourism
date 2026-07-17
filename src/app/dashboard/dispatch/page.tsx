@@ -25,9 +25,11 @@ function effectif(m: any): PrestationStatut {
   }) as PrestationStatut
 }
 function aAffecter(m: any): boolean {
+  if (m.sous_traitant_id) return false                 // prestation entièrement sous-traitée
   if (m.type === 'transfert') return !m.chauffeur_id && !m.sous_traitant_id
   const jours = m.jours ?? []
   if (jours.length === 0) return true
+  // un jour est couvert par un chauffeur OU un sous-traitant (au jour) OU la sous-traitance de la prestation
   return jours.some((j: any) => !j.chauffeur_id && !j.sous_traitant_id)
 }
 

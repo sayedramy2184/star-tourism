@@ -27,6 +27,7 @@ interface JourMad {
     id: string; statut: string | null; date_debut: string | null; date_fin: string | null
     heure_debut_journee: string | null; heure_fin_journee: string | null
     adresse_depart: string | null; modele_souhaite: string | null
+    sous_traitant_id: string | null
     vehicule: { id: string; marque: string; modele: string; immatriculation: string } | null
     dossier: { id: string; numero: string; client: { nom: string } }
   }
@@ -35,6 +36,12 @@ interface JourMad {
 // Véhicule effectif d'un jour MAD : celui affecté au jour, sinon celui de la prestation
 function jourVehiculeId(j: JourMad): string | null {
   return j.vehicule_id ?? j.prestation?.vehicule?.id ?? null
+}
+
+// Un jour est « affecté » s'il a un chauffeur OU un sous-traitant (au jour),
+// OU si toute la prestation est sous-traitée. Sinon il est « à affecter ».
+function jourAffecte(j: JourMad): boolean {
+  return !!(j.chauffeur_id || j.sous_traitant_id || j.prestation?.sous_traitant_id)
 }
 
 interface Transfert {
@@ -105,7 +112,7 @@ export default function PlanningPage() {
     : format(currentDate, 'MMMM yyyy', { locale: fr })
 
   // Stats alertes
-  const joursSansChauf   = data?.jours.filter(j => !j.chauffeur_id && !j.sous_traitant_id) ?? []
+  const joursSansChauf   = data?.jours.filter(j => !jourAffecte(j)) ?? []
   const totalMissions    = (data?.jours.length ?? 0) + (data?.transferts.length ?? 0)
   const joursSansVehicule = data?.jours.filter(j => !jourVehiculeId(j)) ?? []
   const transfertsSansChauf = data?.transferts.filter(t => !t.chauffeur_id && !t.sous_traitant_id) ?? []
@@ -360,7 +367,7 @@ function ChauffeursView({ days, viewMode, data, onTooltip, dragJourId, dragOver,
   }
 
   // Jours MAD non affectés (ni chauffeur, ni sous-traitant) — pool déplaçable
-  const unassigned: JourMad[] = data.jours.filter((j: JourMad) => !j.chauffeur_id && !j.sous_traitant_id)
+  const unassigned: JourMad[] = data.jours.filter((j: JourMad) => !jourAffecte(j))
 
   const colW = viewMode === 'semaine' ? 104 : 46
   const minWidth = 160 + days.length * colW
