@@ -22,7 +22,7 @@ export async function POST(req: NextRequest) {
   // Vérifie que ce jour appartient bien au compte connecté (chauffeur_id OU sous_traitant_id)
   const { data: jour } = await supabase
     .from('jours_mad')
-    .select('id, chauffeur_id, sous_traitant_id, prestation_id, prestation:prestations(dossier:dossiers(valide_at))')
+    .select('id, chauffeur_id, sous_traitant_id, prestation_id, heure_debut_reelle, heure_fin_reelle, prestation:prestations(dossier:dossiers(valide_at))')
     .eq('id', jour_id)
     .single()
 
@@ -33,11 +33,17 @@ export async function POST(req: NextRequest) {
   )
   if (!owns) return NextResponse.json({ error: 'Mission non autorisée' }, { status: 403 })
 
-  // Verrou : une fois le dossier validé par le dispatch, les heures sont figées
+  // Verrou 1 : une fois le dossier validé par le dispatch, les heures sont figées
   const prest = Array.isArray(jour.prestation) ? jour.prestation[0] : jour.prestation
   const dossier = prest ? (Array.isArray(prest.dossier) ? prest.dossier[0] : prest.dossier) : null
   if (dossier?.valide_at) {
     return NextResponse.json({ error: 'Heures validées par le dispatch — modification impossible.' }, { status: 423 })
+  }
+
+  // Verrou 2 : une fois saisies par le chauffeur, elles ne sont plus modifiables
+  // (seul le dispatch peut corriger côté back-office)
+  if (jour.heure_debut_reelle && jour.heure_fin_reelle) {
+    return NextResponse.json({ error: 'Heures déjà enregistrées — contactez le dispatch pour toute correction.' }, { status: 423 })
   }
 
   // Écriture + recalculs via le client admin (ownership déjà vérifié ci-dessus)
