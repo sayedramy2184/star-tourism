@@ -41,10 +41,11 @@ export default function AgencyPortal({ agencyName }: { agencyName: string }) {
   const [tab, setTab] = useState<'requests' | 'new'>('requests')
   const [dossiers, setDossiers] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
-  const [edit, setEdit] = useState<{ editId: string; initial: any } | null>(null)
+  const [edit, setEdit] = useState<{ mode: 'edit' | 'add'; dossierId: string; initial: any } | null>(null)
 
   function startNew() { setEdit(null); setTab('new') }
-  function startEdit(d: any) { setEdit({ editId: d.id, initial: initialFromDossier(d) }); setTab('new') }
+  function startEdit(d: any) { setEdit({ mode: 'edit', dossierId: d.id, initial: initialFromDossier(d) }); setTab('new') }
+  function startAdd(d: any) { setEdit({ mode: 'add', dossierId: d.id, initial: { services: [makeService()], passengers: [], notes: '' } }); setTab('new') }
 
   const load = useCallback(async () => {
     setLoading(true)
@@ -84,7 +85,7 @@ export default function AgencyPortal({ agencyName }: { agencyName: string }) {
 
       {/* Tabs */}
       <div style={{ maxWidth: '860px', margin: '0 auto', padding: '16px 16px 0', display: 'flex', gap: '8px' }}>
-        {([['requests', 'My requests', <ListChecks size={15} key="a" />], ['new', edit ? 'Edit request' : 'New request', <Plus size={15} key="b" />]] as const).map(([v, label, icon]) => (
+        {([['requests', 'My requests', <ListChecks size={15} key="a" />], ['new', edit ? (edit.mode === 'add' ? 'Add service' : 'Edit request') : 'New request', <Plus size={15} key="b" />]] as const).map(([v, label, icon]) => (
           <button key={v} onClick={() => v === 'new' ? startNew() : setTab(v)}
             style={{ display: 'flex', alignItems: 'center', gap: '7px', padding: '9px 16px', cursor: 'pointer', border: 'none', borderRadius: '10px', fontSize: '13px', fontWeight: 600, background: tab === v ? '#16130e' : '#fff', color: tab === v ? '#fff' : '#5a564e' }}>
             {icon} {label}
@@ -94,15 +95,15 @@ export default function AgencyPortal({ agencyName }: { agencyName: string }) {
 
       <div style={{ maxWidth: '860px', margin: '0 auto', padding: '16px' }}>
         {tab === 'requests'
-          ? <RequestsList dossiers={dossiers} loading={loading} onNew={startNew} onEdit={startEdit} onReload={load} />
-          : <NewRequest key={edit?.editId ?? 'new'} initial={edit?.initial} editId={edit?.editId} onDone={() => { load(); setEdit(null); setTab('requests') }} />}
+          ? <RequestsList dossiers={dossiers} loading={loading} onNew={startNew} onEdit={startEdit} onAdd={startAdd} onReload={load} />
+          : <NewRequest key={(edit?.mode ?? 'new') + (edit?.dossierId ?? '')} initial={edit?.initial} mode={edit?.mode ?? 'new'} dossierId={edit?.dossierId} onDone={() => { load(); setEdit(null); setTab('requests') }} />}
       </div>
     </div>
   )
 }
 
 // ── Requests list ──────────────────────────────
-function RequestsList({ dossiers, loading, onNew, onEdit, onReload }: { dossiers: any[]; loading: boolean; onNew: () => void; onEdit: (d: any) => void; onReload: () => void }) {
+function RequestsList({ dossiers, loading, onNew, onEdit, onAdd, onReload }: { dossiers: any[]; loading: boolean; onNew: () => void; onEdit: (d: any) => void; onAdd: (d: any) => void; onReload: () => void }) {
   if (loading) return <div style={{ padding: '60px', textAlign: 'center', color: '#8a8478' }}>Loading…</div>
   if (dossiers.length === 0) return (
     <div style={{ padding: '60px 20px', textAlign: 'center' }}>
@@ -112,18 +113,26 @@ function RequestsList({ dossiers, loading, onNew, onEdit, onReload }: { dossiers
   )
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-      {dossiers.map(d => <DossierCard key={d.id} d={d} onEdit={onEdit} onReload={onReload} />)}
+      {dossiers.map(d => <DossierCard key={d.id} d={d} onEdit={onEdit} onAdd={onAdd} onReload={onReload} />)}
     </div>
   )
 }
 
-function DossierCard({ d, onEdit, onReload }: { d: any; onEdit: (d: any) => void; onReload: () => void }) {
+function paxLine(passagers: any[]): string {
+  const names = (passagers ?? []).map(p => p.nom).filter(Boolean)
+  if (names.length === 0) return ''
+  return names.length <= 2 ? names.join(', ') : `${names.slice(0, 2).join(', ')} +${names.length - 2}`
+}
+
+function DossierCard({ d, onEdit, onAdd, onReload }: { d: any; onEdit: (d: any) => void; onAdd: (d: any) => void; onReload: () => void }) {
   const [open, setOpen] = useState(false)
   const [busy, setBusy] = useState(false)
   const prestations = d.prestations ?? []
   const pending = prestations.filter((p: any) => p.validation_statut === 'a_valider').length
-  // Modifiable tant que toutes les prestations sont encore « à valider »
+  // Modifiable (edit complet) tant que toutes les prestations sont encore « à valider »
   const editable = prestations.length > 0 && prestations.every((p: any) => p.validation_statut === 'a_valider')
+  const canAdd = d.statut !== 'termine'
+  const pax = paxLine(d.passagers)
 
   async function cancel() {
     if (!confirm('Cancel this request? This cannot be undone.')) return
@@ -144,6 +153,7 @@ function DossierCard({ d, onEdit, onReload }: { d: any; onEdit: (d: any) => void
           <div style={{ fontSize: '13px', color: '#16130e', marginTop: '2px' }}>
             {format(parseISO(d.date_debut), 'dd MMM yyyy')} → {format(parseISO(d.date_fin), 'dd MMM yyyy')} · {prestations.length} service{prestations.length > 1 ? 's' : ''}
           </div>
+          {pax && <div style={{ fontSize: '12px', color: '#5a564e', marginTop: '2px', display: 'flex', alignItems: 'center', gap: '5px' }}><Users size={12} /> {pax}</div>}
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
           {pending > 0 && <span style={{ fontSize: '10px', fontWeight: 700, color: '#7a5c10', background: '#fdf3dc', padding: '3px 9px', borderRadius: '999px' }}>{pending} pending</span>}
@@ -152,13 +162,18 @@ function DossierCard({ d, onEdit, onReload }: { d: any; onEdit: (d: any) => void
       </button>
       {open && (
         <div style={{ borderTop: '1px solid #ede9e2', padding: '8px 12px 12px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
-          {prestations.map((p: any) => <ServiceLine key={p.id} p={p} />)}
-          {editable && (
-            <div style={{ display: 'flex', gap: '8px', marginTop: '4px' }}>
-              <button onClick={() => onEdit(d)} disabled={busy} className="btn-ghost" style={{ flex: 1, justifyContent: 'center', gap: '6px' }}><Pencil size={13} /> Edit request</button>
-              <button onClick={cancel} disabled={busy} style={{ flex: 1, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: '6px', background: 'none', border: '1.5px solid rgba(158,42,42,0.35)', color: '#9e2a2a', borderRadius: '8px', padding: '8px', fontSize: '12px', fontWeight: 500, cursor: 'pointer' }}><Trash2 size={13} /> Cancel</button>
-            </div>
-          )}
+          {prestations.map((p: any) => <ServiceLine key={p.id} p={p} passagers={d.passagers} />)}
+          <div style={{ display: 'flex', gap: '8px', marginTop: '4px', flexWrap: 'wrap' }}>
+            {canAdd && (
+              <button onClick={() => onAdd(d)} disabled={busy} className="btn-primary" style={{ flex: '1 1 140px', justifyContent: 'center', gap: '6px' }}><Plus size={14} /> Add service</button>
+            )}
+            {editable && (
+              <>
+                <button onClick={() => onEdit(d)} disabled={busy} className="btn-ghost" style={{ flex: '1 1 120px', justifyContent: 'center', gap: '6px' }}><Pencil size={13} /> Edit</button>
+                <button onClick={cancel} disabled={busy} style={{ flex: '1 1 120px', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: '6px', background: 'none', border: '1.5px solid rgba(158,42,42,0.35)', color: '#9e2a2a', borderRadius: '8px', padding: '8px', fontSize: '12px', fontWeight: 500, cursor: 'pointer' }}><Trash2 size={13} /> Cancel</button>
+              </>
+            )}
+          </div>
         </div>
       )}
     </div>
@@ -181,7 +196,7 @@ function initialFromDossier(d: any) {
   return { services: services.length ? services : [makeService()], passengers, notes: d.notes ?? '' }
 }
 
-function ServiceLine({ p }: { p: any }) {
+function ServiceLine({ p }: { p: any; passagers?: any[] }) {
   const s = statusOf(p)
   const isMad = p.type === 'mad'
   const veh = one(p.vehicule); const ch = one(p.chauffeur)
@@ -216,7 +231,7 @@ function makeService(): any {
   return { type: 'transfert', date_debut: '', date_fin: '', heure_depart: '', heure_debut_journee: '09:00', heure_fin_journee: '18:00', adresse_depart: '', adresse_arrivee: '', vol_numero: '', vol_heure: '', vol_ville: '', vol_terminal: '', modele_souhaite: '', nb_passagers: 1, nb_bagages: 0 }
 }
 
-function NewRequest({ onDone, initial, editId }: { onDone: () => void; initial?: any; editId?: string }) {
+function NewRequest({ onDone, initial, mode = 'new', dossierId }: { onDone: () => void; initial?: any; mode?: 'new' | 'edit' | 'add'; dossierId?: string }) {
   const [services, setServices] = useState<any[]>(initial?.services ?? [makeService()])
   const [passengers, setPassengers] = useState<any[]>(initial?.passengers ?? [])
   const [notes, setNotes] = useState<string>(initial?.notes ?? '')
@@ -228,13 +243,16 @@ function NewRequest({ onDone, initial, editId }: { onDone: () => void; initial?:
     if (services.some(s => !s.date_debut)) return toast.error('Please set a date for each service')
     setSaving(true)
     try {
-      const res = await fetch(editId ? `/api/agence/dossiers/${editId}` : '/api/agence/dossiers', {
-        method: editId ? 'PATCH' : 'POST', headers: { 'Content-Type': 'application/json' },
+      const url = mode === 'new' ? '/api/agence/dossiers'
+        : mode === 'add' ? `/api/agence/dossiers/${dossierId}/services`
+        : `/api/agence/dossiers/${dossierId}`
+      const res = await fetch(url, {
+        method: mode === 'edit' ? 'PATCH' : 'POST', headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ notes, prestations: services, passagers: passengers }),
       })
       const json = await res.json()
       if (!res.ok) throw new Error(json.error ?? 'Error')
-      toast.success(editId ? 'Request updated' : `Request ${json.data.numero} submitted`)
+      toast.success(mode === 'new' ? `Request ${json.data.numero} submitted` : mode === 'add' ? 'Service(s) added' : 'Request updated')
       onDone()
     } catch (e: any) { toast.error(e.message) }
     finally { setSaving(false) }
@@ -323,7 +341,7 @@ function NewRequest({ onDone, initial, editId }: { onDone: () => void; initial?:
       <div><label style={lbl}>Notes / instructions (optional)</label><textarea style={{ ...inp, minHeight: '64px', resize: 'vertical' }} value={notes} onChange={e => setNotes(e.target.value)} placeholder="Any special request…" /></div>
 
       <button onClick={submit} disabled={saving} className="btn-primary" style={{ justifyContent: 'center', padding: '14px', fontSize: '14px' }}>
-        <Send size={16} /> {saving ? 'Saving…' : editId ? 'Save changes' : 'Submit request'}
+        <Send size={16} /> {saving ? 'Saving…' : mode === 'new' ? 'Submit request' : mode === 'add' ? 'Add to request' : 'Save changes'}
       </button>
       <p style={{ fontSize: '11px', color: '#8a8478', textAlign: 'center', lineHeight: 1.5 }}>
         Each service will be reviewed and priced by Star Tourism Services. You will see the status update here.
