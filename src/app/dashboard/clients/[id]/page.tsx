@@ -5,6 +5,7 @@ import { format } from 'date-fns'
 import { fr } from 'date-fns/locale'
 import { ArrowLeft, Phone, Mail, MapPin, Building2, User } from 'lucide-react'
 import TarifsClient from '@/components/clients/TarifsClient'
+import AccesAgence from '@/components/clients/AccesAgence'
 
 function fmt(n: number) {
   return new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' }).format(n ?? 0)
@@ -146,6 +147,9 @@ export default async function ClientDetailPage({ params }: { params: { id: strin
 
         {/* Sidebar stats */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
+          {c.type === 'agence' && (
+            <AccesAgence clientId={c.id} hasAccess={!!c.profile_id} email={c.email} />
+          )}
           <TarifsClient clientId={c.id} />
 
           <div className="card">

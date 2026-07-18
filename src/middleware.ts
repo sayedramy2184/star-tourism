@@ -48,6 +48,7 @@ export async function middleware(request: NextRequest) {
   // Toutes les autres API sont du back-office → admin/dispatcher requis.
   if (pathname.startsWith('/api/')) {
     if (pathname.startsWith('/api/chauffeur/')) return supabaseResponse
+    if (pathname.startsWith('/api/agence/')) return supabaseResponse
     if (!user) return NextResponse.json({ error: 'Non autorisé' }, { status: 401 })
     const { data: prof } = await supabase.from('profiles').select('role').eq('id', user.id).single()
     if (!prof || (prof.role !== 'admin' && prof.role !== 'dispatcher')) {
@@ -72,6 +73,11 @@ export async function middleware(request: NextRequest) {
     // Chauffeur / sous-traitant → redirigé vers la PWA mobile dédiée
     if (profile?.role === 'chauffeur' || profile?.role === 'sous_traitant') {
       return NextResponse.redirect(new URL('/chauffeur', request.url))
+    }
+
+    // Agence → portail dédié
+    if (profile?.role === 'agence') {
+      return NextResponse.redirect(new URL('/agence', request.url))
     }
 
     // Redirect racine → dossiers

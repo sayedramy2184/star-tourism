@@ -8,6 +8,7 @@ type AnySupabase = {
 export type AppAccount =
   | { type: 'chauffeur'; id: string; nom: string; prenom: string; vtc_card_numero: string | null; label: string }
   | { type: 'sous_traitant'; id: string; societe: string; contact_nom: string | null; label: string }
+  | { type: 'agence'; id: string; nom: string; contact_nom: string | null; label: string }
 
 export async function getAppAccount(supabase: AnySupabase, userId: string): Promise<AppAccount | null> {
   const { data: ch } = await supabase
@@ -26,6 +27,16 @@ export async function getAppAccount(supabase: AnySupabase, userId: string): Prom
     .maybeSingle()
   if (st) {
     return { type: 'sous_traitant', id: st.id, societe: st.societe, contact_nom: st.contact_nom ?? null, label: st.societe }
+  }
+
+  const { data: ag } = await supabase
+    .from('clients')
+    .select('id, nom, contact_nom, type')
+    .eq('profile_id', userId)
+    .eq('type', 'agence')
+    .maybeSingle()
+  if (ag) {
+    return { type: 'agence', id: ag.id, nom: ag.nom, contact_nom: ag.contact_nom ?? null, label: ag.nom }
   }
 
   return null
