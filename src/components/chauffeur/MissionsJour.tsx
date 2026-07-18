@@ -597,33 +597,26 @@ function HoursEntry({ j, locked, onSaved }: { j: any; locked: boolean; onSaved: 
     finally { setSaving(false) }
   }
 
-  // Verrous : dispatch validé (dossier) OU heures déjà saisies par le chauffeur.
+  // Verrou UNIQUE : dossier validé par le dispatch → heures figées.
+  // Tant que non validé, le chauffeur peut saisir ET corriger librement.
   const dispatchLocked = locked
-  const isLocked = dispatchLocked || saisi
 
   return (
-    <div style={{ background: isLocked ? (dispatchLocked ? '#f2f0ec' : '#eef6f1') : '#faf8f5', borderTop: '1px solid ' + LINE, padding: '13px 15px' }}>
+    <div style={{ background: dispatchLocked ? '#f2f0ec' : saisi ? '#eef6f1' : '#faf8f5', borderTop: '1px solid ' + LINE, padding: '13px 15px' }}>
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '9px' }}>
         <span style={{ fontSize: '9px', letterSpacing: '2px', textTransform: 'uppercase', color: GOLD, fontWeight: 800 }}>Mes heures réelles</span>
         {dispatchLocked
           ? <span style={{ display: 'inline-flex', alignItems: 'center', gap: '4px', fontSize: '10px', fontWeight: 700, color: GREEN, background: '#eaf4ee', padding: '3px 9px', borderRadius: '999px' }}><ShieldCheck size={12} /> Validé</span>
           : saisi
-            ? <span style={{ display: 'inline-flex', alignItems: 'center', gap: '4px', fontSize: '10px', fontWeight: 700, color: '#7a5c10', background: '#fdf3dc', padding: '3px 9px', borderRadius: '999px' }}><Lock size={11} /> Verrouillé</span>
+            ? <span style={{ display: 'inline-flex', alignItems: 'center', gap: '4px', fontSize: '10px', fontWeight: 700, color: GREEN, background: '#eaf4ee', padding: '3px 9px', borderRadius: '999px' }}><ShieldCheck size={12} /> Enregistré</span>
             : null}
       </div>
-      {isLocked ? (
-        <>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontFamily: 'JetBrains Mono,monospace', fontSize: '16px', color: INK }}>
-            <Lock size={14} color={MUTE} />
-            {saisi ? `${debut} → ${fin}` : 'Non saisies'}
-            {saisi && <span style={{ fontFamily: 'inherit', fontSize: '12px', color: GREEN, fontWeight: 600, marginLeft: 'auto' }}>{j.heures_reelles ?? 0}h{(j.heures_sup ?? 0) > 0 ? ` · +${j.heures_sup}h sup` : ''}</span>}
-          </div>
-          {!dispatchLocked && saisi && (
-            <div style={{ marginTop: '8px', fontSize: '11px', color: MUTE, lineHeight: 1.4 }}>
-              Heures transmises et verrouillées. Pour une correction, contactez le dispatch.
-            </div>
-          )}
-        </>
+      {dispatchLocked ? (
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontFamily: 'JetBrains Mono,monospace', fontSize: '16px', color: INK }}>
+          <Lock size={14} color={MUTE} />
+          {saisi ? `${debut} → ${fin}` : 'Non saisies'}
+          {saisi && <span style={{ fontFamily: 'inherit', fontSize: '12px', color: GREEN, fontWeight: 600, marginLeft: 'auto' }}>{j.heures_reelles ?? 0}h{(j.heures_sup ?? 0) > 0 ? ` · +${j.heures_sup}h sup` : ''}</span>}
+        </div>
       ) : (
         <>
           <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
@@ -633,12 +626,17 @@ function HoursEntry({ j, locked, onSaved }: { j: any; locked: boolean; onSaved: 
             <input type="time" value={fin} onChange={e => setFin(e.target.value)} aria-label="Heure de fin"
               style={{ flex: 1, background: '#fff', border: '1px solid #c9c2b6', borderRadius: '11px', padding: '12px', fontSize: '16px', fontFamily: 'JetBrains Mono,monospace', textAlign: 'center', outline: 'none', color: INK }} />
           </div>
+          {saisi && (
+            <div style={{ marginTop: '8px', fontSize: '12px', color: GREEN, fontWeight: 600 }}>
+              {j.heures_reelles ?? 0}h réelles{(j.heures_sup ?? 0) > 0 ? ` · +${j.heures_sup}h sup` : ''}
+            </div>
+          )}
           <div style={{ marginTop: '8px', fontSize: '11px', color: MUTE, lineHeight: 1.4 }}>
-            ⚠️ Vérifiez bien vos heures : une fois enregistrées, elles seront verrouillées.
+            Modifiable tant que le dispatch n'a pas validé le dossier.
           </div>
           <button onClick={save} disabled={saving}
             style={{ width: '100%', marginTop: '10px', background: saving ? '#4a4438' : 'linear-gradient(155deg,#221b11,#16130e)', color: '#fff', border: 'none', borderRadius: '12px', padding: '14px', fontSize: '13px', fontWeight: 700, letterSpacing: '0.5px', cursor: 'pointer' }}>
-            {saving ? 'Enregistrement…' : 'Enregistrer mes heures'}
+            {saving ? 'Enregistrement…' : saisi ? 'Mettre à jour mes heures' : 'Enregistrer mes heures'}
           </button>
         </>
       )}

@@ -33,17 +33,12 @@ export async function POST(req: NextRequest) {
   )
   if (!owns) return NextResponse.json({ error: 'Mission non autorisée' }, { status: 403 })
 
-  // Verrou 1 : une fois le dossier validé par le dispatch, les heures sont figées
+  // Verrou UNIQUE : une fois le dossier validé par le dispatch, les heures sont figées.
+  // Tant que non validé, le chauffeur peut saisir ET corriger.
   const prest = Array.isArray(jour.prestation) ? jour.prestation[0] : jour.prestation
   const dossier = prest ? (Array.isArray(prest.dossier) ? prest.dossier[0] : prest.dossier) : null
   if (dossier?.valide_at) {
     return NextResponse.json({ error: 'Heures validées par le dispatch — modification impossible.' }, { status: 423 })
-  }
-
-  // Verrou 2 : une fois saisies par le chauffeur, elles ne sont plus modifiables
-  // (seul le dispatch peut corriger côté back-office)
-  if (jour.heure_debut_reelle && jour.heure_fin_reelle) {
-    return NextResponse.json({ error: 'Heures déjà enregistrées — contactez le dispatch pour toute correction.' }, { status: 423 })
   }
 
   // Écriture + recalculs via le client admin (ownership déjà vérifié ci-dessus)
