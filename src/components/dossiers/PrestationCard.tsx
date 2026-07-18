@@ -209,6 +209,34 @@ export default function PrestationCard({ p, dossierId, passagers = [] }: { p: an
     sous_traitant:      p.sous_traitant      ?? null as { societe: string } | null,
   }))
   const [savingJour, setSavingJour] = useState<string|null>(null)
+  const [valTarif, setValTarif] = useState('')
+  const [valBusy, setValBusy] = useState(false)
+
+  async function validerPrestation() {
+    const tarif = parseFloat(valTarif)
+    if (!tarif || tarif <= 0) return toast.error('Indiquez le tarif HT')
+    setValBusy(true)
+    try {
+      const res = await fetch(`/api/prestations/${p.id}/valider`, {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'valider', tarif }),
+      })
+      if (!res.ok) throw new Error((await res.json()).error ?? 'Erreur')
+      toast.success('Prestation validée'); router.push(`/dashboard/dossiers/${dossierId}`)
+    } catch (e: any) { toast.error(e.message) } finally { setValBusy(false) }
+  }
+  async function refuserPrestation() {
+    const motif = prompt('Motif du refus (visible par l\'agence) :') ?? ''
+    setValBusy(true)
+    try {
+      const res = await fetch(`/api/prestations/${p.id}/valider`, {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'refuser', motif }),
+      })
+      if (!res.ok) throw new Error((await res.json()).error ?? 'Erreur')
+      toast.success('Prestation refusée'); router.push(`/dashboard/dossiers/${dossierId}`)
+    } catch (e: any) { toast.error(e.message) } finally { setValBusy(false) }
+  }
   // Disponibilités par date (chauffeurs/véhicules déjà pris ailleurs)
   const [dispo, setDispo] = useState<{ chauffeurs: Record<string, string[]>; vehicules: Record<string, string[]> }>({ chauffeurs: {}, vehicules: {} })
 
@@ -318,6 +346,29 @@ export default function PrestationCard({ p, dossierId, passagers = [] }: { p: an
 
   return (
     <div className="card" style={{ overflow:'hidden' }}>
+
+      {/* Bande de validation (demande agence) */}
+      {p.validation_statut === 'a_valider' && (
+        <div style={{ background:'#fdf3dc', borderBottom:'1.5px solid #9a7a28', padding:'10px 14px', display:'flex', alignItems:'center', gap:'10px', flexWrap:'wrap' }}>
+          <span style={{ fontSize:'10px', fontWeight:800, letterSpacing:'1px', textTransform:'uppercase', color:'#7a5c10' }}>⧗ Demande agence · à valider</span>
+          <div style={{ display:'flex', alignItems:'center', gap:'6px', marginLeft:'auto', flexWrap:'wrap' }}>
+            <div style={{ display:'flex', alignItems:'center', gap:'4px' }}>
+              <input type="number" min={0} step={0.01} value={valTarif} onChange={e => setValTarif(e.target.value)}
+                placeholder={p.type === 'mad' ? 'Tarif/jour HT' : 'Tarif HT'}
+                style={{ width:'110px', background:'#fff', border:'1.5px solid #9a7a28', padding:'6px 8px', fontSize:'12px', outline:'none' }} />
+              <span style={{ fontSize:'11px', color:'#7a5c10' }}>€{p.type === 'mad' ? '/j' : ''}</span>
+            </div>
+            <button onClick={validerPrestation} disabled={valBusy} className="btn-or" style={{ padding:'6px 12px', fontSize:'11px' }}>Valider</button>
+            <button onClick={refuserPrestation} disabled={valBusy}
+              style={{ padding:'6px 12px', fontSize:'11px', background:'none', border:'1.5px solid rgba(158,42,42,0.4)', color:'#9e2a2a', cursor:'pointer' }}>Refuser</button>
+          </div>
+        </div>
+      )}
+      {p.validation_statut === 'refusee' && (
+        <div style={{ background:'#faeaea', borderBottom:'1.5px solid rgba(158,42,42,0.3)', padding:'8px 14px', fontSize:'11px', color:'#9e2a2a', fontWeight:600 }}>
+          ✕ Prestation refusée{p.refus_motif ? ` — ${p.refus_motif}` : ''}
+        </div>
+      )}
 
       {/* Header */}
       <div style={{ display:'flex', alignItems:'stretch', borderBottom:'1.5px solid #b8b0a4' }}>

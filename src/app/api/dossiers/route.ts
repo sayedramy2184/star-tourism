@@ -81,7 +81,7 @@ export async function GET(req: NextRequest) {
     .select(`
       *,
       client:clients(id, nom, contact_nom, type),
-      prestations(id, type, statut, date_debut, date_fin, montant_ht),
+      prestations(id, type, statut, validation_statut, date_debut, date_fin, montant_ht),
       passagers(id, nom)
     `)
     .order('created_at', { ascending: false })

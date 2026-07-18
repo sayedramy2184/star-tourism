@@ -29,8 +29,8 @@ export async function GET() {
   const { data, error } = await admin
     .from('dossiers')
     .select(`
-      id, numero, statut, origine, soumis_at, date_debut, date_fin, created_at,
-      passagers(id, nom, nationalite),
+      id, numero, statut, origine, soumis_at, date_debut, date_fin, created_at, notes,
+      passagers(id, nom, nationalite, telephone, nb_bagages),
       prestations(
         id, type, statut, validation_statut, refus_motif,
         date_debut, date_fin, heure_depart, heure_debut_journee, heure_fin_journee,

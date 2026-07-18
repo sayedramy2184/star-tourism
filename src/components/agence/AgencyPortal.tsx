@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import { format, parseISO } from 'date-fns'
 import toast from 'react-hot-toast'
-import { Plus, Trash2, LogOut, MapPin, Plane, Clock, Users, ChevronRight, ListChecks, Send } from 'lucide-react'
+import { Plus, Trash2, LogOut, Users, ChevronRight, ListChecks, Send, Pencil } from 'lucide-react'
 
 // ── Labels ─────────────────────────────────────
 const VEHICLES = [
@@ -41,6 +41,10 @@ export default function AgencyPortal({ agencyName }: { agencyName: string }) {
   const [tab, setTab] = useState<'requests' | 'new'>('requests')
   const [dossiers, setDossiers] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
+  const [edit, setEdit] = useState<{ editId: string; initial: any } | null>(null)
+
+  function startNew() { setEdit(null); setTab('new') }
+  function startEdit(d: any) { setEdit({ editId: d.id, initial: initialFromDossier(d) }); setTab('new') }
 
   const load = useCallback(async () => {
     setLoading(true)
@@ -80,8 +84,8 @@ export default function AgencyPortal({ agencyName }: { agencyName: string }) {
 
       {/* Tabs */}
       <div style={{ maxWidth: '860px', margin: '0 auto', padding: '16px 16px 0', display: 'flex', gap: '8px' }}>
-        {([['requests', 'My requests', <ListChecks size={15} key="a" />], ['new', 'New request', <Plus size={15} key="b" />]] as const).map(([v, label, icon]) => (
-          <button key={v} onClick={() => setTab(v)}
+        {([['requests', 'My requests', <ListChecks size={15} key="a" />], ['new', edit ? 'Edit request' : 'New request', <Plus size={15} key="b" />]] as const).map(([v, label, icon]) => (
+          <button key={v} onClick={() => v === 'new' ? startNew() : setTab(v)}
             style={{ display: 'flex', alignItems: 'center', gap: '7px', padding: '9px 16px', cursor: 'pointer', border: 'none', borderRadius: '10px', fontSize: '13px', fontWeight: 600, background: tab === v ? '#16130e' : '#fff', color: tab === v ? '#fff' : '#5a564e' }}>
             {icon} {label}
           </button>
@@ -90,15 +94,15 @@ export default function AgencyPortal({ agencyName }: { agencyName: string }) {
 
       <div style={{ maxWidth: '860px', margin: '0 auto', padding: '16px' }}>
         {tab === 'requests'
-          ? <RequestsList dossiers={dossiers} loading={loading} onNew={() => setTab('new')} />
-          : <NewRequest onDone={() => { load(); setTab('requests') }} />}
+          ? <RequestsList dossiers={dossiers} loading={loading} onNew={startNew} onEdit={startEdit} onReload={load} />
+          : <NewRequest key={edit?.editId ?? 'new'} initial={edit?.initial} editId={edit?.editId} onDone={() => { load(); setEdit(null); setTab('requests') }} />}
       </div>
     </div>
   )
 }
 
 // ── Requests list ──────────────────────────────
-function RequestsList({ dossiers, loading, onNew }: { dossiers: any[]; loading: boolean; onNew: () => void }) {
+function RequestsList({ dossiers, loading, onNew, onEdit, onReload }: { dossiers: any[]; loading: boolean; onNew: () => void; onEdit: (d: any) => void; onReload: () => void }) {
   if (loading) return <div style={{ padding: '60px', textAlign: 'center', color: '#8a8478' }}>Loading…</div>
   if (dossiers.length === 0) return (
     <div style={{ padding: '60px 20px', textAlign: 'center' }}>
@@ -108,15 +112,30 @@ function RequestsList({ dossiers, loading, onNew }: { dossiers: any[]; loading: 
   )
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-      {dossiers.map(d => <DossierCard key={d.id} d={d} />)}
+      {dossiers.map(d => <DossierCard key={d.id} d={d} onEdit={onEdit} onReload={onReload} />)}
     </div>
   )
 }
 
-function DossierCard({ d }: { d: any }) {
+function DossierCard({ d, onEdit, onReload }: { d: any; onEdit: (d: any) => void; onReload: () => void }) {
   const [open, setOpen] = useState(false)
+  const [busy, setBusy] = useState(false)
   const prestations = d.prestations ?? []
   const pending = prestations.filter((p: any) => p.validation_statut === 'a_valider').length
+  // Modifiable tant que toutes les prestations sont encore « à valider »
+  const editable = prestations.length > 0 && prestations.every((p: any) => p.validation_statut === 'a_valider')
+
+  async function cancel() {
+    if (!confirm('Cancel this request? This cannot be undone.')) return
+    setBusy(true)
+    try {
+      const res = await fetch(`/api/agence/dossiers/${d.id}`, { method: 'DELETE' })
+      const json = await res.json()
+      if (!res.ok) throw new Error(json.error ?? 'Error')
+      toast.success('Request cancelled'); onReload()
+    } catch (e: any) { toast.error(e.message) } finally { setBusy(false) }
+  }
+
   return (
     <div style={{ background: '#fff', border: '1.5px solid #d8d2c8', borderRadius: '12px', overflow: 'hidden' }}>
       <button onClick={() => setOpen(o => !o)} style={{ width: '100%', textAlign: 'left', cursor: 'pointer', background: 'none', border: 'none', padding: '14px 16px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '10px' }}>
@@ -134,10 +153,32 @@ function DossierCard({ d }: { d: any }) {
       {open && (
         <div style={{ borderTop: '1px solid #ede9e2', padding: '8px 12px 12px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
           {prestations.map((p: any) => <ServiceLine key={p.id} p={p} />)}
+          {editable && (
+            <div style={{ display: 'flex', gap: '8px', marginTop: '4px' }}>
+              <button onClick={() => onEdit(d)} disabled={busy} className="btn-ghost" style={{ flex: 1, justifyContent: 'center', gap: '6px' }}><Pencil size={13} /> Edit request</button>
+              <button onClick={cancel} disabled={busy} style={{ flex: 1, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: '6px', background: 'none', border: '1.5px solid rgba(158,42,42,0.35)', color: '#9e2a2a', borderRadius: '8px', padding: '8px', fontSize: '12px', fontWeight: 500, cursor: 'pointer' }}><Trash2 size={13} /> Cancel</button>
+            </div>
+          )}
         </div>
       )}
     </div>
   )
+}
+
+// Reconstruit le formulaire depuis un dossier existant (édition)
+function initialFromDossier(d: any) {
+  const services = (d.prestations ?? []).map((p: any) => ({
+    type: p.type,
+    date_debut: p.date_debut ?? '', date_fin: p.date_fin ?? '',
+    heure_depart: p.heure_depart?.slice(0, 5) ?? '',
+    heure_debut_journee: p.heure_debut_journee?.slice(0, 5) ?? '09:00',
+    heure_fin_journee: p.heure_fin_journee?.slice(0, 5) ?? '18:00',
+    adresse_depart: p.adresse_depart ?? '', adresse_arrivee: p.adresse_arrivee ?? '',
+    vol_numero: p.vol_numero ?? '', vol_heure: p.vol_heure?.slice(0, 5) ?? '', vol_ville: p.vol_ville ?? '', vol_terminal: p.vol_terminal ?? '',
+    modele_souhaite: p.modele_souhaite ?? '', nb_passagers: p.nb_passagers ?? 1, nb_bagages: p.nb_bagages ?? 0,
+  }))
+  const passengers = (d.passagers ?? []).map((p: any) => ({ nom: p.nom ?? '', nationalite: p.nationalite ?? '', telephone: p.telephone ?? '', nb_bagages: p.nb_bagages ?? 0 }))
+  return { services: services.length ? services : [makeService()], passengers, notes: d.notes ?? '' }
 }
 
 function ServiceLine({ p }: { p: any }) {
@@ -175,10 +216,10 @@ function makeService(): any {
   return { type: 'transfert', date_debut: '', date_fin: '', heure_depart: '', heure_debut_journee: '09:00', heure_fin_journee: '18:00', adresse_depart: '', adresse_arrivee: '', vol_numero: '', vol_heure: '', vol_ville: '', vol_terminal: '', modele_souhaite: '', nb_passagers: 1, nb_bagages: 0 }
 }
 
-function NewRequest({ onDone }: { onDone: () => void }) {
-  const [services, setServices] = useState<any[]>([makeService()])
-  const [passengers, setPassengers] = useState<any[]>([])
-  const [notes, setNotes] = useState('')
+function NewRequest({ onDone, initial, editId }: { onDone: () => void; initial?: any; editId?: string }) {
+  const [services, setServices] = useState<any[]>(initial?.services ?? [makeService()])
+  const [passengers, setPassengers] = useState<any[]>(initial?.passengers ?? [])
+  const [notes, setNotes] = useState<string>(initial?.notes ?? '')
   const [saving, setSaving] = useState(false)
 
   function upd(i: number, patch: any) { setServices(prev => prev.map((s, k) => k === i ? { ...s, ...patch } : s)) }
@@ -187,13 +228,13 @@ function NewRequest({ onDone }: { onDone: () => void }) {
     if (services.some(s => !s.date_debut)) return toast.error('Please set a date for each service')
     setSaving(true)
     try {
-      const res = await fetch('/api/agence/dossiers', {
-        method: 'POST', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ notes, services: undefined, prestations: services, passagers: passengers }),
+      const res = await fetch(editId ? `/api/agence/dossiers/${editId}` : '/api/agence/dossiers', {
+        method: editId ? 'PATCH' : 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ notes, prestations: services, passagers: passengers }),
       })
       const json = await res.json()
       if (!res.ok) throw new Error(json.error ?? 'Error')
-      toast.success(`Request ${json.data.numero} submitted`)
+      toast.success(editId ? 'Request updated' : `Request ${json.data.numero} submitted`)
       onDone()
     } catch (e: any) { toast.error(e.message) }
     finally { setSaving(false) }
@@ -282,7 +323,7 @@ function NewRequest({ onDone }: { onDone: () => void }) {
       <div><label style={lbl}>Notes / instructions (optional)</label><textarea style={{ ...inp, minHeight: '64px', resize: 'vertical' }} value={notes} onChange={e => setNotes(e.target.value)} placeholder="Any special request…" /></div>
 
       <button onClick={submit} disabled={saving} className="btn-primary" style={{ justifyContent: 'center', padding: '14px', fontSize: '14px' }}>
-        <Send size={16} /> {saving ? 'Submitting…' : 'Submit request'}
+        <Send size={16} /> {saving ? 'Saving…' : editId ? 'Save changes' : 'Submit request'}
       </button>
       <p style={{ fontSize: '11px', color: '#8a8478', textAlign: 'center', lineHeight: 1.5 }}>
         Each service will be reviewed and priced by Star Tourism Services. You will see the status update here.

@@ -15,6 +15,21 @@ function formatMontant(n: number) {
   return new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' }).format(n)
 }
 
+function agencePending(d: any): number {
+  if (d.origine !== 'agence') return 0
+  return (d.prestations ?? []).filter((p: any) => p.validation_statut === 'a_valider').length
+}
+function AgenceBadge({ d }: { d: any }) {
+  if (d.origine !== 'agence') return null
+  const n = agencePending(d)
+  return (
+    <span style={{ fontSize:'8px', fontWeight:700, letterSpacing:'0.5px', textTransform:'uppercase', padding:'2px 7px', borderRadius:'999px',
+      background: n > 0 ? '#fdf3dc' : '#f0ebfa', color: n > 0 ? '#7a5c10' : '#4a2a6e', border:`1px solid ${n > 0 ? 'rgba(122,92,16,0.25)' : 'rgba(74,42,110,0.2)'}` }}>
+      Agence{n > 0 ? ` · ${n} à valider` : ''}
+    </span>
+  )
+}
+
 // Noms des passagers du dossier (affichés sous les prestations pour distinguer
 // plusieurs dossiers d'un même client).
 function PassagersLine({ passagers }: { passagers?: any[] }) {
@@ -122,7 +137,7 @@ export default function DossiersPage() {
           return (
             <div key={d.id} style={{ background:'#fff', border:'1.5px solid #b8b0a4', boxShadow:'0 1px 4px rgba(0,0,0,0.06)' }}>
               <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', padding:'10px 12px', borderBottom:'1px solid #ede9e2' }}>
-                <span className="mono" style={{ fontSize:'11px', color:'#9a7a28' }}>{d.numero}</span>
+                <span style={{ display:'inline-flex', alignItems:'center', gap:'6px', flexWrap:'wrap' }}><span className="mono" style={{ fontSize:'11px', color:'#9a7a28' }}>{d.numero}</span><AgenceBadge d={d} /></span>
                 <StatutDossierSelector key={d.id + d.statut} dossierId={d.id} statut={d.statut} onStatutChange={(ns) => setDossiers(prev => prev.map(x => x.id === d.id ? {...x, statut: ns} : x))} />
               </div>
               <Link href={`/dashboard/dossiers/${d.id}`} style={{ display:'block', padding:'10px 12px', textDecoration:'none', color:'inherit' }}>
@@ -168,7 +183,7 @@ export default function DossiersPage() {
               return (
                 <tr key={d.id} className="tr-body">
                   <td className="td" style={{ background:'rgba(154,122,40,0.04)' }}>
-                    <span className="mono" style={{ fontSize:'11px', color:'#9a7a28' }}>{d.numero}</span>
+                    <span style={{ display:'inline-flex', alignItems:'center', gap:'6px', flexWrap:'wrap' }}><span className="mono" style={{ fontSize:'11px', color:'#9a7a28' }}>{d.numero}</span><AgenceBadge d={d} /></span>
                   </td>
                   <td className="td">
                     <div style={{ fontWeight:600, color:'#16130e' }}>{d.client?.nom}</div>
