@@ -5,6 +5,7 @@ import { format, differenceInDays, parseISO } from 'date-fns'
 import { fr } from 'date-fns/locale'
 import { ArrowLeft, AlertTriangle, CheckCircle } from 'lucide-react'
 import VehiculeEditModal from '@/components/vehicules/VehiculeEditModal'
+import { contratStatut } from '@/lib/coutLocation'
 
 const CATEGORIES: Record<string, string> = {
   berline_standard: 'Berline Standard', berline_premium: 'Berline Premium',
@@ -79,7 +80,8 @@ export default async function VehiculeDetailPage({ params }: { params: { id: str
     .order('date', { ascending: false })
     .limit(50)
 
-  const st     = STATUTS[v.statut] ?? STATUTS.disponible
+  const cs     = contratStatut(v)
+  const st     = (cs && cs.key !== 'actif') ? { label: cs.label, color: cs.color, bg: cs.bg } : (STATUTS[v.statut] ?? STATUTS.disponible)
   const mode   = MODES[v.mode_acquisition] ?? MODES.propriete
   const estLoue = v.mode_acquisition && v.mode_acquisition !== 'propriete'
   const ct     = docStatus(v.ct_date)

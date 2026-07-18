@@ -22,9 +22,16 @@ export async function GET(req: NextRequest) {
     //  - pas encore entrés dans le parc à la fin de la mission
     // (comparaison lexicographique sûre sur des dates ISO 'YYYY-MM-DD')
     const dansLeParc = vehicules.filter(v => {
-      const sortiAvantPeriode    = v.date_sortie_parc && v.date_sortie_parc < date_debut
-      const pasEncoreEntre       = v.date_entree_parc && v.date_entree_parc > date_fin
-      return !sortiAvantPeriode && !pasEncoreEntre
+      // Hors parc (entrée / sortie)
+      if (v.date_sortie_parc && v.date_sortie_parc < date_debut) return false
+      if (v.date_entree_parc && v.date_entree_parc > date_fin) return false
+      // Hors période de contrat pour les véhicules loués
+      const loue = v.mode_acquisition && v.mode_acquisition !== 'propriete'
+      if (loue) {
+        if (v.contrat_fin && v.contrat_fin < date_debut) return false      // contrat terminé avant la mission
+        if (v.contrat_debut && v.contrat_debut > date_fin) return false    // contrat pas encore commencé
+      }
+      return true
     })
 
     const { data: occupes } = await supabase

@@ -11,6 +11,16 @@ import { useSearchPaginate } from '@/lib/useSearchPaginate'
 import { SearchBar, Pager } from '@/components/ui/ListControls'
 import { exportCsv } from '@/lib/exportCsv'
 import LoueurSelect from '@/components/loueurs/LoueurSelect'
+import { contratStatut } from '@/lib/coutLocation'
+
+// Statut affiché : pour un loué hors période de contrat, on montre l'état du contrat
+// (le véhicule reste visible pour l'historique) ; sinon le statut opérationnel.
+function statutAffiche(v: any): { label: string; color: string; bg: string } {
+  const cs = contratStatut(v)
+  if (cs && cs.key !== 'actif') return { label: cs.label, color: cs.color, bg: cs.bg }
+  const s = STATUTS[v.statut as StatutVehicule] ?? STATUTS.disponible
+  return { label: s.label, color: s.color, bg: s.bg }
+}
 
 type StatutVehicule  = 'disponible' | 'en_mission' | 'maintenance' | 'inactif'
 type CategorieVehicule = 'berline_standard' | 'berline_premium' | 'berline_prestige' | 'van_minibus' | 'van_bagages' | 'suv_premium' | 'electrique'
@@ -251,7 +261,7 @@ export default function VehiculesPage() {
         ) : sp.total === 0 ? (
           <div style={{ padding:'40px', textAlign:'center', color:'#8a8478', fontSize:'12px' }}>{vehicules.length === 0 ? 'Aucun véhicule — ajoutez le premier !' : 'Aucun résultat'}</div>
         ) : sp.pageItems.map((v: any) => {
-          const stt = STATUTS[v.statut]; const m = MODES[v.mode_acquisition] ?? MODES.propriete
+          const stt = statutAffiche(v); const m = MODES[v.mode_acquisition] ?? MODES.propriete
           const ct = docAlert(v.ct_date); const ass = docAlert(v.assurance_date); const ca = contratAlert(v.contrat_fin)
           return (
             <Link key={v.id} href={`/dashboard/vehicules/${v.id}`} style={{ display:'block', background:'#fff', border:'1.5px solid #b8b0a4', boxShadow:'0 1px 4px rgba(0,0,0,0.06)', padding:'12px', textDecoration:'none', color:'inherit' }}>
@@ -294,7 +304,7 @@ export default function VehiculesPage() {
                 {vehicules.length === 0 ? 'Aucun véhicule — ajoutez le premier !' : 'Aucun résultat'}
               </td></tr>
             ) : sp.pageItems.map(v => {
-              const st  = STATUTS[v.statut]
+              const st  = statutAffiche(v)
               const ct  = docAlert(v.ct_date)
               const ass = docAlert(v.assurance_date)
               return (
