@@ -6,6 +6,7 @@ import { fr } from 'date-fns/locale'
 import { ArrowLeft, Phone, Mail, MapPin, Building2, User } from 'lucide-react'
 import TarifsClient from '@/components/clients/TarifsClient'
 import AccesAgence from '@/components/clients/AccesAgence'
+import ClientEditModal from '@/components/clients/ClientEditModal'
 
 function fmt(n: number) {
   return new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' }).format(n ?? 0)
@@ -50,8 +51,9 @@ export default async function ClientDetailPage({ params }: { params: { id: strin
         {/* Colonne principale */}
         <div>
           <div className="card" style={{ marginBottom: '16px' }}>
-            <div style={{ background: '#16130e', padding: '12px 22px' }}>
+            <div style={{ background: '#16130e', padding: '12px 22px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
               <span style={{ fontFamily: 'JetBrains Mono,monospace', fontSize: '11px', color: '#9a7a28' }}>FICHE CLIENT</span>
+              <ClientEditModal client={c as any} />
             </div>
             <div style={{ padding: '20px 22px' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '14px', marginBottom: '18px' }}>
