@@ -9,12 +9,16 @@ import {
   Document, Page, Text, View, Image, StyleSheet, renderToBuffer,
 } from '@react-pdf/renderer'
 
-// Logo société (boussole) — lu une seule fois et embarqué en data-URI.
+// Logo société — lu une seule fois et embarqué en data-URI.
+// Priorité au logo dédié aux factures (logo-facture.png), sinon le logo de l'app.
 let LOGO_DATA: string | null = null
-try {
-  const buf = fs.readFileSync(path.join(process.cwd(), 'public', 'logo.png'))
-  LOGO_DATA = `data:image/png;base64,${buf.toString('base64')}`
-} catch { LOGO_DATA = null }
+for (const nom of ['logo-facture.png', 'logo.png']) {
+  try {
+    const buf = fs.readFileSync(path.join(process.cwd(), 'public', nom))
+    LOGO_DATA = `data:image/png;base64,${buf.toString('base64')}`
+    break
+  } catch { /* essai suivant */ }
+}
 
 // ── Couleurs de marque ────────────────────────
 const OR    = '#9a7a28'
@@ -113,9 +117,9 @@ const styles = StyleSheet.create({
   header: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 28 },
   brandMark: { flexDirection: 'row', alignItems: 'center' },
   brandBox: { width: 22, height: 22, borderWidth: 1, borderColor: OR, alignItems: 'center', justifyContent: 'center', marginRight: 8 },
-  brandLogo: { width: 42, height: 36, marginRight: 8, objectFit: 'contain' },
+  brandLogo: { width: 84, height: 84, objectFit: 'contain' },
   brandBoxTxt: { fontFamily: 'Times-Roman', fontSize: 12, color: OR },
-  brandName: { fontFamily: 'Times-Roman', fontSize: 15, letterSpacing: 3, color: NOIR },
+  brandName: { fontFamily: 'Times-Roman', fontSize: 13, letterSpacing: 2, lineHeight: 1.25, color: NOIR },
   brandSub: { fontSize: 6, letterSpacing: 2, color: '#9c968b', marginTop: 3, textTransform: 'uppercase' },
   societeBlock: { textAlign: 'right', maxWidth: 240 },
   societeNom: { fontSize: 10, fontFamily: 'Helvetica-Bold', color: NOIR },
@@ -189,14 +193,15 @@ function FactureDocument({ facture, lignes, client, societe, dossierNumero }: Fa
 
         {/* En-tête : marque + société émettrice */}
         <View style={styles.header}>
-          <View>
-            <View style={styles.brandMark}>
-              {LOGO_DATA
-                ? <Image src={LOGO_DATA} style={styles.brandLogo} />
-                : <View style={styles.brandBox}><Text style={styles.brandBoxTxt}>S</Text></View>}
-              <Text style={styles.brandName}>STAR TOURISM</Text>
-            </View>
-            <Text style={styles.brandSub}>Services Drive</Text>
+          <View style={styles.brandMark}>
+            {LOGO_DATA
+              ? <Image src={LOGO_DATA} style={styles.brandLogo} />
+              : (
+                <View>
+                  <View style={styles.brandBox}><Text style={styles.brandBoxTxt}>S</Text></View>
+                  <Text style={styles.brandName}>STAR TOURISME SERVICES</Text>
+                </View>
+              )}
           </View>
           <View style={styles.societeBlock}>
             <Text style={styles.societeNom}>{safe(societe.nom) || 'Ma société'}</Text>
