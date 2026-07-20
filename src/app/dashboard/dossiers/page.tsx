@@ -19,13 +19,20 @@ function agencePending(d: any): number {
   if (d.origine !== 'agence') return 0
   return (d.prestations ?? []).filter((p: any) => p.validation_statut === 'a_valider').length
 }
+function agenceAnnul(d: any): number {
+  if (d.origine !== 'agence') return 0
+  return (d.prestations ?? []).filter((p: any) => p.annulation_demandee && p.statut !== 'annule').length
+}
 function AgenceBadge({ d }: { d: any }) {
   if (d.origine !== 'agence') return null
   const n = agencePending(d)
+  const na = agenceAnnul(d)
+  const alerte = n > 0 || na > 0
+  const parts = [n > 0 ? `${n} à valider` : '', na > 0 ? `${na} annul.` : ''].filter(Boolean).join(' · ')
   return (
     <span style={{ fontSize:'8px', fontWeight:700, letterSpacing:'0.5px', textTransform:'uppercase', padding:'2px 7px', borderRadius:'999px',
-      background: n > 0 ? '#fdf3dc' : '#f0ebfa', color: n > 0 ? '#7a5c10' : '#4a2a6e', border:`1px solid ${n > 0 ? 'rgba(122,92,16,0.25)' : 'rgba(74,42,110,0.2)'}` }}>
-      Agence{n > 0 ? ` · ${n} à valider` : ''}
+      background: alerte ? '#fdf3dc' : '#f0ebfa', color: alerte ? '#7a5c10' : '#4a2a6e', border:`1px solid ${alerte ? 'rgba(122,92,16,0.25)' : 'rgba(74,42,110,0.2)'}` }}>
+      Agence{parts ? ` · ${parts}` : ''}
     </span>
   )
 }

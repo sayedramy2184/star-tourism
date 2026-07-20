@@ -254,6 +254,19 @@ export default function PrestationCard({ p, dossierId, passagers = [] }: { p: an
       toast.success('Prestation refusée'); router.push(`/dashboard/dossiers/${dossierId}`)
     } catch (e: any) { toast.error(e.message) } finally { setValBusy(false) }
   }
+  async function repondreAnnulation(action: 'annuler' | 'annulation_refusee') {
+    if (action === 'annuler' && !confirm("Confirmer l'annulation de cette prestation ? Elle disparaîtra côté agence.")) return
+    setValBusy(true)
+    try {
+      const res = await fetch(`/api/prestations/${p.id}/valider`, {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action }),
+      })
+      if (!res.ok) throw new Error((await res.json()).error ?? 'Erreur')
+      toast.success(action === 'annuler' ? 'Prestation annulée' : 'Demande d\'annulation refusée')
+      router.push(`/dashboard/dossiers/${dossierId}`)
+    } catch (e: any) { toast.error(e.message) } finally { setValBusy(false) }
+  }
   // Disponibilités par date (chauffeurs/véhicules déjà pris ailleurs)
   const [dispo, setDispo] = useState<{ chauffeurs: Record<string, { id: string; s: number; e: number }[]>; vehicules: Record<string, { id: string; s: number; e: number }[]> }>({ chauffeurs: {}, vehicules: {} })
 
@@ -384,6 +397,16 @@ export default function PrestationCard({ p, dossierId, passagers = [] }: { p: an
       {p.validation_statut === 'refusee' && (
         <div style={{ background:'#faeaea', borderBottom:'1.5px solid rgba(158,42,42,0.3)', padding:'8px 14px', fontSize:'11px', color:'#9e2a2a', fontWeight:600 }}>
           ✕ Prestation refusée{p.refus_motif ? ` — ${p.refus_motif}` : ''}
+        </div>
+      )}
+      {p.annulation_demandee && p.statut !== 'annule' && (
+        <div style={{ background:'#faeaea', borderBottom:'1.5px solid rgba(158,42,42,0.4)', padding:'10px 14px', display:'flex', alignItems:'center', gap:'10px', flexWrap:'wrap' }}>
+          <span style={{ fontSize:'10px', fontWeight:800, letterSpacing:'1px', textTransform:'uppercase', color:'#9e2a2a' }}>⚠ Annulation demandée par l'agence</span>
+          <div style={{ display:'flex', gap:'6px', marginLeft:'auto', flexWrap:'wrap' }}>
+            <button onClick={() => repondreAnnulation('annuler')} disabled={valBusy}
+              style={{ padding:'6px 12px', fontSize:'11px', background:'#9e2a2a', color:'#fff', border:'none', cursor:'pointer', fontWeight:700 }}>Confirmer l'annulation</button>
+            <button onClick={() => repondreAnnulation('annulation_refusee')} disabled={valBusy} className="btn-ghost" style={{ padding:'6px 12px', fontSize:'11px' }}>Garder</button>
+          </div>
         </div>
       )}
 

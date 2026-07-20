@@ -115,9 +115,18 @@ function RequestsList({ dossiers, loading, onNew, onEdit, onAdd, onEditService, 
   )
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-      {dossiers.map(d => <DossierCard key={d.id} d={d} onEdit={onEdit} onAdd={onAdd} onEditService={onEditService} onReload={onReload} />)}
+      {dossiers.filter(d => visibleServices(d).length > 0).map(d => <DossierCard key={d.id} d={d} onEdit={onEdit} onAdd={onAdd} onEditService={onEditService} onReload={onReload} />)}
     </div>
   )
+}
+
+// Service annulé (annulation confirmée par le dispatch) → masqué côté agence.
+// On garde les refus (validation_statut='refusee') visibles pour info.
+function isCancelled(p: any): boolean {
+  return p.statut === 'annule' && p.validation_statut !== 'refusee'
+}
+function visibleServices(d: any): any[] {
+  return (d.prestations ?? []).filter((p: any) => !isCancelled(p))
 }
 
 function paxLine(passagers: any[]): string {
@@ -129,7 +138,18 @@ function paxLine(passagers: any[]): string {
 function DossierCard({ d, onEdit, onAdd, onEditService, onReload }: { d: any; onEdit: (d: any) => void; onAdd: (d: any) => void; onEditService: (d: any, p: any) => void; onReload: () => void }) {
   const [open, setOpen] = useState(false)
   const [busy, setBusy] = useState(false)
-  const prestations = [...(d.prestations ?? [])].sort(byChrono)
+  const prestations = visibleServices(d).slice().sort(byChrono)
+
+  async function requestCancel(pid: string) {
+    if (!confirm('Request cancellation of this service? Star Tourism Services will confirm it.')) return
+    setBusy(true)
+    try {
+      const res = await fetch(`/api/agence/prestations/${pid}/annuler`, { method: 'POST' })
+      const json = await res.json()
+      if (!res.ok) throw new Error(json.error ?? 'Error')
+      toast.success('Cancellation requested'); onReload()
+    } catch (e: any) { toast.error(e.message) } finally { setBusy(false) }
+  }
   const pending = prestations.filter((p: any) => p.validation_statut === 'a_valider').length
   // Modifiable (edit complet) tant que toutes les prestations sont encore « à valider »
   const editable = prestations.length > 0 && prestations.every((p: any) => p.validation_statut === 'a_valider')
@@ -164,7 +184,7 @@ function DossierCard({ d, onEdit, onAdd, onEditService, onReload }: { d: any; on
       </button>
       {open && (
         <div style={{ borderTop: '1px solid #ede9e2', padding: '8px 12px 12px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
-          {prestations.map((p: any) => <ServiceLine key={p.id} p={p} onEdit={() => onEditService(d, p)} />)}
+          {prestations.map((p: any) => <ServiceLine key={p.id} p={p} onEdit={() => onEditService(d, p)} onCancel={() => requestCancel(p.id)} />)}
           <div style={{ display: 'flex', gap: '8px', marginTop: '4px', flexWrap: 'wrap' }}>
             {canAdd && (
               <button onClick={() => onAdd(d)} disabled={busy} className="btn-primary" style={{ flex: '1 1 140px', justifyContent: 'center', gap: '6px' }}><Plus size={14} /> Add service</button>
@@ -242,7 +262,7 @@ function DRow({ label, children }: { label: string; children: React.ReactNode })
   )
 }
 
-function ServiceLine({ p, onEdit }: { p: any; onEdit?: () => void }) {
+function ServiceLine({ p, onEdit, onCancel }: { p: any; onEdit?: () => void; onCancel?: () => void }) {
   const s = statusOf(p)
   const isMad = p.type === 'mad'
   const color = isMad ? '#a6432a' : '#1e3f70'
@@ -299,9 +319,14 @@ function ServiceLine({ p, onEdit }: { p: any; onEdit?: () => void }) {
         )}
       </div>
 
-      {canEdit && onEdit && (
-        <div style={{ marginTop: '10px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '8px', flexWrap: 'wrap' }}>
-          <button onClick={onEdit} className="btn-ghost" style={{ padding: '5px 12px', fontSize: '11px', gap: '5px' }}><Pencil size={12} /> Edit service</button>
+      {p.annulation_demandee ? (
+        <div style={{ marginTop: '10px', fontSize: '11px', fontWeight: 700, color: '#9e2a2a', background: '#faeaea', border: '1px solid rgba(158,42,42,0.25)', borderRadius: '8px', padding: '7px 11px' }}>
+          Cancellation requested — pending confirmation
+        </div>
+      ) : canEdit && (onEdit || onCancel) && (
+        <div style={{ marginTop: '10px', display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
+          {onEdit && <button onClick={onEdit} className="btn-ghost" style={{ padding: '5px 12px', fontSize: '11px', gap: '5px' }}><Pencil size={12} /> Edit service</button>}
+          {onCancel && <button onClick={onCancel} style={{ display: 'inline-flex', alignItems: 'center', gap: '5px', padding: '5px 12px', fontSize: '11px', background: 'none', border: '1.5px solid rgba(158,42,42,0.35)', color: '#9e2a2a', borderRadius: '8px', cursor: 'pointer' }}><Trash2 size={12} /> Request cancellation</button>}
           {validated && <span style={{ fontSize: '10px', color: '#8a8478', fontStyle: 'italic' }}>Editing sends it back for review.</span>}
         </div>
       )}

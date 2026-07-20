@@ -23,6 +23,24 @@ export async function POST(req: NextRequest, { params }: { params: { id: string 
     return NextResponse.json({ data: { ok: true } })
   }
 
+  // Confirmer l'annulation demandée par l'agence → le service devient annulé
+  if (action === 'annuler') {
+    const { error } = await supabase.from('prestations')
+      .update({ statut: 'annule', annulation_demandee: false })
+      .eq('id', params.id)
+    if (error) return NextResponse.json({ error: error.message }, { status: 500 })
+    return NextResponse.json({ data: { ok: true } })
+  }
+
+  // Refuser la demande d'annulation → on garde le service
+  if (action === 'annulation_refusee') {
+    const { error } = await supabase.from('prestations')
+      .update({ annulation_demandee: false })
+      .eq('id', params.id)
+    if (error) return NextResponse.json({ error: error.message }, { status: 500 })
+    return NextResponse.json({ data: { ok: true } })
+  }
+
   if (action === 'valider') {
     const tarif = Number(body.tarif) || 0
     const isMad = prest.type === 'mad'
