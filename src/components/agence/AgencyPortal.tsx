@@ -34,6 +34,7 @@ function statusOf(p: any): { label: string; color: string; bg: string } {
 }
 
 function one(v: any) { return Array.isArray(v) ? v[0] : v }
+function eur(n: number) { return new Intl.NumberFormat('en-GB', { style: 'currency', currency: 'EUR' }).format(n || 0) }
 
 // ══════════════════════════════════════════════
 export default function AgencyPortal({ agencyName }: { agencyName: string }) {
@@ -185,6 +186,32 @@ function DossierCard({ d, onEdit, onAdd, onEditService, onReload }: { d: any; on
       {open && (
         <div style={{ borderTop: '1px solid #ede9e2', padding: '8px 12px 12px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
           {prestations.map((p: any) => <ServiceLine key={p.id} p={p} onEdit={() => onEditService(d, p)} onCancel={() => requestCancel(p.id)} />)}
+
+          {/* Total du dossier (prestations validées uniquement) */}
+          {(() => {
+            const ht = Number(d.montant_ht) || 0
+            if (ht <= 0) return null
+            const tva = Number(d.montant_tva) || 0
+            const ttc = Number(d.montant_ttc) || (ht + tva)
+            const priced = prestations.filter((p: any) => p.validation_statut === 'validee' && (Number(p.montant_ht) || 0) > 0).length
+            const totalPending = prestations.length - priced > 0
+            return (
+              <div style={{ background: '#fff', border: '1.5px solid #d8d2c8', borderRadius: '10px', padding: '10px 14px', marginTop: '2px' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '12px', color: '#5a564e', padding: '3px 0' }}>
+                  <span>Subtotal (excl. VAT)</span><span style={{ fontFamily: 'JetBrains Mono,monospace' }}>{eur(ht)}</span>
+                </div>
+                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '12px', color: '#5a564e', padding: '3px 0' }}>
+                  <span>VAT 10%</span><span style={{ fontFamily: 'JetBrains Mono,monospace' }}>{eur(tva)}</span>
+                </div>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingTop: '7px', marginTop: '4px', borderTop: '1.5px solid #ede9e2' }}>
+                  <span style={{ fontSize: '11px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.5px', color: '#16130e' }}>Total (incl. VAT)</span>
+                  <span style={{ fontFamily: 'Cormorant Garamond,serif', fontSize: '20px', color: '#9a7a28' }}>{eur(ttc)}</span>
+                </div>
+                {totalPending && <div style={{ fontSize: '10px', color: '#8a8478', marginTop: '4px', fontStyle: 'italic' }}>Excludes services still pending review.</div>}
+              </div>
+            )
+          })()}
+
           <div style={{ display: 'flex', gap: '8px', marginTop: '4px', flexWrap: 'wrap' }}>
             {canAdd && (
               <button onClick={() => onAdd(d)} disabled={busy} className="btn-primary" style={{ flex: '1 1 140px', justifyContent: 'center', gap: '6px' }}><Plus size={14} /> Add service</button>
@@ -312,7 +339,13 @@ function ServiceLine({ p, onEdit, onCancel }: { p: any; onEdit?: () => void; onC
           </DRow>
         )}
         {validated && price > 0 && (
-          <DRow label="Price"><span style={{ fontWeight: 700 }}>{new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' }).format(price)} <span style={{ fontSize: '10px', color: '#8a8478', fontWeight: 400 }}>excl. VAT</span></span></DRow>
+          <DRow label="Price">
+            {isMad && p.tarif_journalier_ht ? (
+              <span><span style={{ color: '#8a8478' }}>{eur(p.tarif_journalier_ht)}/day × {p.nb_jours} day{p.nb_jours > 1 ? 's' : ''} = </span><span style={{ fontWeight: 700 }}>{eur(price)}</span> <span style={{ fontSize: '10px', color: '#8a8478' }}>excl. VAT</span></span>
+            ) : (
+              <span><span style={{ fontWeight: 700 }}>{eur(price)}</span> <span style={{ fontSize: '10px', color: '#8a8478' }}>excl. VAT</span></span>
+            )}
+          </DRow>
         )}
         {p.validation_statut === 'refusee' && p.refus_motif && (
           <DRow label="Reason"><span style={{ color: '#9e2a2a' }}>{p.refus_motif}</span></DRow>
