@@ -166,6 +166,19 @@ function StatutSelector({ prestation }: { prestation: any }) {
 
 // ── PrestationCard ────────────────────────────
 
+// ── Disponibilité : créneaux horaires (un chauffeur peut enchaîner plusieurs
+//    missions/jour ; on ne bloque que si les horaires se chevauchent). ──
+const TRANSFER_DUR = 60
+function toMin(t?: string | null): number | null {
+  if (!t) return null
+  const [h, m] = t.slice(0, 5).split(':').map(Number)
+  return Number.isNaN(h) ? null : h * 60 + (m || 0)
+}
+function slotsOverlap(cur: { s: number; e: number } | null, slots: { s: number; e: number }[]): boolean {
+  if (!cur) return false
+  return slots.some(iv => cur.s < iv.e && iv.s < cur.e)
+}
+
 export default function PrestationCard({ p, dossierId, passagers = [] }: { p: any; dossierId: string; passagers?: any[] }) {
   const router = useRouter()
   const [paxIds, setPaxIds] = useState<string[]>(p.passager_ids ?? [])
@@ -185,6 +198,10 @@ export default function PrestationCard({ p, dossierId, passagers = [] }: { p: an
   const jours     = p.jours ?? []
   // Jour « couvert » = chauffeur OU sous-traitant (au jour), OU prestation entièrement sous-traitée
   const joursManquants = p.sous_traitant_id ? 0 : jours.filter((j: any) => !j.chauffeur_id && !j.sous_traitant_id).length
+  // Créneau horaire de CETTE prestation (dispo par chevauchement — null = pas d'heure connue)
+  const curInterval: { s: number; e: number } | null = p.type === 'mad'
+    ? { s: toMin(p.heure_debut_journee) ?? 0, e: toMin(p.heure_fin_journee) ?? 1440 }
+    : (() => { const d = toMin(p.heure_depart); return d == null ? null : { s: d, e: Math.min(1440, d + TRANSFER_DUR) } })()
   const [chauffeurs, setChauffeurs] = useState<any[]>([])
   const [vehicules, setVehicules] = useState<any[]>([])
   const [sousTraitants, setSousTraitants] = useState<any[]>([])
@@ -238,7 +255,7 @@ export default function PrestationCard({ p, dossierId, passagers = [] }: { p: an
     } catch (e: any) { toast.error(e.message) } finally { setValBusy(false) }
   }
   // Disponibilités par date (chauffeurs/véhicules déjà pris ailleurs)
-  const [dispo, setDispo] = useState<{ chauffeurs: Record<string, string[]>; vehicules: Record<string, string[]> }>({ chauffeurs: {}, vehicules: {} })
+  const [dispo, setDispo] = useState<{ chauffeurs: Record<string, { id: string; s: number; e: number }[]>; vehicules: Record<string, { id: string; s: number; e: number }[]> }>({ chauffeurs: {}, vehicules: {} })
 
   useEffect(() => {
     fetch('/api/chauffeurs').then(r => r.json()).then(d => setChauffeurs(d.data ?? []))
@@ -432,8 +449,10 @@ export default function PrestationCard({ p, dossierId, passagers = [] }: { p: an
                 style={{ background: !chauffeurTransfert ? '#fff8e8' : '#fff', border:`1px solid ${!chauffeurTransfert ? '#9a7a28' : '#b8b0a4'}`, padding:'5px 8px', fontSize:'11px', color:'#16130e', outline:'none', width:'100%', cursor:'pointer' }}>
                 <option value="">— Non affecté —</option>
                 {chauffeurs.map((c: any) => {
-                  const busy = (dispo.chauffeurs[p.date_debut]?.includes(c.id) ?? false) && c.id !== chauffeurTransfert
-                  return <option key={c.id} value={c.id} disabled={busy}>{c.prenom} {c.nom}{busy ? ' · occupé' : ''}</option>
+                  const slots = (dispo.chauffeurs[p.date_debut] ?? []).filter((iv: any) => iv.id === c.id)
+                  const conflict = c.id !== chauffeurTransfert && slotsOverlap(curInterval, slots)
+                  const sameDay = c.id !== chauffeurTransfert && slots.length > 0 && !conflict
+                  return <option key={c.id} value={c.id} disabled={conflict}>{c.prenom} {c.nom}{conflict ? ' · occupé (horaire)' : sameDay ? ' · déjà 1 ce jour' : ''}</option>
                 })}
               </select>
             </div>
@@ -646,8 +665,10 @@ export default function PrestationCard({ p, dossierId, passagers = [] }: { p: an
                       <option value="">{p.sous_traitant_id ? '↳ ST prestation' : '— Non affecté —'}</option>
                       <optgroup label="Chauffeurs">
                         {chauffeurs.map((c: any) => {
-                          const busy = (dispo.chauffeurs[j.date]?.includes(c.id) ?? false) && c.id !== chJour
-                          return <option key={c.id} value={`ch:${c.id}`} disabled={busy}>{c.prenom} {c.nom}{busy ? ' · occupé' : ''}</option>
+                          const slots = (dispo.chauffeurs[j.date] ?? []).filter((iv: any) => iv.id === c.id)
+                          const conflict = c.id !== chJour && slotsOverlap(curInterval, slots)
+                          const sameDay = c.id !== chJour && slots.length > 0 && !conflict
+                          return <option key={c.id} value={`ch:${c.id}`} disabled={conflict}>{c.prenom} {c.nom}{conflict ? ' · occupé (horaire)' : sameDay ? ' · déjà 1 ce jour' : ''}</option>
                         })}
                       </optgroup>
                       {sousTraitants.length > 0 && (
@@ -671,8 +692,10 @@ export default function PrestationCard({ p, dossierId, passagers = [] }: { p: an
                       }}>
                       <option value="">↳ {prestVehLabel}</option>
                       {vehicules.map((v: any) => {
-                        const busy = (dispo.vehicules[j.date]?.includes(v.id) ?? false) && v.id !== vehJour
-                        return <option key={v.id} value={v.id} disabled={busy}>{v.marque} {v.modele} · {v.immatriculation}{busy ? ' · occupé' : ''}</option>
+                        const slots = (dispo.vehicules[j.date] ?? []).filter((iv: any) => iv.id === v.id)
+                        const conflict = v.id !== vehJour && slotsOverlap(curInterval, slots)
+                        const sameDay = v.id !== vehJour && slots.length > 0 && !conflict
+                        return <option key={v.id} value={v.id} disabled={conflict}>{v.marque} {v.modele} · {v.immatriculation}{conflict ? ' · occupé (horaire)' : sameDay ? ' · déjà 1 ce jour' : ''}</option>
                       })}
                     </select>
                     <span style={{ fontFamily:'JetBrains Mono,monospace', fontSize:'11px', color:'#9a7a28', textAlign:'right' }}>

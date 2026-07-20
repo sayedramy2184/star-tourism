@@ -47,6 +47,29 @@ function jourVehiculeId(j: JourMad): string | null {
   return j.vehicule_id ?? j.prestation?.vehicule?.id ?? null
 }
 
+// Conflit = chevauchement HORAIRE (un chauffeur/véhicule peut faire plusieurs missions/jour)
+const TRANSFER_DUR = 60
+function toMinP(t?: string | null): number | null {
+  if (!t) return null
+  const [h, m] = t.slice(0, 5).split(':').map(Number)
+  return Number.isNaN(h) ? null : h * 60 + (m || 0)
+}
+function dayHasOverlap(jours: any[], transferts: any[]): boolean {
+  const iv: { s: number; e: number }[] = []
+  for (const j of jours) {
+    const s = toMinP(j.prestation?.heure_debut_journee); const e = toMinP(j.prestation?.heure_fin_journee)
+    iv.push((s == null || e == null) ? { s: 0, e: 1440 } : { s, e })
+  }
+  for (const t of transferts) {
+    const s = toMinP(t.heure_depart)
+    iv.push(s == null ? { s: 0, e: 1440 } : { s, e: Math.min(1440, s + TRANSFER_DUR) })
+  }
+  for (let i = 0; i < iv.length; i++)
+    for (let k = i + 1; k < iv.length; k++)
+      if (iv[i].s < iv[k].e && iv[k].s < iv[i].e) return true
+  return false
+}
+
 // Un jour est « affecté » s'il a un chauffeur OU un sous-traitant (au jour),
 // OU si toute la prestation est sous-traitée. Sinon il est « à affecter ».
 function jourAffecte(j: JourMad): boolean {
@@ -127,15 +150,15 @@ export default function PlanningPage() {
   const joursSansVehicule = data?.jours.filter(j => !jourVehiculeId(j)) ?? []
   const transfertsSansChauf = data?.transferts.filter(t => !t.chauffeur_id && !t.sous_traitant_id) ?? []
 
-  // Conflits : même chauffeur, même jour, 2+ missions
+  // Conflits : même chauffeur, même jour, avec CHEVAUCHEMENT horaire
   const conflits: string[] = []
   if (data) {
     days.forEach(day => {
       const dateStr = format(day,'yyyy-MM-dd')
       data.chauffeurs.forEach(c => {
-        const nb = (data.jours.filter(j => j.chauffeur_id === c.id && j.date === dateStr).length) +
-                   (data.transferts.filter(t => t.chauffeur_id === c.id && t.date_debut === dateStr).length)
-        if (nb > 1) conflits.push(`${c.prenom} ${c.nom} — ${format(day,'dd/MM',{locale:fr})}`)
+        const jr = data.jours.filter(j => j.chauffeur_id === c.id && j.date === dateStr)
+        const tr = data.transferts.filter(t => t.chauffeur_id === c.id && t.date_debut === dateStr)
+        if (dayHasOverlap(jr, tr)) conflits.push(`${c.prenom} ${c.nom} — ${format(day,'dd/MM',{locale:fr})}`)
       })
     })
   }
@@ -470,7 +493,7 @@ function ChauffeursView({ days, viewMode, data, onTooltip, dragJourId, dragOver,
                 const dateStr   = format(day,'yyyy-MM-dd')
                 const jours     = data.jours.filter((j: JourMad) => j.chauffeur_id === c.id && j.date === dateStr)
                 const transferts = data.transferts.filter((t: Transfert) => t.chauffeur_id === c.id && t.date_debut === dateStr)
-                const conflict  = (jours.length + transferts.length) > 1
+                const conflict  = dayHasOverlap(jours, transferts)
                 const today     = isToday(day)
                 const weekend   = [0, 6].includes(day.getDay())
                 const isConge   = c.statut === 'indisponible' || c.statut === 'conge'
@@ -602,7 +625,7 @@ function VehiculesView({ days, viewMode, data, onTooltip, router, vehCat }: any)
                 const trans   = data.transferts.filter((t: Transfert) => t.vehicule_id === v.id && t.date_debut === dateStr)
                 const today   = isToday(day)
                 const weekend = [0, 6].includes(day.getDay())
-                const conflict = (jours.length + trans.length) > 1
+                const conflict = dayHasOverlap(jours, trans)
 
                 return (
                   <td key={dateStr} style={{ padding:'3px', verticalAlign:'top', background: conflict ? 'rgba(158,42,42,0.06)' : today ? '#fdf6e3' : weekend ? '#f1ece4' : idx%2===0 ? '#faf9f7' : '#fff', borderRight:'1px solid #ede9e2' }}>
