@@ -105,25 +105,46 @@ export function PrestationLibreCard({ p, dossierId }: { p: any; dossierId: strin
 
   return (
     <div className="card" style={{ overflow: 'hidden' }}>
-      <div style={{ display: 'flex', alignItems: 'stretch', borderLeft: '5px solid #9a7a28' }}>
-        <div style={{ flex: 1, padding: '12px 16px' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '4px', flexWrap: 'wrap' }}>
-            <span style={{ display: 'inline-flex', alignItems: 'center', gap: '5px', fontSize: '10px', fontWeight: 700, letterSpacing: '1px', textTransform: 'uppercase', color: '#9a7a28', background: '#fdf6e3', border: '1px solid rgba(154,122,40,0.25)', padding: '2px 8px' }}>
-              <Sparkles size={11} /> Prestation libre
+
+      {/* Header — même structure que les autres prestations */}
+      <div style={{ display: 'flex', alignItems: 'stretch', borderBottom: '1.5px solid #b8b0a4' }}>
+        <div style={{ width: '5px', background: '#9a7a28', flexShrink: 0 }} />
+        <div style={{ flex: 1, padding: '10px 16px', display: 'flex', alignItems: 'center', gap: '14px', flexWrap: 'wrap' }}>
+          <span style={{ fontFamily: 'JetBrains Mono,monospace', fontSize: '10px', color: '#8a8478', background: '#f5f2ed', border: '1px solid #d8d2c8', padding: '2px 8px' }}>
+            P-0{p.ordre}
+          </span>
+          <span style={{ display: 'inline-flex', alignItems: 'center', gap: '5px', fontSize: '10px', fontWeight: 700, letterSpacing: '1px', textTransform: 'uppercase', color: '#9a7a28' }}>
+            <Sparkles size={11} /> Prestation libre
+          </span>
+          {p.date_debut && (
+            <span style={{ fontFamily: 'JetBrains Mono,monospace', fontSize: '11px', color: '#2e2b25' }}>
+              {format(parseISO(p.date_debut), 'dd/MM/yyyy', { locale: fr })}
             </span>
-            {p.date_debut && <span style={{ fontFamily: 'JetBrains Mono,monospace', fontSize: '11px', color: '#5a564e' }}>{format(parseISO(p.date_debut), 'dd/MM/yyyy', { locale: fr })}</span>}
-          </div>
-          <div style={{ fontSize: '15px', fontWeight: 600, color: '#16130e' }}>{p.libelle || 'Prestation'}</div>
-          {p.notes && <div style={{ fontSize: '12px', color: '#8a8478', marginTop: '2px', fontStyle: 'italic' }}>{p.notes}</div>}
+          )}
         </div>
-        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', justifyContent: 'center', gap: '8px', padding: '12px 16px', borderLeft: '1px solid #ede9e2' }}>
-          <span style={{ fontFamily: 'JetBrains Mono,monospace', fontSize: '15px', fontWeight: 700, color: '#9a7a28' }}>{fmt(p.montant_ht ?? 0)}</span>
-          <div style={{ display: 'flex', gap: '6px' }}>
-            <button onClick={() => setEdit(true)} disabled={busy} className="btn-ghost" style={{ padding: '4px 9px', fontSize: '10px' }}><Pencil size={11} /></button>
-            <button onClick={supprimer} disabled={busy} style={{ background: 'none', border: '1.5px solid rgba(158,42,42,0.3)', padding: '4px 8px', cursor: 'pointer', color: '#9e2a2a' }}><Trash2 size={11} /></button>
-          </div>
+        <div style={{ padding: '10px 16px', display: 'flex', alignItems: 'center', gap: '8px', borderLeft: '1px solid #d8d2c8', flexShrink: 0 }}>
+          <button onClick={() => setEdit(true)} disabled={busy} className="btn-ghost" style={{ padding: '4px 10px', fontSize: '10px' }}>
+            <Pencil size={11} /> Modifier
+          </button>
+          <button onClick={supprimer} disabled={busy} style={{ background: 'none', border: '1.5px solid rgba(158,42,42,0.3)', padding: '4px 8px', cursor: 'pointer', color: '#9e2a2a', display: 'inline-flex', alignItems: 'center' }}>
+            <Trash2 size={11} />
+          </button>
         </div>
       </div>
+
+      {/* Body — mêmes libellés/tailles que les autres prestations */}
+      <div style={{ padding: '14px 16px', display: 'grid', gridTemplateColumns: '1fr auto', gap: '16px', alignItems: 'start' }}>
+        <div>
+          <div style={{ fontSize: '8px', fontWeight: 600, letterSpacing: '2px', textTransform: 'uppercase', color: '#8a8478', marginBottom: '3px' }}>Désignation</div>
+          <div style={{ fontSize: '13px', fontWeight: 500, color: '#16130e' }}>{p.libelle || 'Prestation'}</div>
+          {p.notes && <div style={{ fontSize: '11px', color: '#8a8478', marginTop: '4px', fontStyle: 'italic' }}>{p.notes}</div>}
+        </div>
+        <div style={{ textAlign: 'right' }}>
+          <div style={{ fontSize: '8px', fontWeight: 600, letterSpacing: '2px', textTransform: 'uppercase', color: '#8a8478', marginBottom: '3px' }}>Montant HT</div>
+          <div style={{ fontFamily: 'JetBrains Mono,monospace', fontSize: '13px', fontWeight: 700, color: '#9a7a28' }}>{fmt(p.montant_ht ?? 0)}</div>
+        </div>
+      </div>
+
       {edit && <LibreModal dossierId={dossierId} dateDefaut={p.date_debut} prestation={p} onClose={() => setEdit(false)} />}
     </div>
   )
