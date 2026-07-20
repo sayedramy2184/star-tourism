@@ -1,6 +1,7 @@
 'use client'
 
 import { calcStatutClient, STATUT_MAP } from '@/lib/statut'
+import { chronoKey } from '@/lib/chrono'
 import { useState, useEffect, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
 import {
@@ -354,41 +355,43 @@ function MissionsView({ days, viewMode, data, onTooltip, onDragStart, router }: 
 
               return (
                 <td key={dateStr} style={{ padding:'3px', background: today ? '#fdf6e3' : weekend ? '#f1ece4' : idx%2===0 ? '#faf9f7' : '#fff', borderRight:'1px solid #ede9e2', verticalAlign:'top', minHeight:'48px' }}>
-                  {joursDay.map(j => {
-                    const nonAff = !j.chauffeur_id && !j.sous_traitant_id
-                    // Statut calculé pour CE jour précis (et non toute la période de la MAD)
-                    const statCalc = calcStatutClient({ statut: j.prestation.statut ?? j.statut, type:'mad', date_debut: j.date, date_fin: j.date, heure_debut_journee: j.prestation.heure_debut_journee, heure_fin_journee: j.prestation.heure_fin_journee })
-                    const si = STATUT_MAP[statCalc] ?? STATUT_MAP.en_attente
-                    return (
-                      <MBlock key={j.id}
-                        bg={nonAff ? '#fff8e8' : si.bg} border={nonAff ? '#9a7a28' : si.border.replace('rgba','rgba')} text={nonAff ? '#9a7a28' : si.color}
-                        icon="◷" label={`MAD · ${si.label}`}
-                        title={nonAff ? '⚠ Sans chauffeur' : `${j.chauffeur?.prenom ?? ''} ${j.chauffeur?.nom ?? ''}`}
-                        sub={j.prestation.heure_debut_journee ? `${j.prestation.heure_debut_journee}→${j.prestation.heure_fin_journee}` : null}
-                        compact={viewMode==='mois'}
-                        draggable={nonAff}
-                        onDragStart={() => onDragStart(j.id)}
-                        onClick={e => { e.stopPropagation(); onTooltip({ x:e.clientX, y:e.clientY, content: buildMadTooltip(j) }) }}
-                      />
-                    )
-                  })}
-                  {transDay.map(t => {
-                    const nonAff = !t.chauffeur_id && !t.sous_traitant_id
-                    const statCalcT = calcStatutClient({ statut: t.statut, type:'transfert', date_debut: t.date_debut, date_fin: t.date_debut, heure_depart: t.heure_depart })
-                    const siT = STATUT_MAP[statCalcT] ?? STATUT_MAP.en_attente
-                    return (
-                      <MBlock key={t.id}
-                        bg={nonAff ? '#eef4fb' : siT.bg} border={nonAff ? '#1e3f70' : siT.color} text={siT.color}
-                        icon="→" label={`Transfert · ${siT.label}`}
-                        title={nonAff ? '⚠ Sans chauffeur' : `${t.chauffeur?.prenom ?? ''} ${t.chauffeur?.nom ?? ''}`}
-                        sub={t.heure_depart ?? null}
-                        compact={viewMode==='mois'}
-                        draggable={false}
-                        onDragStart={() => {}}
-                        onClick={e => { e.stopPropagation(); onTooltip({ x:e.clientX, y:e.clientY, content: buildTransTooltip(t) }) }}
-                      />
-                    )
-                  })}
+                  {[
+                    ...joursDay.map(j => {
+                      const nonAff = !j.chauffeur_id && !j.sous_traitant_id
+                      // Statut calculé pour CE jour précis (et non toute la période de la MAD)
+                      const statCalc = calcStatutClient({ statut: j.prestation.statut ?? j.statut, type:'mad', date_debut: j.date, date_fin: j.date, heure_debut_journee: j.prestation.heure_debut_journee, heure_fin_journee: j.prestation.heure_fin_journee })
+                      const si = STATUT_MAP[statCalc] ?? STATUT_MAP.en_attente
+                      return { key: chronoKey(j), node: (
+                        <MBlock key={j.id}
+                          bg={nonAff ? '#fff8e8' : si.bg} border={nonAff ? '#9a7a28' : si.border.replace('rgba','rgba')} text={nonAff ? '#9a7a28' : si.color}
+                          icon="◷" label={`MAD · ${si.label}`}
+                          title={nonAff ? '⚠ Sans chauffeur' : `${j.chauffeur?.prenom ?? ''} ${j.chauffeur?.nom ?? ''}`}
+                          sub={j.prestation.heure_debut_journee ? `${j.prestation.heure_debut_journee}→${j.prestation.heure_fin_journee}` : null}
+                          compact={viewMode==='mois'}
+                          draggable={nonAff}
+                          onDragStart={() => onDragStart(j.id)}
+                          onClick={e => { e.stopPropagation(); onTooltip({ x:e.clientX, y:e.clientY, content: buildMadTooltip(j) }) }}
+                        />
+                      ) }
+                    }),
+                    ...transDay.map(t => {
+                      const nonAff = !t.chauffeur_id && !t.sous_traitant_id
+                      const statCalcT = calcStatutClient({ statut: t.statut, type:'transfert', date_debut: t.date_debut, date_fin: t.date_debut, heure_depart: t.heure_depart })
+                      const siT = STATUT_MAP[statCalcT] ?? STATUT_MAP.en_attente
+                      return { key: chronoKey(t), node: (
+                        <MBlock key={t.id}
+                          bg={nonAff ? '#eef4fb' : siT.bg} border={nonAff ? '#1e3f70' : siT.color} text={siT.color}
+                          icon="→" label={`Transfert · ${siT.label}`}
+                          title={nonAff ? '⚠ Sans chauffeur' : `${t.chauffeur?.prenom ?? ''} ${t.chauffeur?.nom ?? ''}`}
+                          sub={t.heure_depart ?? null}
+                          compact={viewMode==='mois'}
+                          draggable={false}
+                          onDragStart={() => {}}
+                          onClick={e => { e.stopPropagation(); onTooltip({ x:e.clientX, y:e.clientY, content: buildTransTooltip(t) }) }}
+                        />
+                      ) }
+                    }),
+                  ].sort((a, b) => a.key.localeCompare(b.key)).map(b => b.node)}
                 </td>
               )
             })}
@@ -510,30 +513,32 @@ function ChauffeursView({ days, viewMode, data, onTooltip, dragJourId, dragOver,
                     onDragLeave={() => onDragOver(null)}
                     onDrop={() => onDrop(c.id)}
                   >
-                    {jours.map((j: JourMad) => (
-                      <MBlock key={j.id}
-                        bg="#f8ece7" border="#a6432a" text="#a6432a"
-                        icon="◷" label="MAD"
-                        title={j.prestation.dossier.client.nom}
-                        sub={j.prestation.dossier.numero}
-                        compact={viewMode==='mois'}
-                        draggable={false}
-                        onDragStart={() => {}}
-                        onClick={e => { e.stopPropagation(); onTooltip({ x:e.clientX, y:e.clientY, content: buildMadTooltip(j) }) }}
-                      />
-                    ))}
-                    {transferts.map((t: Transfert) => (
-                      <MBlock key={t.id}
-                        bg="#e8eef8" border="#1e3f70" text="#1e3f70"
-                        icon="→" label="Transfert"
-                        title={t.dossier.client.nom}
-                        sub={t.heure_depart ?? t.dossier.numero}
-                        compact={viewMode==='mois'}
-                        draggable={false}
-                        onDragStart={() => {}}
-                        onClick={e => { e.stopPropagation(); onTooltip({ x:e.clientX, y:e.clientY, content: buildTransTooltip(t) }) }}
-                      />
-                    ))}
+                    {[
+                      ...jours.map((j: JourMad) => ({ key: chronoKey(j), node: (
+                        <MBlock key={j.id}
+                          bg="#f8ece7" border="#a6432a" text="#a6432a"
+                          icon="◷" label="MAD"
+                          title={j.prestation.dossier.client.nom}
+                          sub={j.prestation.dossier.numero}
+                          compact={viewMode==='mois'}
+                          draggable={false}
+                          onDragStart={() => {}}
+                          onClick={e => { e.stopPropagation(); onTooltip({ x:e.clientX, y:e.clientY, content: buildMadTooltip(j) }) }}
+                        />
+                      ) })),
+                      ...transferts.map((t: Transfert) => ({ key: chronoKey(t), node: (
+                        <MBlock key={t.id}
+                          bg="#e8eef8" border="#1e3f70" text="#1e3f70"
+                          icon="→" label="Transfert"
+                          title={t.dossier.client.nom}
+                          sub={t.heure_depart ?? t.dossier.numero}
+                          compact={viewMode==='mois'}
+                          draggable={false}
+                          onDragStart={() => {}}
+                          onClick={e => { e.stopPropagation(); onTooltip({ x:e.clientX, y:e.clientY, content: buildTransTooltip(t) }) }}
+                        />
+                      ) })),
+                    ].sort((a, b) => a.key.localeCompare(b.key)).map(b => b.node)}
                     {conflict && (
                       <div style={{ fontSize:'8px', color:'#9e2a2a', fontWeight:700, padding:'1px 4px', background:'rgba(158,42,42,0.1)', display:'flex', alignItems:'center', gap:'2px' }}>
                         <AlertTriangle size={8}/> CONFLIT
@@ -629,26 +634,28 @@ function VehiculesView({ days, viewMode, data, onTooltip, router, vehCat }: any)
 
                 return (
                   <td key={dateStr} style={{ padding:'3px', verticalAlign:'top', background: conflict ? 'rgba(158,42,42,0.06)' : today ? '#fdf6e3' : weekend ? '#f1ece4' : idx%2===0 ? '#faf9f7' : '#fff', borderRight:'1px solid #ede9e2' }}>
-                    {jours.map((j: JourMad) => (
-                      <MBlock key={j.id} bg="#f8ece7" border="#a6432a" text="#a6432a"
-                        icon="◷" label="MAD"
-                        title={j.prestation.dossier.client.nom}
-                        sub={j.prestation.dossier.numero}
-                        compact={viewMode==='mois'}
-                        draggable={false} onDragStart={() => {}}
-                        onClick={e => { e.stopPropagation(); onTooltip({ x:e.clientX, y:e.clientY, content: buildMadTooltip(j) }) }}
-                      />
-                    ))}
-                    {trans.map((t: Transfert) => (
-                      <MBlock key={t.id} bg="#e8eef8" border="#1e3f70" text="#1e3f70"
-                        icon="→" label="Transfert"
-                        title={t.dossier.client.nom}
-                        sub={t.heure_depart ?? t.dossier.numero}
-                        compact={viewMode==='mois'}
-                        draggable={false} onDragStart={() => {}}
-                        onClick={e => { e.stopPropagation(); onTooltip({ x:e.clientX, y:e.clientY, content: buildTransTooltip(t) }) }}
-                      />
-                    ))}
+                    {[
+                      ...jours.map((j: JourMad) => ({ key: chronoKey(j), node: (
+                        <MBlock key={j.id} bg="#f8ece7" border="#a6432a" text="#a6432a"
+                          icon="◷" label="MAD"
+                          title={j.prestation.dossier.client.nom}
+                          sub={j.prestation.dossier.numero}
+                          compact={viewMode==='mois'}
+                          draggable={false} onDragStart={() => {}}
+                          onClick={e => { e.stopPropagation(); onTooltip({ x:e.clientX, y:e.clientY, content: buildMadTooltip(j) }) }}
+                        />
+                      ) })),
+                      ...trans.map((t: Transfert) => ({ key: chronoKey(t), node: (
+                        <MBlock key={t.id} bg="#e8eef8" border="#1e3f70" text="#1e3f70"
+                          icon="→" label="Transfert"
+                          title={t.dossier.client.nom}
+                          sub={t.heure_depart ?? t.dossier.numero}
+                          compact={viewMode==='mois'}
+                          draggable={false} onDragStart={() => {}}
+                          onClick={e => { e.stopPropagation(); onTooltip({ x:e.clientX, y:e.clientY, content: buildTransTooltip(t) }) }}
+                        />
+                      ) })),
+                    ].sort((a, b) => a.key.localeCompare(b.key)).map(b => b.node)}
                   </td>
                 )
               })}
@@ -712,33 +719,35 @@ function PlanningMobile({ days, data, router }: { days: Date[]; data: any; route
           <div style={{ padding: '30px', textAlign: 'center', color: '#8a8478', fontSize: '12px' }}>Aucune mission ce jour</div>
         ) : (
           <>
-            {jours.map((j: JourMad) => {
-              const stat = calcStatutClient({ statut: j.prestation.statut ?? j.statut, type: 'mad', date_debut: j.date, date_fin: j.date, heure_debut_journee: j.prestation.heure_debut_journee, heure_fin_journee: j.prestation.heure_fin_journee })
-              const si = STATUT_MAP[stat] ?? STATUT_MAP.en_attente
-              const veh = (data.vehicules ?? []).find((v: any) => v.id === jourVehiculeId(j))
-              const chauf = j.chauffeur ? `${j.chauffeur.prenom} ${j.chauffeur.nom}` : j.sous_traitant ? `ST · ${j.sous_traitant.societe}` : null
-              return (
-                <MobileMissionCard key={j.id} type="MAD" typeColor="#a6432a" client={j.prestation.dossier.client.nom} numero={j.prestation.dossier.numero}
-                  heure={j.prestation.heure_debut_journee ? `${j.prestation.heure_debut_journee}→${j.prestation.heure_fin_journee ?? ''}` : null}
-                  itineraire={j.prestation.adresse_depart ?? 'Mise à disposition'}
-                  chauffeur={chauf} vehicule={veh ? `${veh.marque} ${veh.modele}` : (j.prestation.modele_souhaite ?? null)}
-                  siLabel={si.label} siColor={si.color} siBg={si.bg} siBorder={si.border}
-                  onOpen={() => router.push(`/dashboard/dossiers/${j.prestation.dossier.id}`)} />
-              )
-            })}
-            {transferts.map((t: Transfert) => {
-              const stat = calcStatutClient({ statut: t.statut, type: 'transfert', date_debut: t.date_debut, date_fin: t.date_debut, heure_depart: t.heure_depart })
-              const si = STATUT_MAP[stat] ?? STATUT_MAP.en_attente
-              const chauf = t.chauffeur ? `${t.chauffeur.prenom} ${t.chauffeur.nom}` : t.sous_traitant ? `ST · ${t.sous_traitant.societe}` : null
-              return (
-                <MobileMissionCard key={t.id} type="Transfert" typeColor="#1e3f70" client={t.dossier.client.nom} numero={t.dossier.numero}
-                  heure={t.heure_depart ?? null}
-                  itineraire={`${t.adresse_depart ?? '—'} → ${t.adresse_arrivee ?? '—'}`}
-                  chauffeur={chauf} vehicule={t.vehicule ? `${t.vehicule.marque} ${t.vehicule.modele}` : null}
-                  siLabel={si.label} siColor={si.color} siBg={si.bg} siBorder={si.border}
-                  onOpen={() => router.push(`/dashboard/dossiers/${t.dossier.id}`)} />
-              )
-            })}
+            {[
+              ...jours.map((j: JourMad) => {
+                const stat = calcStatutClient({ statut: j.prestation.statut ?? j.statut, type: 'mad', date_debut: j.date, date_fin: j.date, heure_debut_journee: j.prestation.heure_debut_journee, heure_fin_journee: j.prestation.heure_fin_journee })
+                const si = STATUT_MAP[stat] ?? STATUT_MAP.en_attente
+                const veh = (data.vehicules ?? []).find((v: any) => v.id === jourVehiculeId(j))
+                const chauf = j.chauffeur ? `${j.chauffeur.prenom} ${j.chauffeur.nom}` : j.sous_traitant ? `ST · ${j.sous_traitant.societe}` : null
+                return { key: chronoKey(j), node: (
+                  <MobileMissionCard key={j.id} type="MAD" typeColor="#a6432a" client={j.prestation.dossier.client.nom} numero={j.prestation.dossier.numero}
+                    heure={j.prestation.heure_debut_journee ? `${j.prestation.heure_debut_journee}→${j.prestation.heure_fin_journee ?? ''}` : null}
+                    itineraire={j.prestation.adresse_depart ?? 'Mise à disposition'}
+                    chauffeur={chauf} vehicule={veh ? `${veh.marque} ${veh.modele}` : (j.prestation.modele_souhaite ?? null)}
+                    siLabel={si.label} siColor={si.color} siBg={si.bg} siBorder={si.border}
+                    onOpen={() => router.push(`/dashboard/dossiers/${j.prestation.dossier.id}`)} />
+                ) }
+              }),
+              ...transferts.map((t: Transfert) => {
+                const stat = calcStatutClient({ statut: t.statut, type: 'transfert', date_debut: t.date_debut, date_fin: t.date_debut, heure_depart: t.heure_depart })
+                const si = STATUT_MAP[stat] ?? STATUT_MAP.en_attente
+                const chauf = t.chauffeur ? `${t.chauffeur.prenom} ${t.chauffeur.nom}` : t.sous_traitant ? `ST · ${t.sous_traitant.societe}` : null
+                return { key: chronoKey(t), node: (
+                  <MobileMissionCard key={t.id} type="Transfert" typeColor="#1e3f70" client={t.dossier.client.nom} numero={t.dossier.numero}
+                    heure={t.heure_depart ?? null}
+                    itineraire={`${t.adresse_depart ?? '—'} → ${t.adresse_arrivee ?? '—'}`}
+                    chauffeur={chauf} vehicule={t.vehicule ? `${t.vehicule.marque} ${t.vehicule.modele}` : null}
+                    siLabel={si.label} siColor={si.color} siBg={si.bg} siBorder={si.border}
+                    onOpen={() => router.push(`/dashboard/dossiers/${t.dossier.id}`)} />
+                ) }
+              }),
+            ].sort((a, b) => a.key.localeCompare(b.key)).map(b => b.node)}
           </>
         )}
       </div>
