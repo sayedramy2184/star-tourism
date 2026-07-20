@@ -30,6 +30,7 @@ export async function GET(req: NextRequest) {
       sous_traitant:sous_traitants(societe),
       jours:jours_mad(chauffeur_id, sous_traitant_id)
     `)
+    .in('type', ['mad', 'transfert'])   // exclut les prestations libres (hors transport)
     .lte('date_debut', to)
     .gte('date_fin', from)
     .order('date_debut', { ascending: true })

@@ -12,7 +12,13 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
 
   // Anti mass-assignment : colonnes immuables / calculées interdites à l'écriture directe
   const FORBIDDEN = ['id', 'company_id', 'dossier_id', 'montant_ht', 'nb_jours', 'created_at', 'ordre']
-  const clean = Object.fromEntries(Object.entries(body).filter(([k]) => !FORBIDDEN.includes(k)))
+  const clean: Record<string, any> = Object.fromEntries(Object.entries(body).filter(([k]) => !FORBIDDEN.includes(k)))
+
+  // Prestation libre : le montant suit le tarif fixe (recalculé côté serveur)
+  const { data: prest } = await supabase.from('prestations').select('type, dossier_id').eq('id', params.id).single()
+  if (prest?.type === 'libre' && body.tarif_fixe_ht !== undefined) {
+    clean.montant_ht = Number(body.tarif_fixe_ht) || 0
+  }
 
   const { data, error } = await supabase
     .from('prestations')
@@ -26,6 +32,9 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
     console.error('BODY:', JSON.stringify(body))
     return NextResponse.json({ error: error.message }, { status: 500 })
   }
+  if (prest?.type === 'libre' && prest.dossier_id) {
+    await supabase.rpc('recalc_dossier', { p_dossier_id: prest.dossier_id })
+  }
   return NextResponse.json({ data })
 }
 
@@ -35,6 +44,17 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
     .from('prestations').select('*').eq('id', params.id).single()
   if (error) return NextResponse.json({ error: error.message }, { status: 404 })
   return NextResponse.json({ data })
+}
+
+// ── DELETE — supprimer une prestation (+ ses jours), recalcule le dossier ──
+export async function DELETE(_req: NextRequest, { params }: { params: { id: string } }) {
+  const supabase = createClient()
+  const { data: prest } = await supabase.from('prestations').select('dossier_id').eq('id', params.id).single()
+  await supabase.from('jours_mad').delete().eq('prestation_id', params.id)
+  const { error } = await supabase.from('prestations').delete().eq('id', params.id)
+  if (error) return NextResponse.json({ error: error.message }, { status: 500 })
+  if (prest?.dossier_id) await supabase.rpc('recalc_dossier', { p_dossier_id: prest.dossier_id })
+  return NextResponse.json({ success: true })
 }
 
 // ── PUT — édition complète d'une prestation (détails + tarif) ──

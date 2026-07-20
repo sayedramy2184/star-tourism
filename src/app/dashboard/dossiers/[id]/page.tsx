@@ -6,6 +6,7 @@ import { fr } from 'date-fns/locale'
 import { ArrowLeft, AlertTriangle } from 'lucide-react'
 import { BoutonModifierDossier, BoutonAjoutPrestation, BoutonAffecterVehicule, BoutonValiderDossier, BoutonSupprimerDossier } from '@/components/dossiers/DossierActions'
 import PrestationCard from '@/components/dossiers/PrestationCard'
+import { BoutonPrestationLibre, PrestationLibreCard } from '@/components/dossiers/PrestationLibre'
 import GenererFactureButton from '@/components/factures/GenererFactureButton'
 import PassagersDossier from '@/components/dossiers/PassagersDossier'
 import { byChrono } from '@/lib/chrono'
@@ -177,18 +178,23 @@ export default async function DossierDetailPage({ params }: { params: { id: stri
           </div>
 
           {/* Prestations */}
-          <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom:'12px' }}>
+          <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom:'12px', gap:'8px', flexWrap:'wrap' }}>
             <span className="section-title">Prestations</span>
-            <BoutonAjoutPrestation
-              dossierId={data.id}
-              dateDebutDossier={data.date_debut}
-              dateFinDossier={data.date_fin}
-            />
+            <div style={{ display:'flex', gap:'8px', flexWrap:'wrap' }}>
+              <BoutonPrestationLibre dossierId={data.id} dateDefaut={data.date_debut} />
+              <BoutonAjoutPrestation
+                dossierId={data.id}
+                dateDebutDossier={data.date_debut}
+                dateFinDossier={data.date_fin}
+              />
+            </div>
           </div>
 
           <div style={{ display:'flex', flexDirection:'column', gap:'12px' }}>
             {prestations.map((p: any) => (
-              <PrestationCard key={p.id} p={p} dossierId={data.id} passagers={data.passagers ?? []} />
+              p.type === 'libre'
+                ? <PrestationLibreCard key={p.id} p={p} dossierId={data.id} />
+                : <PrestationCard key={p.id} p={p} dossierId={data.id} passagers={data.passagers ?? []} />
             ))}
           </div>
 

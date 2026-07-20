@@ -17,7 +17,7 @@ export async function POST(req: NextRequest) {
 
   // Calcul montant HT
   let montant_ht = 0
-  if (prestationData.type === 'transfert') {
+  if (prestationData.type === 'transfert' || prestationData.type === 'libre') {
     montant_ht = prestationData.tarif_fixe_ht ?? 0
   } else if (prestationData.type === 'mad') {
     montant_ht = (prestationData.jours ?? []).reduce((s: number, j: any) => s + (j.tarif_ht ?? 0), 0)

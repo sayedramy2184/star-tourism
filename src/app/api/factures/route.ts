@@ -73,7 +73,7 @@ export async function POST(req: NextRequest) {
         id, numero, client_id, montant_ht,
         prestations(
           id, ordre, type, date_debut, date_fin, nb_jours,
-          adresse_depart, adresse_arrivee, modele_souhaite, montant_ht,
+          adresse_depart, adresse_arrivee, modele_souhaite, montant_ht, libelle, notes, statut,
           jours:jours_mad(id)
         )
       `)
@@ -83,17 +83,22 @@ export async function POST(req: NextRequest) {
 
     dossierId = dossier.id
     clientId = dossier.client_id
-    const prestations = [...(dossier.prestations ?? [])].sort((a: any, b: any) => a.ordre - b.ordre)
+    const prestations = [...(dossier.prestations ?? [])]
+      .filter((p: any) => p.statut !== 'annule')   // pas de ligne pour une prestation annulée
+      .sort((a: any, b: any) => a.ordre - b.ordre)
     lignesInput = prestations.map((p: any, i: number) => {
       const isMad = p.type === 'mad'
+      const isLibre = p.type === 'libre'
       const nbj = isMad ? (p.jours?.length || p.nb_jours || 1) : 1
       const quantite = isMad ? nbj : 1
       const pu = round2(quantite > 0 ? (p.montant_ht ?? 0) / quantite : (p.montant_ht ?? 0))
       const trajet = [p.adresse_depart, p.adresse_arrivee].filter(Boolean).join(' → ')
       return {
         ordre: i + 1,
-        designation: isMad ? 'Mise à disposition avec chauffeur' : 'Transfert privé avec chauffeur',
-        description: [`${p.date_debut} → ${p.date_fin}`, p.modele_souhaite, trajet || null].filter(Boolean).join(' · '),
+        designation: isLibre ? (p.libelle || 'Prestation') : isMad ? 'Mise à disposition avec chauffeur' : 'Transfert privé avec chauffeur',
+        description: isLibre
+          ? [p.date_debut, p.notes || null].filter(Boolean).join(' · ') || null
+          : [`${p.date_debut} → ${p.date_fin}`, p.modele_souhaite, trajet || null].filter(Boolean).join(' · '),
         reference: `${dossier.numero} · P-${String(p.ordre).padStart(2, '0')}`,
         quantite,
         prix_unitaire_ht: pu,
