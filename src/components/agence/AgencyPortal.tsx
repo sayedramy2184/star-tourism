@@ -8,12 +8,12 @@ import toast from 'react-hot-toast'
 import { Plus, Trash2, LogOut, Users, ChevronRight, ListChecks, Send, Pencil } from 'lucide-react'
 
 // ── Labels ─────────────────────────────────────
+// Mêmes catégories que le dashboard (valeurs identiques à modele_souhaite)
 const VEHICLES = [
   { value: 'Berline standard', en: 'Standard sedan' },
   { value: 'Berline premium', en: 'Premium sedan' },
   { value: 'Berline prestige', en: 'Prestige sedan' },
   { value: 'Van / Minibus', en: 'Van / Minibus' },
-  { value: 'Van Bagages', en: 'Luggage van' },
   { value: 'SUV premium', en: 'Premium SUV' },
   { value: 'Électrique', en: 'Electric' },
 ]
@@ -211,6 +211,27 @@ function serviceFromPrestation(p: any) {
   }
 }
 
+// Chauffeur(s) + véhicule affectés — pour un transfert (niveau prestation)
+// ou une MAD (affectation par jour dans jours_mad).
+function assignedInfo(p: any): { chauffeurs: { nom: string; tel: string | null }[]; veh: string | null } {
+  if (p.type !== 'mad') {
+    const ch = one(p.chauffeur); const veh = one(p.vehicule) || one(p.vehicule_ext)
+    return {
+      chauffeurs: ch ? [{ nom: `${ch.prenom} ${ch.nom}`.trim(), tel: ch.telephone ?? null }] : [],
+      veh: veh ? `${veh.marque} ${veh.modele}` : null,
+    }
+  }
+  const map = new Map<string, { nom: string; tel: string | null }>()
+  let veh: string | null = null
+  for (const j of p.jours_mad ?? []) {
+    const c = one(j.chauffeur)
+    if (c) { const nom = `${c.prenom} ${c.nom}`.trim(); if (nom && !map.has(nom)) map.set(nom, { nom, tel: c.telephone ?? null }) }
+    const v = one(j.vehicule) || one(j.vehicule_ext)
+    if (v && !veh) veh = `${v.marque} ${v.modele}`
+  }
+  return { chauffeurs: Array.from(map.values()), veh }
+}
+
 function DRow({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <div style={{ display: 'flex', gap: '8px', fontSize: '12px', lineHeight: 1.4 }}>
@@ -224,7 +245,7 @@ function ServiceLine({ p, onEdit }: { p: any; onEdit?: () => void }) {
   const s = statusOf(p)
   const isMad = p.type === 'mad'
   const color = isMad ? '#a6432a' : '#1e3f70'
-  const veh = one(p.vehicule); const ch = one(p.chauffeur)
+  const asg = assignedInfo(p)
   const validated = p.validation_statut === 'validee'
   const canEdit = p.validation_statut !== 'refusee' && p.statut !== 'termine'
   const price = Number(p.montant_ht) || 0
@@ -257,8 +278,17 @@ function ServiceLine({ p, onEdit }: { p: any; onEdit?: () => void }) {
         )}
         {vehLbl && <DRow label="Vehicle">{vehLbl}</DRow>}
         <DRow label="Passengers">{p.nb_passagers ?? 1}{(p.nb_bagages ?? 0) > 0 ? ` · ${p.nb_bagages} bag(s)` : ''}</DRow>
-        {validated && (veh || ch) && (
-          <DRow label="Assigned"><span style={{ color: '#1e5e3a', fontWeight: 600 }}>{[ch ? `${ch.prenom} ${ch.nom}` : '', veh ? `${veh.marque} ${veh.modele}` : ''].filter(Boolean).join(' · ')}</span></DRow>
+        {(asg.chauffeurs.length > 0 || asg.veh) && (
+          <DRow label={asg.chauffeurs.length > 1 ? 'Drivers' : 'Driver'}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
+              {asg.chauffeurs.map((c, k) => (
+                <span key={k} style={{ color: '#1e5e3a', fontWeight: 600 }}>
+                  {c.nom}{c.tel ? <> · <a href={`tel:${c.tel}`} style={{ color: '#1e5e3a', textDecoration: 'none' }}>{c.tel}</a></> : ''}
+                </span>
+              ))}
+              {asg.veh && <span style={{ color: '#16130e' }}>{asg.veh}</span>}
+            </div>
+          </DRow>
         )}
         {validated && price > 0 && (
           <DRow label="Price"><span style={{ fontWeight: 700 }}>{new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' }).format(price)} <span style={{ fontSize: '10px', color: '#8a8478', fontWeight: 400 }}>excl. VAT</span></span></DRow>

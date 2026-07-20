@@ -36,8 +36,15 @@ export async function GET() {
         date_debut, date_fin, heure_depart, heure_debut_journee, heure_fin_journee,
         adresse_depart, adresse_arrivee, modele_souhaite, nb_passagers, nb_bagages,
         vol_numero, vol_heure, vol_ville, vol_terminal,
-        chauffeur:chauffeurs(nom, prenom),
-        vehicule:vehicules(marque, modele)
+        chauffeur:chauffeurs(nom, prenom, telephone),
+        vehicule:vehicules(marque, modele, immatriculation),
+        vehicule_ext:vehicules_ext(marque, modele),
+        jours_mad(
+          date,
+          chauffeur:chauffeurs(nom, prenom, telephone),
+          vehicule:vehicules(marque, modele, immatriculation),
+          vehicule_ext:vehicules_ext(marque, modele)
+        )
       )
     `)
     .eq('client_id', a.account.id)
