@@ -8,6 +8,7 @@ import { BoutonModifierDossier, BoutonAjoutPrestation, BoutonAffecterVehicule, B
 import PrestationCard from '@/components/dossiers/PrestationCard'
 import GenererFactureButton from '@/components/factures/GenererFactureButton'
 import PassagersDossier from '@/components/dossiers/PassagersDossier'
+import { byChrono } from '@/lib/chrono'
 
 function fmt(n: number) {
   return new Intl.NumberFormat('fr-FR', { style:'currency', currency:'EUR' }).format(n)
@@ -62,7 +63,7 @@ export default async function DossierDetailPage({ params }: { params: { id: stri
   if (error || !data) notFound()
 
   // Trier
-  const prestations = (data.prestations ?? []).sort((a: any, b: any) => a.ordre - b.ordre)
+  const prestations = [...(data.prestations ?? [])].sort(byChrono)
   prestations.forEach((p: any) => {
     if (p.jours) p.jours.sort((a: any, b: any) => a.date.localeCompare(b.date))
   })

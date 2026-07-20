@@ -86,7 +86,8 @@ function normalize(jours: any[], transferts: any[]): Mission[] {
       passagers: pax,
     }
   })
-  return [...t, ...m]
+  return [...t, ...m].sort((a, b) =>
+    `${a.date ?? ''}T${a.heureDebut ?? '00:00'}`.localeCompare(`${b.date ?? ''}T${b.heureDebut ?? '00:00'}`))
 }
 
 export default function DocumentsControle({ jours, transferts, chauffeur }: {

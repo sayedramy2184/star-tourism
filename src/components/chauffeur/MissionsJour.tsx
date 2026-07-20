@@ -12,6 +12,7 @@ import {
   Check, Flag, Play, Building2,
 } from 'lucide-react'
 import DocumentsControle from './DocumentsControle'
+import { chronoKey } from '@/lib/chrono'
 
 type AppMode = 'chauffeur' | 'sous_traitant'
 const AppModeContext = createContext<AppMode>('chauffeur')
@@ -231,8 +232,14 @@ function TabJour() {
               {total} mission{total > 1 ? 's' : ''}
             </div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
-              {(data?.transferts ?? []).map((t: any) => <TransfertCard key={t.id} t={t} />)}
-              {(data?.jours ?? []).map((j: any) => <MadCard key={j.id} j={j} onSaved={() => load(date)} />)}
+              {[
+                ...(data?.transferts ?? []).map((t: any) => ({ kind: 't' as const, id: t.id, data: t })),
+                ...(data?.jours ?? []).map((j: any) => ({ kind: 'j' as const, id: j.id, data: j })),
+              ]
+                .sort((a, b) => chronoKey(a.data).localeCompare(chronoKey(b.data)))
+                .map(it => it.kind === 't'
+                  ? <TransfertCard key={it.id} t={it.data} />
+                  : <MadCard key={it.id} j={it.data} onSaved={() => load(date)} />)}
             </div>
           </>
         )}

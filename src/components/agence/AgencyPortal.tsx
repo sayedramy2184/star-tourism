@@ -6,6 +6,7 @@ import { createClient } from '@/lib/supabase/client'
 import { format, parseISO } from 'date-fns'
 import toast from 'react-hot-toast'
 import { Plus, Trash2, LogOut, Users, ChevronRight, ListChecks, Send, Pencil } from 'lucide-react'
+import { byChrono } from '@/lib/chrono'
 
 // ── Labels ─────────────────────────────────────
 // Mêmes catégories que le dashboard (valeurs identiques à modele_souhaite)
@@ -128,7 +129,7 @@ function paxLine(passagers: any[]): string {
 function DossierCard({ d, onEdit, onAdd, onEditService, onReload }: { d: any; onEdit: (d: any) => void; onAdd: (d: any) => void; onEditService: (d: any, p: any) => void; onReload: () => void }) {
   const [open, setOpen] = useState(false)
   const [busy, setBusy] = useState(false)
-  const prestations = d.prestations ?? []
+  const prestations = [...(d.prestations ?? [])].sort(byChrono)
   const pending = prestations.filter((p: any) => p.validation_statut === 'a_valider').length
   // Modifiable (edit complet) tant que toutes les prestations sont encore « à valider »
   const editable = prestations.length > 0 && prestations.every((p: any) => p.validation_statut === 'a_valider')

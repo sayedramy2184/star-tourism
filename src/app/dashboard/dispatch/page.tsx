@@ -7,6 +7,7 @@ import { format, parseISO, startOfWeek, endOfWeek } from 'date-fns'
 import { fr } from 'date-fns/locale'
 import toast from 'react-hot-toast'
 import { calcStatutClient, STATUT_MAP, type PrestationStatut } from '@/lib/statut'
+import { byChrono } from '@/lib/chrono'
 import FlightBlock from '@/components/dossiers/FlightBlock'
 import { flag } from '@/components/dossiers/PassagersDossier'
 import { useSearchPaginate } from '@/lib/useSearchPaginate'
@@ -66,8 +67,9 @@ export default function DispatchPage() {
   const enCours = counts.en_cours
   const aFacturer = counts.termine
 
-  // Filtre statut + recherche
-  const parStatut = statutFiltre === 'toutes' ? missions : missions.filter(m => effectif(m) === statutFiltre)
+  // Filtre statut + recherche (missions triées chronologiquement : date puis heure)
+  const parStatut = (statutFiltre === 'toutes' ? missions : missions.filter(m => effectif(m) === statutFiltre))
+    .slice().sort(byChrono)
   const sp = useSearchPaginate(parStatut, (m: any) => {
     const d = one(m.dossier); const c = one(d?.client)
     return `${d?.numero ?? ''} ${c?.nom ?? ''} ${m.adresse_depart ?? ''} ${m.adresse_arrivee ?? ''} ${m.vol_numero ?? ''}`
