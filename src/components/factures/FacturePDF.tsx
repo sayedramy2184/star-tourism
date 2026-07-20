@@ -3,9 +3,18 @@
 // sans dépendance réseau au moment du rendu.
 
 import React from 'react'
+import fs from 'fs'
+import path from 'path'
 import {
-  Document, Page, Text, View, StyleSheet, renderToBuffer,
+  Document, Page, Text, View, Image, StyleSheet, renderToBuffer,
 } from '@react-pdf/renderer'
+
+// Logo société (boussole) — lu une seule fois et embarqué en data-URI.
+let LOGO_DATA: string | null = null
+try {
+  const buf = fs.readFileSync(path.join(process.cwd(), 'public', 'logo.png'))
+  LOGO_DATA = `data:image/png;base64,${buf.toString('base64')}`
+} catch { LOGO_DATA = null }
 
 // ── Couleurs de marque ────────────────────────
 const OR    = '#9a7a28'
@@ -69,8 +78,28 @@ export interface FacturePDFData {
   dossierNumero: string | null
 }
 
+// Formatage € en ASCII pur : les polices standard du PDF (Helvetica) ne savent pas
+// dessiner l'espace insécable étroit (U+202F) qu'insère Intl.NumberFormat('fr-FR'),
+// d'où l'affichage « 5/200 ». On construit le séparateur de milliers à la main.
 function eur(n: number) {
-  return new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' }).format(n ?? 0)
+  const v = n ?? 0
+  const neg = v < 0
+  const [ent, dec] = Math.abs(v).toFixed(2).split('.')
+  const entSep = ent.replace(/\B(?=(\d{3})+(?!\d))/g, ' ')
+  return `${neg ? '-' : ''}${entSep},${dec} €`
+}
+
+// Assainit un texte libre pour les polices standard du PDF (Latin-1 uniquement) :
+// flèches, espaces insécables et guillemets typographiques → équivalents ASCII.
+function safe(s: string | null | undefined): string {
+  if (!s) return ''
+  return String(s)
+    .replace(/[  ]/g, ' ')
+    .replace(/[→➔➜]/g, '-')
+    .replace(/[‘’′]/g, "'")
+    .replace(/[“”]/g, '"')
+    .replace(/[–—]/g, '-')
+    .replace(/[…]/g, '...')
 }
 function dateFr(d: string) {
   const [y, m, j] = d.split('-')
@@ -84,6 +113,7 @@ const styles = StyleSheet.create({
   header: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 28 },
   brandMark: { flexDirection: 'row', alignItems: 'center' },
   brandBox: { width: 22, height: 22, borderWidth: 1, borderColor: OR, alignItems: 'center', justifyContent: 'center', marginRight: 8 },
+  brandLogo: { width: 42, height: 36, marginRight: 8, objectFit: 'contain' },
   brandBoxTxt: { fontFamily: 'Times-Roman', fontSize: 12, color: OR },
   brandName: { fontFamily: 'Times-Roman', fontSize: 15, letterSpacing: 3, color: NOIR },
   brandSub: { fontSize: 6, letterSpacing: 2, color: '#9c968b', marginTop: 3, textTransform: 'uppercase' },
@@ -161,17 +191,19 @@ function FactureDocument({ facture, lignes, client, societe, dossierNumero }: Fa
         <View style={styles.header}>
           <View>
             <View style={styles.brandMark}>
-              <View style={styles.brandBox}><Text style={styles.brandBoxTxt}>S</Text></View>
+              {LOGO_DATA
+                ? <Image src={LOGO_DATA} style={styles.brandLogo} />
+                : <View style={styles.brandBox}><Text style={styles.brandBoxTxt}>S</Text></View>}
               <Text style={styles.brandName}>STAR TOURISM</Text>
             </View>
             <Text style={styles.brandSub}>Services Drive</Text>
           </View>
           <View style={styles.societeBlock}>
-            <Text style={styles.societeNom}>{societe.nom ?? 'Ma société'}</Text>
-            {societe.adresse ? <Text style={styles.societeLine}>{societe.adresse}</Text> : null}
-            {villeLigne ? <Text style={styles.societeLine}>{villeLigne}</Text> : null}
-            {societe.telephone ? <Text style={styles.societeLine}>{societe.telephone}</Text> : null}
-            {societe.email ? <Text style={styles.societeLine}>{societe.email}</Text> : null}
+            <Text style={styles.societeNom}>{safe(societe.nom) || 'Ma société'}</Text>
+            {societe.adresse ? <Text style={styles.societeLine}>{safe(societe.adresse)}</Text> : null}
+            {villeLigne ? <Text style={styles.societeLine}>{safe(villeLigne)}</Text> : null}
+            {societe.telephone ? <Text style={styles.societeLine}>{safe(societe.telephone)}</Text> : null}
+            {societe.email ? <Text style={styles.societeLine}>{safe(societe.email)}</Text> : null}
           </View>
         </View>
 
@@ -200,11 +232,11 @@ function FactureDocument({ facture, lignes, client, societe, dossierNumero }: Fa
         {/* Client */}
         <View style={styles.billTo}>
           <Text style={styles.billToLabel}>Facturé à</Text>
-          <Text style={styles.billToNom}>{client.nom}</Text>
-          {client.contact_nom ? <Text style={styles.billToLine}>À l'attention de {client.contact_nom}</Text> : null}
-          {client.adresse ? <Text style={styles.billToLine}>{client.adresse}</Text> : null}
-          {clientVille ? <Text style={styles.billToLine}>{clientVille}{client.pays && client.pays !== 'France' ? `, ${client.pays}` : ''}</Text> : null}
-          {client.numero_tva ? <Text style={styles.billToLine}>TVA : {client.numero_tva}</Text> : null}
+          <Text style={styles.billToNom}>{safe(client.nom)}</Text>
+          {client.contact_nom ? <Text style={styles.billToLine}>À l'attention de {safe(client.contact_nom)}</Text> : null}
+          {client.adresse ? <Text style={styles.billToLine}>{safe(client.adresse)}</Text> : null}
+          {clientVille ? <Text style={styles.billToLine}>{safe(clientVille)}{client.pays && client.pays !== 'France' ? `, ${safe(client.pays)}` : ''}</Text> : null}
+          {client.numero_tva ? <Text style={styles.billToLine}>TVA : {safe(client.numero_tva)}</Text> : null}
         </View>
 
         {/* Tableau des lignes */}
@@ -217,9 +249,9 @@ function FactureDocument({ facture, lignes, client, societe, dossierNumero }: Fa
         {lignes.map((l, i) => (
           <View key={i} style={styles.tRow} wrap={false}>
             <View style={styles.cDesc}>
-              <Text style={styles.desigTxt}>{l.designation}</Text>
-              {l.description ? <Text style={styles.descTxt}>{l.description}</Text> : null}
-              {l.reference ? <Text style={styles.refTxt}>Réf. {l.reference}</Text> : null}
+              <Text style={styles.desigTxt}>{safe(l.designation)}</Text>
+              {l.description ? <Text style={styles.descTxt}>{safe(l.description)}</Text> : null}
+              {l.reference ? <Text style={styles.refTxt}>Réf. {safe(l.reference)}</Text> : null}
             </View>
             <Text style={[styles.numTxt, styles.cQte]}>{l.quantite}</Text>
             <Text style={[styles.numTxt, styles.cPu]}>{eur(l.prix_unitaire_ht)}</Text>
@@ -249,25 +281,25 @@ function FactureDocument({ facture, lignes, client, societe, dossierNumero }: Fa
         <View style={styles.payBlock}>
           <View style={styles.payCol}>
             <Text style={styles.payLabel}>Conditions de règlement</Text>
-            <Text style={styles.payLine}>{societe.conditions_paiement ?? 'Paiement à 30 jours'}</Text>
+            <Text style={styles.payLine}>{safe(societe.conditions_paiement) || 'Paiement à 30 jours'}</Text>
             <Text style={styles.payLine}>Échéance : {dateFr(facture.date_echeance)}</Text>
           </View>
           {(societe.iban || societe.bic) ? (
             <View style={styles.payCol}>
               <Text style={styles.payLabel}>Coordonnées bancaires</Text>
-              {societe.banque ? <Text style={styles.payLine}>{societe.banque}</Text> : null}
-              {societe.iban ? <Text style={styles.payMono}>IBAN {societe.iban}</Text> : null}
-              {societe.bic ? <Text style={styles.payMono}>BIC {societe.bic}</Text> : null}
+              {societe.banque ? <Text style={styles.payLine}>{safe(societe.banque)}</Text> : null}
+              {societe.iban ? <Text style={styles.payMono}>IBAN {safe(societe.iban)}</Text> : null}
+              {societe.bic ? <Text style={styles.payMono}>BIC {safe(societe.bic)}</Text> : null}
             </View>
           ) : null}
         </View>
 
-        {facture.notes ? <Text style={styles.notes}>{facture.notes}</Text> : null}
+        {facture.notes ? <Text style={styles.notes}>{safe(facture.notes)}</Text> : null}
 
         {/* Pied de page — mentions légales */}
         <View style={styles.footer} fixed>
-          {societe.mentions_legales ? <Text style={styles.footerTxt}>{societe.mentions_legales}</Text> : null}
-          {legalParts ? <Text style={styles.footerTxt}>{legalParts}</Text> : null}
+          {societe.mentions_legales ? <Text style={styles.footerTxt}>{safe(societe.mentions_legales)}</Text> : null}
+          {legalParts ? <Text style={styles.footerTxt}>{safe(legalParts)}</Text> : null}
         </View>
 
       </Page>
