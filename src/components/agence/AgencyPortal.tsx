@@ -292,10 +292,12 @@ function DRow({ label, children }: { label: string; children: React.ReactNode })
 function ServiceLine({ p, onEdit, onCancel }: { p: any; onEdit?: () => void; onCancel?: () => void }) {
   const s = statusOf(p)
   const isMad = p.type === 'mad'
-  const color = isMad ? '#a6432a' : '#1e3f70'
+  const isLibre = p.type === 'libre'
+  const color = isLibre ? '#9a7a28' : isMad ? '#a6432a' : '#1e3f70'
   const asg = assignedInfo(p)
   const validated = p.validation_statut === 'validee'
-  const canEdit = p.validation_statut !== 'refusee' && p.statut !== 'termine'
+  // Une prestation libre est un extra ajouté par nos soins : lecture seule côté agence.
+  const canEdit = !isLibre && p.validation_statut !== 'refusee' && p.statut !== 'termine'
   const price = Number(p.montant_ht) || 0
   const vehLbl = VEHICLES.find(v => v.value === p.modele_souhaite)?.en ?? p.modele_souhaite
 
@@ -303,7 +305,7 @@ function ServiceLine({ p, onEdit, onCancel }: { p: any; onEdit?: () => void; onC
     <div style={{ background: '#faf9f7', border: '1px solid #ede9e2', borderLeft: `3px solid ${color}`, borderRadius: '8px', padding: '11px 13px' }}>
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '8px', marginBottom: '9px' }}>
         <span style={{ fontSize: '10px', fontWeight: 800, letterSpacing: '0.5px', textTransform: 'uppercase', color }}>
-          {isMad ? 'Chauffeur service' : 'Transfer'}
+          {isLibre ? (p.libelle || 'Service') : isMad ? 'Chauffeur service' : 'Transfer'}
         </span>
         <span style={{ fontSize: '10px', fontWeight: 700, color: s.color, background: s.bg, padding: '3px 9px', borderRadius: '999px' }}>{s.label}</span>
       </div>
@@ -312,6 +314,11 @@ function ServiceLine({ p, onEdit, onCancel }: { p: any; onEdit?: () => void; onC
         <DRow label="Date">
           {format(parseISO(p.date_debut), 'EEE dd MMM yyyy')}{isMad && p.date_fin !== p.date_debut ? ` → ${format(parseISO(p.date_fin), 'EEE dd MMM yyyy')}` : ''}
         </DRow>
+
+        {isLibre ? (
+          p.notes ? <DRow label="Details">{p.notes}</DRow> : null
+        ) : (
+        <>
         <DRow label={isMad ? 'Hours' : 'Pick-up'}>
           {isMad
             ? `${p.heure_debut_journee?.slice(0, 5) ?? '—'} → ${p.heure_fin_journee?.slice(0, 5) ?? '—'}`
@@ -338,7 +345,9 @@ function ServiceLine({ p, onEdit, onCancel }: { p: any; onEdit?: () => void; onC
             </div>
           </DRow>
         )}
-        {validated && price > 0 && (
+        </>
+        )}
+        {price > 0 && (
           <DRow label="Price">
             {isMad && p.tarif_journalier_ht ? (
               <span><span style={{ color: '#8a8478' }}>{eur(p.tarif_journalier_ht)}/day × {p.nb_jours} day{p.nb_jours > 1 ? 's' : ''} = </span><span style={{ fontWeight: 700 }}>{eur(price)}</span> <span style={{ fontSize: '10px', color: '#8a8478' }}>excl. VAT</span></span>
