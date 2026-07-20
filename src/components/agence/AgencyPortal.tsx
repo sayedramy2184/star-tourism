@@ -41,11 +41,12 @@ export default function AgencyPortal({ agencyName }: { agencyName: string }) {
   const [tab, setTab] = useState<'requests' | 'new'>('requests')
   const [dossiers, setDossiers] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
-  const [edit, setEdit] = useState<{ mode: 'edit' | 'add'; dossierId: string; initial: any } | null>(null)
+  const [edit, setEdit] = useState<{ mode: 'edit' | 'add' | 'edit-service'; dossierId: string; prestationId?: string; initial: any } | null>(null)
 
   function startNew() { setEdit(null); setTab('new') }
   function startEdit(d: any) { setEdit({ mode: 'edit', dossierId: d.id, initial: initialFromDossier(d) }); setTab('new') }
   function startAdd(d: any) { setEdit({ mode: 'add', dossierId: d.id, initial: { services: [makeService()], passengers: [], notes: '' } }); setTab('new') }
+  function startEditService(d: any, p: any) { setEdit({ mode: 'edit-service', dossierId: d.id, prestationId: p.id, initial: { services: [serviceFromPrestation(p)], passengers: [], notes: '', wasValidated: p.validation_statut === 'validee' } }); setTab('new') }
 
   const load = useCallback(async () => {
     setLoading(true)
@@ -85,7 +86,7 @@ export default function AgencyPortal({ agencyName }: { agencyName: string }) {
 
       {/* Tabs */}
       <div style={{ maxWidth: '860px', margin: '0 auto', padding: '16px 16px 0', display: 'flex', gap: '8px' }}>
-        {([['requests', 'My requests', <ListChecks size={15} key="a" />], ['new', edit ? (edit.mode === 'add' ? 'Add service' : 'Edit request') : 'New request', <Plus size={15} key="b" />]] as const).map(([v, label, icon]) => (
+        {([['requests', 'My requests', <ListChecks size={15} key="a" />], ['new', edit ? (edit.mode === 'add' ? 'Add service' : edit.mode === 'edit-service' ? 'Edit service' : 'Edit request') : 'New request', <Plus size={15} key="b" />]] as const).map(([v, label, icon]) => (
           <button key={v} onClick={() => v === 'new' ? startNew() : setTab(v)}
             style={{ display: 'flex', alignItems: 'center', gap: '7px', padding: '9px 16px', cursor: 'pointer', border: 'none', borderRadius: '10px', fontSize: '13px', fontWeight: 600, background: tab === v ? '#16130e' : '#fff', color: tab === v ? '#fff' : '#5a564e' }}>
             {icon} {label}
@@ -95,15 +96,15 @@ export default function AgencyPortal({ agencyName }: { agencyName: string }) {
 
       <div style={{ maxWidth: '860px', margin: '0 auto', padding: '16px' }}>
         {tab === 'requests'
-          ? <RequestsList dossiers={dossiers} loading={loading} onNew={startNew} onEdit={startEdit} onAdd={startAdd} onReload={load} />
-          : <NewRequest key={(edit?.mode ?? 'new') + (edit?.dossierId ?? '')} initial={edit?.initial} mode={edit?.mode ?? 'new'} dossierId={edit?.dossierId} onDone={() => { load(); setEdit(null); setTab('requests') }} />}
+          ? <RequestsList dossiers={dossiers} loading={loading} onNew={startNew} onEdit={startEdit} onAdd={startAdd} onEditService={startEditService} onReload={load} />
+          : <NewRequest key={(edit?.mode ?? 'new') + (edit?.dossierId ?? '') + (edit?.prestationId ?? '')} initial={edit?.initial} mode={edit?.mode ?? 'new'} dossierId={edit?.dossierId} prestationId={edit?.prestationId} onDone={() => { load(); setEdit(null); setTab('requests') }} />}
       </div>
     </div>
   )
 }
 
 // ── Requests list ──────────────────────────────
-function RequestsList({ dossiers, loading, onNew, onEdit, onAdd, onReload }: { dossiers: any[]; loading: boolean; onNew: () => void; onEdit: (d: any) => void; onAdd: (d: any) => void; onReload: () => void }) {
+function RequestsList({ dossiers, loading, onNew, onEdit, onAdd, onEditService, onReload }: { dossiers: any[]; loading: boolean; onNew: () => void; onEdit: (d: any) => void; onAdd: (d: any) => void; onEditService: (d: any, p: any) => void; onReload: () => void }) {
   if (loading) return <div style={{ padding: '60px', textAlign: 'center', color: '#8a8478' }}>Loading…</div>
   if (dossiers.length === 0) return (
     <div style={{ padding: '60px 20px', textAlign: 'center' }}>
@@ -113,7 +114,7 @@ function RequestsList({ dossiers, loading, onNew, onEdit, onAdd, onReload }: { d
   )
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-      {dossiers.map(d => <DossierCard key={d.id} d={d} onEdit={onEdit} onAdd={onAdd} onReload={onReload} />)}
+      {dossiers.map(d => <DossierCard key={d.id} d={d} onEdit={onEdit} onAdd={onAdd} onEditService={onEditService} onReload={onReload} />)}
     </div>
   )
 }
@@ -124,7 +125,7 @@ function paxLine(passagers: any[]): string {
   return names.length <= 2 ? names.join(', ') : `${names.slice(0, 2).join(', ')} +${names.length - 2}`
 }
 
-function DossierCard({ d, onEdit, onAdd, onReload }: { d: any; onEdit: (d: any) => void; onAdd: (d: any) => void; onReload: () => void }) {
+function DossierCard({ d, onEdit, onAdd, onEditService, onReload }: { d: any; onEdit: (d: any) => void; onAdd: (d: any) => void; onEditService: (d: any, p: any) => void; onReload: () => void }) {
   const [open, setOpen] = useState(false)
   const [busy, setBusy] = useState(false)
   const prestations = d.prestations ?? []
@@ -162,7 +163,7 @@ function DossierCard({ d, onEdit, onAdd, onReload }: { d: any; onEdit: (d: any) 
       </button>
       {open && (
         <div style={{ borderTop: '1px solid #ede9e2', padding: '8px 12px 12px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
-          {prestations.map((p: any) => <ServiceLine key={p.id} p={p} passagers={d.passagers} />)}
+          {prestations.map((p: any) => <ServiceLine key={p.id} p={p} onEdit={() => onEditService(d, p)} />)}
           <div style={{ display: 'flex', gap: '8px', marginTop: '4px', flexWrap: 'wrap' }}>
             {canAdd && (
               <button onClick={() => onAdd(d)} disabled={busy} className="btn-primary" style={{ flex: '1 1 140px', justifyContent: 'center', gap: '6px' }}><Plus size={14} /> Add service</button>
@@ -196,31 +197,82 @@ function initialFromDossier(d: any) {
   return { services: services.length ? services : [makeService()], passengers, notes: d.notes ?? '' }
 }
 
-function ServiceLine({ p }: { p: any; passagers?: any[] }) {
+// Reconstruit un service (formulaire) depuis une prestation existante
+function serviceFromPrestation(p: any) {
+  return {
+    type: p.type,
+    date_debut: p.date_debut ?? '', date_fin: p.date_fin ?? '',
+    heure_depart: p.heure_depart?.slice(0, 5) ?? '',
+    heure_debut_journee: p.heure_debut_journee?.slice(0, 5) ?? '09:00',
+    heure_fin_journee: p.heure_fin_journee?.slice(0, 5) ?? '18:00',
+    adresse_depart: p.adresse_depart ?? '', adresse_arrivee: p.adresse_arrivee ?? '',
+    vol_numero: p.vol_numero ?? '', vol_heure: p.vol_heure?.slice(0, 5) ?? '', vol_ville: p.vol_ville ?? '', vol_terminal: p.vol_terminal ?? '',
+    modele_souhaite: p.modele_souhaite ?? '', nb_passagers: p.nb_passagers ?? 1, nb_bagages: p.nb_bagages ?? 0,
+  }
+}
+
+function DRow({ label, children }: { label: string; children: React.ReactNode }) {
+  return (
+    <div style={{ display: 'flex', gap: '8px', fontSize: '12px', lineHeight: 1.4 }}>
+      <span style={{ flexShrink: 0, width: '92px', color: '#8a8478', fontSize: '10px', fontWeight: 700, letterSpacing: '0.4px', textTransform: 'uppercase', paddingTop: '1px' }}>{label}</span>
+      <span style={{ flex: 1, color: '#16130e', minWidth: 0 }}>{children}</span>
+    </div>
+  )
+}
+
+function ServiceLine({ p, onEdit }: { p: any; onEdit?: () => void }) {
   const s = statusOf(p)
   const isMad = p.type === 'mad'
+  const color = isMad ? '#a6432a' : '#1e3f70'
   const veh = one(p.vehicule); const ch = one(p.chauffeur)
-  const heure = isMad ? p.heure_debut_journee : p.heure_depart
+  const validated = p.validation_statut === 'validee'
+  const canEdit = p.validation_statut !== 'refusee' && p.statut !== 'termine'
+  const price = Number(p.montant_ht) || 0
+  const vehLbl = VEHICLES.find(v => v.value === p.modele_souhaite)?.en ?? p.modele_souhaite
+
   return (
-    <div style={{ background: '#faf9f7', border: '1px solid #ede9e2', borderLeft: `3px solid ${isMad ? '#a6432a' : '#1e3f70'}`, borderRadius: '8px', padding: '10px 12px' }}>
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '8px' }}>
-        <span style={{ fontSize: '10px', fontWeight: 700, textTransform: 'uppercase', color: isMad ? '#a6432a' : '#1e3f70' }}>
-          {isMad ? 'Chauffeur service' : 'Transfer'}{heure ? ` · ${heure.slice(0, 5)}` : ''}
+    <div style={{ background: '#faf9f7', border: '1px solid #ede9e2', borderLeft: `3px solid ${color}`, borderRadius: '8px', padding: '11px 13px' }}>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '8px', marginBottom: '9px' }}>
+        <span style={{ fontSize: '10px', fontWeight: 800, letterSpacing: '0.5px', textTransform: 'uppercase', color }}>
+          {isMad ? 'Chauffeur service' : 'Transfer'}
         </span>
         <span style={{ fontSize: '10px', fontWeight: 700, color: s.color, background: s.bg, padding: '3px 9px', borderRadius: '999px' }}>{s.label}</span>
       </div>
-      <div style={{ fontSize: '11px', color: '#5a564e', marginTop: '3px' }}>
-        {format(parseISO(p.date_debut), 'dd MMM yyyy')}{isMad && p.date_fin !== p.date_debut ? ` → ${format(parseISO(p.date_fin), 'dd MMM')}` : ''}
-        {p.adresse_depart ? ` · ${p.adresse_depart}${p.adresse_arrivee ? ` → ${p.adresse_arrivee}` : ''}` : ''}
+
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+        <DRow label="Date">
+          {format(parseISO(p.date_debut), 'EEE dd MMM yyyy')}{isMad && p.date_fin !== p.date_debut ? ` → ${format(parseISO(p.date_fin), 'EEE dd MMM yyyy')}` : ''}
+        </DRow>
+        <DRow label={isMad ? 'Hours' : 'Pick-up'}>
+          {isMad
+            ? `${p.heure_debut_journee?.slice(0, 5) ?? '—'} → ${p.heure_fin_journee?.slice(0, 5) ?? '—'}`
+            : (p.heure_depart?.slice(0, 5) ?? '—')}
+        </DRow>
+        <DRow label={isMad ? 'Location' : 'From'}>{p.adresse_depart || '—'}</DRow>
+        {!isMad && <DRow label="To">{p.adresse_arrivee || '—'}</DRow>}
+        {(p.vol_numero || p.vol_ville || p.vol_terminal) && (
+          <DRow label="Flight">
+            <span style={{ color: '#1e3f70' }}>✈ {[p.vol_numero, p.vol_heure?.slice(0, 5), p.vol_ville, p.vol_terminal ? `T. ${p.vol_terminal}` : ''].filter(Boolean).join(' · ')}</span>
+          </DRow>
+        )}
+        {vehLbl && <DRow label="Vehicle">{vehLbl}</DRow>}
+        <DRow label="Passengers">{p.nb_passagers ?? 1}{(p.nb_bagages ?? 0) > 0 ? ` · ${p.nb_bagages} bag(s)` : ''}</DRow>
+        {validated && (veh || ch) && (
+          <DRow label="Assigned"><span style={{ color: '#1e5e3a', fontWeight: 600 }}>{[ch ? `${ch.prenom} ${ch.nom}` : '', veh ? `${veh.marque} ${veh.modele}` : ''].filter(Boolean).join(' · ')}</span></DRow>
+        )}
+        {validated && price > 0 && (
+          <DRow label="Price"><span style={{ fontWeight: 700 }}>{new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' }).format(price)} <span style={{ fontSize: '10px', color: '#8a8478', fontWeight: 400 }}>excl. VAT</span></span></DRow>
+        )}
+        {p.validation_statut === 'refusee' && p.refus_motif && (
+          <DRow label="Reason"><span style={{ color: '#9e2a2a' }}>{p.refus_motif}</span></DRow>
+        )}
       </div>
-      {p.vol_numero && <div style={{ fontSize: '11px', color: '#1e3f70', marginTop: '2px' }}>✈ {p.vol_numero}{p.vol_heure ? ` ${p.vol_heure.slice(0, 5)}` : ''}{p.vol_ville ? ` · ${p.vol_ville}` : ''}</div>}
-      {p.validation_statut === 'validee' && (veh || ch) && (
-        <div style={{ fontSize: '11px', color: '#1e5e3a', marginTop: '4px', fontWeight: 600 }}>
-          {ch ? `${ch.prenom} ${ch.nom}` : ''}{ch && veh ? ' · ' : ''}{veh ? `${veh.marque} ${veh.modele}` : ''}
+
+      {canEdit && onEdit && (
+        <div style={{ marginTop: '10px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '8px', flexWrap: 'wrap' }}>
+          <button onClick={onEdit} className="btn-ghost" style={{ padding: '5px 12px', fontSize: '11px', gap: '5px' }}><Pencil size={12} /> Edit service</button>
+          {validated && <span style={{ fontSize: '10px', color: '#8a8478', fontStyle: 'italic' }}>Editing sends it back for review.</span>}
         </div>
-      )}
-      {p.validation_statut === 'refusee' && p.refus_motif && (
-        <div style={{ fontSize: '11px', color: '#9e2a2a', marginTop: '4px' }}>Reason: {p.refus_motif}</div>
       )}
     </div>
   )
@@ -231,11 +283,12 @@ function makeService(): any {
   return { type: 'transfert', date_debut: '', date_fin: '', heure_depart: '', heure_debut_journee: '09:00', heure_fin_journee: '18:00', adresse_depart: '', adresse_arrivee: '', vol_numero: '', vol_heure: '', vol_ville: '', vol_terminal: '', modele_souhaite: '', nb_passagers: 1, nb_bagages: 0 }
 }
 
-function NewRequest({ onDone, initial, mode = 'new', dossierId }: { onDone: () => void; initial?: any; mode?: 'new' | 'edit' | 'add'; dossierId?: string }) {
+function NewRequest({ onDone, initial, mode = 'new', dossierId, prestationId }: { onDone: () => void; initial?: any; mode?: 'new' | 'edit' | 'add' | 'edit-service'; dossierId?: string; prestationId?: string }) {
   const [services, setServices] = useState<any[]>(initial?.services ?? [makeService()])
   const [passengers, setPassengers] = useState<any[]>(initial?.passengers ?? [])
   const [notes, setNotes] = useState<string>(initial?.notes ?? '')
   const [saving, setSaving] = useState(false)
+  const isEditService = mode === 'edit-service'
 
   function upd(i: number, patch: any) { setServices(prev => prev.map((s, k) => k === i ? { ...s, ...patch } : s)) }
 
@@ -243,6 +296,18 @@ function NewRequest({ onDone, initial, mode = 'new', dossierId }: { onDone: () =
     if (services.some(s => !s.date_debut)) return toast.error('Please set a date for each service')
     setSaving(true)
     try {
+      if (isEditService) {
+        // Édition d'un seul service → repasse en validation dispatch
+        const res = await fetch(`/api/agence/prestations/${prestationId}`, {
+          method: 'PATCH', headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(services[0]),
+        })
+        const json = await res.json()
+        if (!res.ok) throw new Error(json.error ?? 'Error')
+        toast.success('Service updated — sent for review')
+        onDone()
+        return
+      }
       const url = mode === 'new' ? '/api/agence/dossiers'
         : mode === 'add' ? `/api/agence/dossiers/${dossierId}/services`
         : `/api/agence/dossiers/${dossierId}`
@@ -263,6 +328,13 @@ function NewRequest({ onDone, initial, mode = 'new', dossierId }: { onDone: () =
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
+      {isEditService && (
+        <div style={{ background: '#fdf3dc', border: '1px solid rgba(122,92,16,0.3)', borderRadius: '10px', padding: '11px 13px', fontSize: '12px', color: '#7a5c10', lineHeight: 1.5 }}>
+          {initial?.wasValidated
+            ? 'This service is confirmed. Saving your changes will send it back to Star Tourism Services for review and re-pricing.'
+            : 'Edit this service — it will be reviewed by Star Tourism Services.'}
+        </div>
+      )}
       {services.map((s, i) => {
         const isMad = s.type === 'mad'
         return (
@@ -320,28 +392,34 @@ function NewRequest({ onDone, initial, mode = 'new', dossierId }: { onDone: () =
         )
       })}
 
-      <button onClick={() => setServices(prev => [...prev, makeService()])} className="btn-ghost" style={{ justifyContent: 'center' }}><Plus size={14} /> Add another service</button>
+      {!isEditService && (
+        <button onClick={() => setServices(prev => [...prev, makeService()])} className="btn-ghost" style={{ justifyContent: 'center' }}><Plus size={14} /> Add another service</button>
+      )}
 
       {/* Passengers */}
-      <div style={{ background: '#fff', border: '1.5px solid #d8d2c8', borderRadius: '12px', padding: '14px' }}>
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '10px' }}>
-          <span style={{ fontSize: '13px', fontWeight: 700, color: '#16130e', display: 'flex', alignItems: 'center', gap: '7px' }}><Users size={15} /> Passengers (optional)</span>
-          <button onClick={() => setPassengers(prev => [...prev, { nom: '', nationalite: '', telephone: '', nb_bagages: 0 }])} className="btn-or" style={{ padding: '6px 12px', fontSize: '11px' }}><Plus size={12} /> Add</button>
-        </div>
-        {passengers.map((p, i) => (
-          <div key={i} style={{ display: 'flex', gap: '8px', marginBottom: '8px', flexWrap: 'wrap', alignItems: 'flex-end' }}>
-            <div style={{ flex: '2 1 150px' }}><label style={lbl}>Name</label><input style={inp} value={p.nom} onChange={e => setPassengers(prev => prev.map((x, k) => k === i ? { ...x, nom: e.target.value } : x))} placeholder="Mr John Smith" /></div>
-            <div style={{ flex: '0 1 70px' }}><label style={lbl}>Country</label><input style={inp} maxLength={2} value={p.nationalite} onChange={e => setPassengers(prev => prev.map((x, k) => k === i ? { ...x, nationalite: e.target.value.toUpperCase() } : x))} placeholder="AE" /></div>
-            <div style={{ flex: '1 1 120px' }}><label style={lbl}>Phone</label><input style={inp} value={p.telephone} onChange={e => setPassengers(prev => prev.map((x, k) => k === i ? { ...x, telephone: e.target.value } : x))} /></div>
-            <button onClick={() => setPassengers(prev => prev.filter((_, k) => k !== i))} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#9e2a2a', paddingBottom: '8px' }}><Trash2 size={15} /></button>
+      {!isEditService && (
+        <div style={{ background: '#fff', border: '1.5px solid #d8d2c8', borderRadius: '12px', padding: '14px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '10px' }}>
+            <span style={{ fontSize: '13px', fontWeight: 700, color: '#16130e', display: 'flex', alignItems: 'center', gap: '7px' }}><Users size={15} /> Passengers (optional)</span>
+            <button onClick={() => setPassengers(prev => [...prev, { nom: '', nationalite: '', telephone: '', nb_bagages: 0 }])} className="btn-or" style={{ padding: '6px 12px', fontSize: '11px' }}><Plus size={12} /> Add</button>
           </div>
-        ))}
-      </div>
+          {passengers.map((p, i) => (
+            <div key={i} style={{ display: 'flex', gap: '8px', marginBottom: '8px', flexWrap: 'wrap', alignItems: 'flex-end' }}>
+              <div style={{ flex: '2 1 150px' }}><label style={lbl}>Name</label><input style={inp} value={p.nom} onChange={e => setPassengers(prev => prev.map((x, k) => k === i ? { ...x, nom: e.target.value } : x))} placeholder="Mr John Smith" /></div>
+              <div style={{ flex: '0 1 70px' }}><label style={lbl}>Country</label><input style={inp} maxLength={2} value={p.nationalite} onChange={e => setPassengers(prev => prev.map((x, k) => k === i ? { ...x, nationalite: e.target.value.toUpperCase() } : x))} placeholder="AE" /></div>
+              <div style={{ flex: '1 1 120px' }}><label style={lbl}>Phone</label><input style={inp} value={p.telephone} onChange={e => setPassengers(prev => prev.map((x, k) => k === i ? { ...x, telephone: e.target.value } : x))} /></div>
+              <button onClick={() => setPassengers(prev => prev.filter((_, k) => k !== i))} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#9e2a2a', paddingBottom: '8px' }}><Trash2 size={15} /></button>
+            </div>
+          ))}
+        </div>
+      )}
 
-      <div><label style={lbl}>Notes / instructions (optional)</label><textarea style={{ ...inp, minHeight: '64px', resize: 'vertical' }} value={notes} onChange={e => setNotes(e.target.value)} placeholder="Any special request…" /></div>
+      {!isEditService && (
+        <div><label style={lbl}>Notes / instructions (optional)</label><textarea style={{ ...inp, minHeight: '64px', resize: 'vertical' }} value={notes} onChange={e => setNotes(e.target.value)} placeholder="Any special request…" /></div>
+      )}
 
       <button onClick={submit} disabled={saving} className="btn-primary" style={{ justifyContent: 'center', padding: '14px', fontSize: '14px' }}>
-        <Send size={16} /> {saving ? 'Saving…' : mode === 'new' ? 'Submit request' : mode === 'add' ? 'Add to request' : 'Save changes'}
+        <Send size={16} /> {saving ? 'Saving…' : mode === 'new' ? 'Submit request' : mode === 'add' ? 'Add to request' : isEditService ? 'Save & resubmit' : 'Save changes'}
       </button>
       <p style={{ fontSize: '11px', color: '#8a8478', textAlign: 'center', lineHeight: 1.5 }}>
         Each service will be reviewed and priced by Star Tourism Services. You will see the status update here.
