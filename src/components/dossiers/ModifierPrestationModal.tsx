@@ -21,6 +21,8 @@ export default function ModifierPrestationModal({ p }: { p: any }) {
   const [heureFinJ, setHeureFinJ]       = useState<string>(p.heure_fin_journee?.slice(0, 5) ?? '18:00')
   const [tarifFixe, setTarifFixe]       = useState<number>(p.tarif_fixe_ht ?? p.montant_ht ?? 0)
   const [tarifJour, setTarifJour]       = useState<number>(p.tarif_journalier_ht ?? 0)
+  const [dateDebutMad, setDateDebutMad] = useState<string>(p.date_debut ?? '')
+  const [dateFinMad, setDateFinMad]     = useState<string>(p.date_fin ?? '')
   const [modele, setModele]             = useState<string>(p.modele_souhaite ?? '')
   const [categories, setCategories]     = useState<any[]>([])
 
@@ -43,6 +45,8 @@ export default function ModifierPrestationModal({ p }: { p: any }) {
         body.heure_debut_journee = heureDebJ || null
         body.heure_fin_journee = heureFinJ || null
         body.tarif_journalier_ht = tarifJour
+        body.date_debut = dateDebutMad
+        body.date_fin = dateFinMad
       } else {
         body.date_debut = date
         body.heure_depart = heure || null
@@ -93,11 +97,16 @@ export default function ModifierPrestationModal({ p }: { p: any }) {
                 </>
               ) : (
                 <>
-                  <FormSep label="Mise à disposition" />
-                  <div style={{ padding: '8px 12px', background: '#f5f2ed', border: '1px solid #d8d2c8', fontSize: '11px', color: '#5a564e', marginBottom: '12px' }}>
-                    Période : <strong style={{ fontFamily: 'JetBrains Mono,monospace' }}>{p.date_debut} → {p.date_fin}</strong> ({p.nb_jours} j).
-                    Pour changer les dates, gérez les jours dans la prestation.
+                  <FormSep label="Période" />
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px', marginBottom: '6px' }}>
+                    <div><label className="form-label">Date début *</label><input type="date" className="input" required value={dateDebutMad} onChange={e => setDateDebutMad(e.target.value)} /></div>
+                    <div><label className="form-label">Date fin *</label><input type="date" className="input" required value={dateFinMad} min={dateDebutMad} onChange={e => setDateFinMad(e.target.value)} /></div>
                   </div>
+                  <div style={{ fontSize: '10px', color: '#8a8478', marginBottom: '12px' }}>
+                    Prolonger ajoute les nouveaux jours (au tarif/jour) ; réduire retire les jours hors période. Les jours conservés gardent leur chauffeur/véhicule/heures.
+                  </div>
+
+                  <FormSep label="Mise à disposition" />
                   <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px', marginBottom: '12px' }}>
                     <div><label className="form-label">Lieu principal</label><input type="text" className="input" value={adresseDepart} onChange={e => setAdresseDep(e.target.value)} placeholder="Adresse, ville…" /></div>
                     <div>

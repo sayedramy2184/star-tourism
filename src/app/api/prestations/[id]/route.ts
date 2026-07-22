@@ -1,5 +1,8 @@
 import { createClient } from '@/lib/supabase/server'
 import { NextRequest, NextResponse } from 'next/server'
+import { eachDayOfInterval, parseISO, format } from 'date-fns'
+
+const JOURS_FR = ['Dim.', 'Lun.', 'Mar.', 'Mer.', 'Jeu.', 'Ven.', 'Sam.']
 
 export async function PATCH(req: NextRequest, { params }: { params: { id: string } }) {
   const supabase = createClient()
@@ -64,7 +67,7 @@ export async function PUT(req: NextRequest, { params }: { params: { id: string }
   const body = await req.json()
 
   const { data: prest, error: fErr } = await supabase
-    .from('prestations').select('id, type').eq('id', params.id).single()
+    .from('prestations').select('id, type, company_id, dossier_id, tarif_journalier_ht').eq('id', params.id).single()
   if (fErr || !prest) return NextResponse.json({ error: 'Prestation introuvable' }, { status: 404 })
 
   const isMad = prest.type === 'mad'
@@ -81,6 +84,8 @@ export async function PUT(req: NextRequest, { params }: { params: { id: string }
     if (body.tarif_journalier_ht != null && body.tarif_journalier_ht !== '') {
       upd.tarif_journalier_ht = Number(body.tarif_journalier_ht)
     }
+    // Modification de la période (prolongation / réduction)
+    if (body.date_debut && body.date_fin) { upd.date_debut = body.date_debut; upd.date_fin = body.date_fin }
   } else {
     upd.heure_depart    = body.heure_depart || null
     upd.adresse_arrivee = body.adresse_arrivee ?? null
@@ -93,15 +98,46 @@ export async function PUT(req: NextRequest, { params }: { params: { id: string }
   const { error: upErr } = await supabase.from('prestations').update(upd).eq('id', params.id)
   if (upErr) return NextResponse.json({ error: upErr.message }, { status: 500 })
 
-  // MAD : si le tarif/jour change, on le répercute sur chaque jour puis on recalcule
-  if (isMad && body.tarif_journalier_ht != null && body.tarif_journalier_ht !== '') {
-    const tj = Number(body.tarif_journalier_ht)
-    const { data: joursRows } = await supabase.from('jours_mad').select('id').eq('prestation_id', params.id)
-    await supabase.from('jours_mad').update({ tarif_ht: tj }).eq('prestation_id', params.id)
-    for (const j of joursRows ?? []) {
-      await supabase.rpc('update_jour_mad_montant', { p_jour_id: j.id })
+  if (isMad) {
+    const tarifJour = (body.tarif_journalier_ht != null && body.tarif_journalier_ht !== '')
+      ? Number(body.tarif_journalier_ht)
+      : Number(prest.tarif_journalier_ht ?? 0)
+
+    // Régénère les jours si la période change — PRÉSERVE les jours existants (affectations, heures)
+    if (body.date_debut && body.date_fin) {
+      const { data: existing } = await supabase.from('jours_mad').select('id, date').eq('prestation_id', params.id)
+      const existDates = new Set((existing ?? []).map((j: any) => j.date))
+      const newDays = eachDayOfInterval({ start: parseISO(body.date_debut), end: parseISO(body.date_fin) }).map(dt => format(dt, 'yyyy-MM-dd'))
+      const newSet = new Set(newDays)
+      // Supprime les jours hors nouvelle période
+      const toDelete = (existing ?? []).filter((j: any) => !newSet.has(j.date)).map((j: any) => j.id)
+      if (toDelete.length) await supabase.from('jours_mad').delete().in('id', toDelete)
+      // Ajoute les nouveaux jours (au tarif/jour de la prestation)
+      const toInsert = newDays.filter(dt => !existDates.has(dt)).map(dt => ({
+        company_id: prest.company_id, prestation_id: params.id, date: dt,
+        jour_semaine: JOURS_FR[parseISO(dt).getDay()], tarif_ht: tarifJour, statut: 'en_attente',
+      }))
+      if (toInsert.length) await supabase.from('jours_mad').insert(toInsert)
     }
+
+    // Si le tarif/jour est explicitement modifié → l'appliquer à tous les jours
+    if (body.tarif_journalier_ht != null && body.tarif_journalier_ht !== '') {
+      const { data: joursRows } = await supabase.from('jours_mad').select('id').eq('prestation_id', params.id)
+      await supabase.from('jours_mad').update({ tarif_ht: tarifJour }).eq('prestation_id', params.id)
+      for (const j of joursRows ?? []) await supabase.rpc('update_jour_mad_montant', { p_jour_id: j.id })
+    }
+
     await supabase.rpc('recalc_prestation_mad', { p_prestation_id: params.id })
+  }
+
+  // Recadre les bornes du dossier si une date a changé
+  if (body.date_debut && prest.dossier_id) {
+    const { data: allP } = await supabase.from('prestations').select('date_debut, date_fin').eq('dossier_id', prest.dossier_id)
+    if (allP && allP.length) {
+      const dd = allP.map((x: any) => x.date_debut).reduce((a: string, b: string) => (a < b ? a : b))
+      const df = allP.map((x: any) => x.date_fin).reduce((a: string, b: string) => (a > b ? a : b))
+      await supabase.from('dossiers').update({ date_debut: dd, date_fin: df }).eq('id', prest.dossier_id)
+    }
   }
 
   const { data } = await supabase.from('prestations').select('*').eq('id', params.id).single()
