@@ -33,6 +33,24 @@ export async function middleware(request: NextRequest) {
 
   const { pathname } = request.nextUrl
 
+  // ── Séparation par sous-domaine ───────────
+  // partenaire.<domaine> (ou agence.<domaine>) = PORTAIL AGENCE uniquement.
+  // Tout le reste (racine, dashboard, login équipe, chauffeur) y est renvoyé vers /agence.
+  // Les autres hôtes (app.<domaine>, *.vercel.app, localhost) gardent le comportement normal.
+  const host = (request.headers.get('host') ?? '').toLowerCase()
+  const isAgencyHost = host.startsWith('partenaire.') || host.startsWith('agence.')
+  if (isAgencyHost) {
+    if (
+      pathname === '/' ||
+      pathname.startsWith('/dashboard') ||
+      pathname.startsWith('/auth') ||
+      pathname.startsWith('/chauffeur')
+    ) {
+      return NextResponse.redirect(new URL('/agence', request.url))
+    }
+    // /agence/*, /api/*, assets → laissés passer (le portail agence a ses propres gardes)
+  }
+
   // ── Routes publiques ──────────────────────
   const publicRoutes = ['/auth/login', '/auth/register', '/auth/reset-password']
   if (publicRoutes.includes(pathname)) {
