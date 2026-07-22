@@ -38,6 +38,7 @@ export async function GET(req: NextRequest) {
         id, statut, date_debut, date_fin, sous_traitant_id,
         heure_debut_journee, heure_fin_journee,
         adresse_depart, modele_souhaite,
+        sous_traitant:sous_traitants(id, societe),
         vehicule:vehicules(id, marque, modele, immatriculation),
         dossier:dossiers(
           id, numero,

@@ -38,6 +38,7 @@ interface JourMad {
     heure_debut_journee: string | null; heure_fin_journee: string | null
     adresse_depart: string | null; modele_souhaite: string | null
     sous_traitant_id: string | null
+    sous_traitant: { id: string; societe: string } | null
     vehicule: { id: string; marque: string; modele: string; immatriculation: string } | null
     dossier: { id: string; numero: string; client: { nom: string } }
   }
@@ -357,7 +358,9 @@ function MissionsView({ days, viewMode, data, onTooltip, onDragStart, router }: 
                 <td key={dateStr} style={{ padding:'3px', background: today ? '#fdf6e3' : weekend ? '#f1ece4' : idx%2===0 ? '#faf9f7' : '#fff', borderRight:'1px solid #ede9e2', verticalAlign:'top', minHeight:'48px' }}>
                   {[
                     ...joursDay.map(j => {
-                      const nonAff = !j.chauffeur_id && !j.sous_traitant_id
+                      // Sous-traité au jour OU prestation entièrement sous-traitée
+                      const stNom = j.sous_traitant?.societe ?? j.prestation?.sous_traitant?.societe
+                      const nonAff = !j.chauffeur_id && !j.sous_traitant_id && !j.prestation?.sous_traitant_id
                       // Statut calculé pour CE jour précis (et non toute la période de la MAD)
                       const statCalc = calcStatutClient({ statut: j.prestation.statut ?? j.statut, type:'mad', date_debut: j.date, date_fin: j.date, heure_debut_journee: j.prestation.heure_debut_journee, heure_fin_journee: j.prestation.heure_fin_journee })
                       const si = STATUT_MAP[statCalc] ?? STATUT_MAP.en_attente
@@ -365,7 +368,7 @@ function MissionsView({ days, viewMode, data, onTooltip, onDragStart, router }: 
                         <MBlock key={j.id}
                           bg={nonAff ? '#fff8e8' : si.bg} border={nonAff ? '#9a7a28' : si.border.replace('rgba','rgba')} text={nonAff ? '#9a7a28' : si.color}
                           icon="◷" label={`MAD · ${si.label}`}
-                          title={nonAff ? '⚠ Sans chauffeur' : `${j.chauffeur?.prenom ?? ''} ${j.chauffeur?.nom ?? ''}`}
+                          title={nonAff ? '⚠ Sans chauffeur' : j.chauffeur ? `${j.chauffeur.prenom} ${j.chauffeur.nom}` : stNom ? `ST · ${stNom}` : '—'}
                           sub={j.prestation.heure_debut_journee ? `${j.prestation.heure_debut_journee}→${j.prestation.heure_fin_journee}` : null}
                           compact={viewMode==='mois'}
                           draggable={nonAff}
@@ -724,7 +727,8 @@ function PlanningMobile({ days, data, router }: { days: Date[]; data: any; route
                 const stat = calcStatutClient({ statut: j.prestation.statut ?? j.statut, type: 'mad', date_debut: j.date, date_fin: j.date, heure_debut_journee: j.prestation.heure_debut_journee, heure_fin_journee: j.prestation.heure_fin_journee })
                 const si = STATUT_MAP[stat] ?? STATUT_MAP.en_attente
                 const veh = (data.vehicules ?? []).find((v: any) => v.id === jourVehiculeId(j))
-                const chauf = j.chauffeur ? `${j.chauffeur.prenom} ${j.chauffeur.nom}` : j.sous_traitant ? `ST · ${j.sous_traitant.societe}` : null
+                const stJ = j.sous_traitant ?? j.prestation?.sous_traitant
+                const chauf = j.chauffeur ? `${j.chauffeur.prenom} ${j.chauffeur.nom}` : stJ ? `ST · ${stJ.societe}` : null
                 return { key: chronoKey(j), node: (
                   <MobileMissionCard key={j.id} type="MAD" typeColor="#a6432a" client={j.prestation.dossier.client.nom} numero={j.prestation.dossier.numero}
                     heure={j.prestation.heure_debut_journee ? `${j.prestation.heure_debut_journee}→${j.prestation.heure_fin_journee ?? ''}` : null}
@@ -924,7 +928,9 @@ function buildMadTooltip(j: JourMad) {
     dossier: j.prestation.dossier.numero,
     dossier_id: j.prestation.dossier.id,
     date: j.date,
-    chauffeur: j.chauffeur ? `${j.chauffeur.prenom} ${j.chauffeur.nom}` : '⚠ Non affecté',
+    chauffeur: j.chauffeur ? `${j.chauffeur.prenom} ${j.chauffeur.nom}`
+      : (j.sous_traitant ?? j.prestation?.sous_traitant) ? `Sous-traitant · ${(j.sous_traitant ?? j.prestation?.sous_traitant)?.societe}`
+      : '⚠ Non affecté',
     vehicule: j.vehicule
       ? `${j.vehicule.marque} ${j.vehicule.modele} — ${j.vehicule.immatriculation}`
       : j.prestation.vehicule
