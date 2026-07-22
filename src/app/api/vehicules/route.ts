@@ -18,15 +18,31 @@ export async function GET(req: NextRequest) {
   // Si dates fournies, calculer la disponibilité — SANS masquer les véhicules :
   // on les renvoie tous en les marquant indisponibles + une raison.
   if (date_debut && date_fin && vehicules) {
-    const { data: occupes } = await supabase
+    const occupesIds = new Set<string>()
+
+    // Transferts : véhicule affecté au niveau prestation
+    const { data: transOcc } = await supabase
       .from('prestations')
       .select('vehicule_id')
+      .eq('type', 'transfert')
       .not('vehicule_id', 'is', null)
       .lte('date_debut', date_fin)
       .gte('date_fin', date_debut)
       .neq('statut', 'annule')
+    for (const p of transOcc ?? []) if (p.vehicule_id) occupesIds.add(p.vehicule_id)
 
-    const occupesIds = new Set(occupes?.map(p => p.vehicule_id) ?? [])
+    // MAD : véhicule EFFECTIF du jour (jour sinon prestation), sur la période
+    const { data: joursOcc } = await supabase
+      .from('jours_mad')
+      .select('vehicule_id, prestation:prestations(vehicule_id, statut)')
+      .gte('date', date_debut)
+      .lte('date', date_fin)
+    for (const j of joursOcc ?? []) {
+      const prest = Array.isArray(j.prestation) ? j.prestation[0] : j.prestation
+      if (prest?.statut === 'annule') continue
+      const veh = j.vehicule_id ?? prest?.vehicule_id
+      if (veh) occupesIds.add(veh)
+    }
 
     const vehiculesWithDispo = vehicules.map(v => {
       const loue = v.mode_acquisition && v.mode_acquisition !== 'propriete'
