@@ -226,6 +226,8 @@ export default function PrestationCard({ p, dossierId, passagers = [] }: { p: an
     sous_traitant:      p.sous_traitant      ?? null as { societe: string } | null,
   }))
   const [savingJour, setSavingJour] = useState<string|null>(null)
+  // Détail journalier repliable (replié par défaut si longue MAD)
+  const [joursOpen, setJoursOpen] = useState(jours.length <= 8)
   const [valTarif, setValTarif] = useState('')
   const [valBusy, setValBusy] = useState(false)
 
@@ -612,9 +614,12 @@ export default function PrestationCard({ p, dossierId, passagers = [] }: { p: an
         {p.type === 'mad' && jours.length > 0 && (
           <div>
             <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', gap:'8px', flexWrap:'wrap', marginBottom:'8px' }}>
-              <div style={{ fontSize:'8px', fontWeight:600, letterSpacing:'2.5px', textTransform:'uppercase', color:'#9a7a28' }}>
-                Détail journalier
-              </div>
+              <button type="button" onClick={() => setJoursOpen(o => !o)}
+                style={{ background:'none', border:'none', cursor:'pointer', padding:0, display:'inline-flex', alignItems:'center', gap:'6px', fontSize:'8px', fontWeight:600, letterSpacing:'2.5px', textTransform:'uppercase', color:'#9a7a28' }}>
+                <span style={{ fontSize:'11px', letterSpacing:0 }}>{joursOpen ? '▾' : '▸'}</span>
+                Détail journalier · {jours.length} j
+                {!joursOpen && joursManquants > 0 && <span style={{ color:'#7a5c10', letterSpacing:0, textTransform:'none', fontWeight:700 }}> · ⚠ {joursManquants} à affecter</span>}
+              </button>
               {jours.length > 1 && (
                 <div style={{ display:'flex', alignItems:'center', gap:'6px', flexWrap:'wrap' }}>
                   <span style={{ fontSize:'9px', fontWeight:700, letterSpacing:'0.5px', textTransform:'uppercase', color:'#9a7a28', display:'inline-flex', alignItems:'center', gap:'3px' }}>
@@ -649,6 +654,7 @@ export default function PrestationCard({ p, dossierId, passagers = [] }: { p: an
                 </div>
               )}
             </div>
+            {joursOpen && (<>
             <div style={{ display:'grid', gridTemplateColumns:'84px 1fr 1fr 74px', gap:'6px', padding:'4px 8px', background:'#faf9f7', marginBottom:'2px' }}>
               {['Date','Affecté à','Véhicule','Tarif HT'].map(h => (
                 <div key={h} style={{ fontSize:'8px', fontWeight:600, letterSpacing:'1.5px', textTransform:'uppercase', color:'#8a8478' }}>{h}</div>
@@ -729,6 +735,7 @@ export default function PrestationCard({ p, dossierId, passagers = [] }: { p: an
                 </div>
               )
             })}
+            </>)}
             <div style={{ display:'flex', justifyContent:'space-between', padding:'8px 8px 0', borderTop:'1.5px solid #b8b0a4', marginTop:'4px' }}>
               <span style={{ fontSize:'9px', fontWeight:600, letterSpacing:'1.5px', textTransform:'uppercase', color:'#8a8478' }}>
                 Sous-total · {jours.length} j
