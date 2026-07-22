@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import toast from 'react-hot-toast'
 import { Edit, X } from 'lucide-react'
@@ -18,10 +18,11 @@ interface Vehicule {
   date_entree_parc?: string | null; date_sortie_parc?: string | null
 }
 
+// Libellés hérités (anciennes valeurs snake_case) — fallback d'affichage
 const CATEGORIES: Record<string, string> = {
-  berline_standard: 'Berline Standard', berline_premium: 'Berline Premium',
-  berline_prestige: 'Berline Prestige', van_minibus: 'Van / Minibus',
-  van_bagages: 'Van Bagages', suv_premium: 'SUV Premium', electrique: 'Électrique',
+  berline_standard: 'Berline standard', berline_premium: 'Berline premium',
+  berline_prestige: 'Berline prestige', van_minibus: 'Van / Minibus',
+  van_bagages: 'Van / Minibus', suv_premium: 'SUV premium', electrique: 'Électrique',
 }
 const STATUTS: Record<string, string> = {
   disponible: 'Disponible', en_mission: 'En mission', maintenance: 'Maintenance', inactif: 'Inactif',
@@ -38,6 +39,11 @@ export default function VehiculeEditModal({ vehicule }: { vehicule: Vehicule }) 
   const router = useRouter()
   const [open, setOpen] = useState(false)
   const [saving, setSaving] = useState(false)
+  const [categories, setCategories] = useState<{ id: string; nom: string }[]>([])
+  useEffect(() => {
+    if (!open) return
+    fetch('/api/vehicule-categories').then(r => r.json()).then(d => setCategories(d.data ?? [])).catch(() => {})
+  }, [open])
   const [form, setForm] = useState({
     marque: vehicule.marque, modele: vehicule.modele, immatriculation: vehicule.immatriculation,
     annee: vehicule.annee ?? new Date().getFullYear(), categorie: vehicule.categorie,
@@ -112,7 +118,11 @@ export default function VehiculeEditModal({ vehicule }: { vehicule: Vehicule }) 
               <div className="form-grid-3" style={{ marginBottom: '12px' }}>
                 <div><label className="form-label">Catégorie</label>
                   <select className="select" value={form.categorie} onChange={e => setForm({ ...form, categorie: e.target.value })}>
-                    {Object.entries(CATEGORIES).map(([v, l]) => <option key={v} value={v}>{l}</option>)}
+                    <option value="">— Sélectionner —</option>
+                    {categories.map(c => <option key={c.id} value={c.nom}>{c.nom}</option>)}
+                    {form.categorie && !categories.some(c => c.nom === form.categorie) && (
+                      <option value={form.categorie}>{CATEGORIES[form.categorie] ?? form.categorie}</option>
+                    )}
                   </select>
                 </div>
                 <div><label className="form-label">Places</label><input type="number" className="input" min={1} value={form.nb_places} onChange={e => setForm({ ...form, nb_places: Number(e.target.value) })} /></div>

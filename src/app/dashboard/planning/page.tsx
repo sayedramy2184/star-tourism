@@ -97,6 +97,7 @@ export default function PlanningPage() {
   const router = useRouter()
   const [tab,         setTab]         = useState<PlanningTab>('missions')
   const [vehCat,      setVehCat]      = useState<string>('')   // filtre catégorie (onglet véhicules)
+  const [vehCats,     setVehCats]     = useState<{ id: string; nom: string }[]>([])
   const [viewMode,    setViewMode]    = useState<ViewMode>('semaine')
   const [currentDate, setCurrentDate] = useState(new Date())
   const [data,        setData]        = useState<{ chauffeurs: Chauffeur[]; vehicules: Vehicule[]; jours: JourMad[]; transferts: Transfert[] } | null>(null)
@@ -122,6 +123,7 @@ export default function PlanningPage() {
   }, [currentDate, viewMode])
 
   useEffect(() => { load() }, [load])
+  useEffect(() => { fetch('/api/vehicule-categories').then(r => r.json()).then(d => setVehCats(d.data ?? [])).catch(() => {}) }, [])
 
   function prev() { setCurrentDate(d => viewMode === 'semaine' ? subWeeks(d,1) : subMonths(d,1)) }
   function next() { setCurrentDate(d => viewMode === 'semaine' ? addWeeks(d,1) : addMonths(d,1)) }
@@ -225,8 +227,8 @@ export default function PlanningPage() {
             className="hidden md:block"
             style={{ padding:'5px 10px', fontSize:'11px', border:'1.5px solid #b8b0a4', background: vehCat ? '#fdf6e3' : '#fff', color:'#16130e', outline:'none', cursor:'pointer' }}>
             <option value="">Tous les types</option>
-            {Object.entries(CAT_LABELS).map(([val, label]) => (
-              <option key={val} value={val}>{label}</option>
+            {vehCats.map(c => (
+              <option key={c.id} value={c.nom}>{c.nom}</option>
             ))}
           </select>
         )}

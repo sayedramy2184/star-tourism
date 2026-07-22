@@ -27,8 +27,8 @@ Repo GitHub : `sayedramy2184/star-tourism`. À réparer un jour via Vercel → S
 ## ⚠️ Migrations base de données
 Le projet **n'est pas lié à la CLI Supabase**. Les migrations `supabase/migrations/*.sql`
 s'appliquent **à la main** : copier-coller dans **Supabase → SQL Editor → Run**, dans l'ordre.
-Elles sont idempotentes. Dernière = **021**. Toujours vérifier que la prod est à jour
-(001→021) après avoir ajouté une migration.
+Elles sont idempotentes. Dernière = **022**. Toujours vérifier que la prod est à jour
+(001→022) après avoir ajouté une migration.
 020 = prestations libres (services hors transport). 021 = `vehicule_categories` (catégories
 + modèles configurables dans Paramètres → Véhicules, utilisés par les formulaires + portail agence).
 018 = portail agences (rôle 'agence', origine dossier, validation_statut prestations, RLS).

@@ -100,7 +100,7 @@ function docAlert(dateStr: string | null) {
 const emptyForm = {
   marque: '', modele: '', immatriculation: '',
   annee: new Date().getFullYear(),
-  categorie: 'berline_premium' as CategorieVehicule,
+  categorie: '',
   nb_places: 4,
   statut: 'disponible' as StatutVehicule,
   ct_date: '', assurance_date: '',
@@ -130,8 +130,10 @@ export default function VehiculesPage() {
   const [filter,    setFilter]    = useState('tous')
   const [form,      setForm]      = useState(emptyForm)
   const [saving,    setSaving]    = useState(false)
+  const [categories, setCategories] = useState<{ id: string; nom: string }[]>([])
 
   useEffect(() => { load() }, [])
+  useEffect(() => { fetch('/api/vehicule-categories').then(r => r.json()).then(d => setCategories(d.data ?? [])).catch(() => {}) }, [])
 
   async function load() {
     setLoading(true)
@@ -188,7 +190,7 @@ export default function VehiculesPage() {
     return v.statut === filter
   })
   const sp = useSearchPaginate(filtered, (v: any) =>
-    `${v.marque} ${v.modele} ${v.immatriculation} ${CATEGORIES[v.categorie] ?? ''} ${v.couleur ?? ''}`)
+    `${v.marque} ${v.modele} ${v.immatriculation} ${CATEGORIES[v.categorie] ?? v.categorie ?? ''} ${v.couleur ?? ''}`)
 
   function handleExport() {
     exportCsv('vehicules.csv', sp.filtered.map((v: any) => ({
@@ -268,7 +270,7 @@ export default function VehiculesPage() {
               <div style={{ display:'flex', alignItems:'flex-start', justifyContent:'space-between', gap:'8px' }}>
                 <div style={{ minWidth:0 }}>
                   <div style={{ fontFamily:'Cormorant Garamond,serif', fontSize:'16px', fontWeight:500, color:'#16130e' }}>{v.marque} {v.modele}</div>
-                  <div className="mono" style={{ fontSize:'11px', color:'#5a564e', marginTop:'2px' }}>{v.immatriculation} · {CATEGORIES[v.categorie]}</div>
+                  <div className="mono" style={{ fontSize:'11px', color:'#5a564e', marginTop:'2px' }}>{v.immatriculation} · {CATEGORIES[v.categorie] ?? v.categorie}</div>
                 </div>
                 <span style={{ flexShrink:0, display:'inline-flex', alignItems:'center', gap:'5px', padding:'3px 10px', fontSize:'10px', fontWeight:700, background:stt.bg, color:stt.color, border:`1px solid ${stt.color}33` }}>
                   <span style={{ width:'6px', height:'6px', borderRadius:'50%', background:stt.color }} />{stt.label}
@@ -326,7 +328,7 @@ export default function VehiculesPage() {
                     </span>
                   </td>
                   <td className="td">
-                    <span style={{ fontSize:'11px', color:'#5a564e' }}>{CATEGORIES[v.categorie]}</span>
+                    <span style={{ fontSize:'11px', color:'#5a564e' }}>{CATEGORIES[v.categorie] ?? v.categorie}</span>
                   </td>
                   <td className="td">
                     <span style={{
@@ -409,10 +411,9 @@ export default function VehiculesPage() {
                 <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:'12px' }}>
                   <div>
                     <label className="form-label">Catégorie</label>
-                    <select className="select" value={form.categorie} onChange={e => setForm({...form, categorie:e.target.value as CategorieVehicule})}>
-                      {(Object.entries(CATEGORIES) as [CategorieVehicule,string][]).map(([val,lbl]) => (
-                        <option key={val} value={val}>{lbl}</option>
-                      ))}
+                    <select className="select" value={form.categorie} onChange={e => setForm({...form, categorie:e.target.value})}>
+                      <option value="">— Sélectionner —</option>
+                      {categories.map(c => <option key={c.id} value={c.nom}>{c.nom}</option>)}
                     </select>
                   </div>
                   <div>
