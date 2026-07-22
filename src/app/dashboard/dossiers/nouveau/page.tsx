@@ -7,6 +7,7 @@ import { fr } from 'date-fns/locale'
 import toast from 'react-hot-toast'
 import { Plus, Trash2, ChevronDown, ChevronUp, Users, Briefcase } from 'lucide-react'
 import { flag } from '@/components/dossiers/PassagersDossier'
+import VehiculeCategorieSelect from '@/components/ui/VehiculeCategorieSelect'
 import type { Client, Vehicule, Chauffeur } from '@/types'
 
 // ── Types ─────────────────────────────────────
@@ -1098,16 +1099,19 @@ function AddressField({ label, value, onChange, placeholder, icon }: {
 // ── Véhicule selector ─────────────────────────
 
 function VehiculeSelector({ p, vehicules, onUpdate }: { p: PrestationForm; vehicules: any[]; onUpdate: (u: Partial<PrestationForm>) => void }) {
+  const [categories, setCategories] = useState<any[]>([])
+  useEffect(() => { fetch('/api/vehicule-categories').then(r => r.json()).then(d => setCategories(d.data ?? [])).catch(() => {}) }, [])
+  // Catégorie sélectionnée : modele_souhaite = nom de catégorie OU modèle précis
+  const selCat = categories.find((c: any) => c.nom === p.modele_souhaite)
+    ?? categories.find((c: any) => (c.modeles ?? []).includes(p.modele_souhaite))
+    ?? null
+  const catName: string | null = selCat?.nom ?? null
+
   return (
     <div>
     <div style={{ marginBottom:'12px' }}>
       <label className="form-label">Catégorie de véhicule souhaitée</label>
-      <select className="select" value={p.modele_souhaite} onChange={e => onUpdate({ modele_souhaite: e.target.value })}>
-        <option value="">— Toutes catégories —</option>
-        <option>Berline standard</option><option>Berline premium</option>
-        <option>Berline prestige</option><option>Van / Minibus</option>
-        <option>Van Bagages</option><option>SUV premium</option><option>Électrique</option>
-      </select>
+      <VehiculeCategorieSelect categories={categories} value={p.modele_souhaite} onChange={v => onUpdate({ modele_souhaite: v })} selectClass="select" anyLabel="— Toutes catégories —" />
     </div>
     <div style={{ border:'1.5px solid #b8b0a4', overflow:'hidden', marginBottom:'12px' }}>
       <div style={{ display:'flex', background:'#f5f2ed' }}>
@@ -1128,17 +1132,8 @@ function VehiculeSelector({ p, vehicules, onUpdate }: { p: PrestationForm; vehic
         {p.vehicule_mode === 'flotte' && (
           <>
             {(() => {
-              const categorieMap: Record<string, string> = {
-                'Berline standard': 'berline_standard',
-                'Berline premium':  'berline_premium',
-                'Berline prestige': 'berline_prestige',
-                'Van / Minibus':    'van_minibus',
-                'SUV premium':      'suv_premium',
-                'Électrique':       'electrique',
-                'Van Bagages':      'van_bagages',
-              }
-              const catFiltre = p.modele_souhaite ? categorieMap[p.modele_souhaite] : null
-              const vFiltres = catFiltre ? vehicules.filter(v => v.categorie === catFiltre) : vehicules
+              // La flotte stocke le NOM de catégorie (= vehicule_categories.nom)
+              const vFiltres = catName ? vehicules.filter(v => v.categorie === catName) : vehicules
 
               if (vehicules.length === 0) return (
                 <div style={{ padding:'10px', background:'#fdf3dc', border:'1px solid rgba(122,92,16,0.2)', fontSize:'11px', color:'#7a5c10' }}>
