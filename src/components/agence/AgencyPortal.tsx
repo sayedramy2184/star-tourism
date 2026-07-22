@@ -7,18 +7,9 @@ import { format, parseISO } from 'date-fns'
 import toast from 'react-hot-toast'
 import { Plus, Trash2, LogOut, Users, ChevronRight, ListChecks, Send, Pencil } from 'lucide-react'
 import { byChrono } from '@/lib/chrono'
+import VehiculeCategorieSelect from '@/components/ui/VehiculeCategorieSelect'
 
 // ── Labels ─────────────────────────────────────
-// Mêmes catégories que le dashboard (valeurs identiques à modele_souhaite)
-const VEHICLES = [
-  { value: 'Berline standard', en: 'Standard sedan' },
-  { value: 'Berline premium', en: 'Premium sedan' },
-  { value: 'Berline prestige', en: 'Prestige sedan' },
-  { value: 'Van / Minibus', en: 'Van / Minibus' },
-  { value: 'SUV premium', en: 'Premium SUV' },
-  { value: 'Électrique', en: 'Electric' },
-]
-
 const EXEC: Record<string, { label: string; color: string; bg: string }> = {
   en_attente: { label: 'Scheduled', color: '#7a5c10', bg: '#fdf3dc' },
   confirme:   { label: 'Confirmed', color: '#1e5e3a', bg: '#eaf4ee' },
@@ -299,7 +290,7 @@ function ServiceLine({ p, onEdit, onCancel }: { p: any; onEdit?: () => void; onC
   // Une prestation libre est un extra ajouté par nos soins : lecture seule côté agence.
   const canEdit = !isLibre && p.validation_statut !== 'refusee' && p.statut !== 'termine'
   const price = Number(p.montant_ht) || 0
-  const vehLbl = VEHICLES.find(v => v.value === p.modele_souhaite)?.en ?? p.modele_souhaite
+  const vehLbl = p.modele_souhaite
 
   return (
     <div style={{ background: '#faf9f7', border: '1px solid #ede9e2', borderLeft: `3px solid ${color}`, borderRadius: '8px', padding: '11px 13px' }}>
@@ -386,7 +377,12 @@ function NewRequest({ onDone, initial, mode = 'new', dossierId, prestationId }: 
   const [passengers, setPassengers] = useState<any[]>(initial?.passengers ?? [])
   const [notes, setNotes] = useState<string>(initial?.notes ?? '')
   const [saving, setSaving] = useState(false)
+  const [categories, setCategories] = useState<any[]>([])
   const isEditService = mode === 'edit-service'
+
+  useEffect(() => {
+    fetch('/api/agence/categories').then(r => r.json()).then(d => setCategories(d.data ?? [])).catch(() => {})
+  }, [])
 
   function upd(i: number, patch: any) { setServices(prev => prev.map((s, k) => k === i ? { ...s, ...patch } : s)) }
 
@@ -478,10 +474,7 @@ function NewRequest({ onDone, initial, mode = 'new', dossierId, prestationId }: 
 
             <div style={{ display: 'grid', gridTemplateColumns: '1.4fr 0.8fr 0.8fr', gap: '10px' }}>
               <div><label style={lbl}>Vehicle preference</label>
-                <select style={inp} value={s.modele_souhaite} onChange={e => upd(i, { modele_souhaite: e.target.value })}>
-                  <option value="">Any</option>
-                  {VEHICLES.map(v => <option key={v.value} value={v.value}>{v.en}</option>)}
-                </select>
+                <VehiculeCategorieSelect categories={categories} value={s.modele_souhaite} onChange={v => upd(i, { modele_souhaite: v })} selectStyle={inp} anyLabel="Any" modelAnyLabel="Any model" />
               </div>
               <div><label style={lbl}>Passengers</label><input type="number" min={1} style={inp} value={s.nb_passagers} onChange={e => upd(i, { nb_passagers: Number(e.target.value) })} /></div>
               <div><label style={lbl}>Bags</label><input type="number" min={0} style={inp} value={s.nb_bagages} onChange={e => upd(i, { nb_bagages: Number(e.target.value) })} /></div>

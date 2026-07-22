@@ -1,11 +1,10 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import toast from 'react-hot-toast'
 import { Pencil, X } from 'lucide-react'
-
-const CATEGORIES = ['Berline standard', 'Berline premium', 'Berline prestige', 'Van / Minibus', 'SUV premium', 'Électrique']
+import VehiculeCategorieSelect from '@/components/ui/VehiculeCategorieSelect'
 
 export default function ModifierPrestationModal({ p }: { p: any }) {
   const router = useRouter()
@@ -23,6 +22,12 @@ export default function ModifierPrestationModal({ p }: { p: any }) {
   const [tarifFixe, setTarifFixe]       = useState<number>(p.tarif_fixe_ht ?? p.montant_ht ?? 0)
   const [tarifJour, setTarifJour]       = useState<number>(p.tarif_journalier_ht ?? 0)
   const [modele, setModele]             = useState<string>(p.modele_souhaite ?? '')
+  const [categories, setCategories]     = useState<any[]>([])
+
+  useEffect(() => {
+    if (!open) return
+    fetch('/api/vehicule-categories').then(r => r.json()).then(d => setCategories(d.data ?? [])).catch(() => {})
+  }, [open])
   const [notes, setNotes]               = useState<string>(p.notes ?? '')
 
   async function handleSubmit(e: React.FormEvent) {
@@ -115,10 +120,8 @@ export default function ModifierPrestationModal({ p }: { p: any }) {
               <FormSep label="Véhicule & notes" />
               <div style={{ marginBottom: '12px' }}>
                 <label className="form-label">Catégorie souhaitée</label>
-                <select className="select" value={modele} onChange={e => setModele(e.target.value)}>
-                  <option value="">— Aucune —</option>
-                  {CATEGORIES.map(c => <option key={c}>{c}</option>)}
-                </select>
+                <VehiculeCategorieSelect categories={categories} value={modele} onChange={setModele} selectClass="select" anyLabel="— Aucune —" />
+
               </div>
               <div style={{ marginBottom: '4px' }}>
                 <label className="form-label">Notes</label>

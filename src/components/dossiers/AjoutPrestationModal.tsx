@@ -6,6 +6,7 @@ import { format, eachDayOfInterval, parseISO } from 'date-fns'
 import { fr } from 'date-fns/locale'
 import toast from 'react-hot-toast'
 import { Plus, X } from 'lucide-react'
+import VehiculeCategorieSelect from '@/components/ui/VehiculeCategorieSelect'
 
 const JOURS_FR = ['Dim.','Lun.','Mar.','Mer.','Jeu.','Ven.','Sam.']
 
@@ -28,6 +29,7 @@ export default function AjoutPrestationModal({ dossierId, dateDebutDossier, date
   const [saving,    setSaving]    = useState(false)
   const [chauffeurs, setChauffeurs] = useState<Chauffeur[]>([])
   const [vehicules,  setVehicules]  = useState<Vehicule[]>([])
+  const [categories, setCategories] = useState<any[]>([])
 
   // Form state
   const [type,           setType]           = useState<'mad'|'transfert'>('transfert')
@@ -51,6 +53,7 @@ export default function AjoutPrestationModal({ dossierId, dateDebutDossier, date
   useEffect(() => {
     if (!open) return
     fetch('/api/chauffeurs').then(r => r.json()).then(d => setChauffeurs(d.data ?? []))
+    fetch('/api/vehicule-categories').then(r => r.json()).then(d => setCategories(d.data ?? [])).catch(() => {})
     fetch(`/api/vehicules?date_debut=${dateDebut}&date_fin=${dateFin}`)
       .then(r => r.json()).then(d => setVehicules(d.data ?? []))
   }, [open])
@@ -253,12 +256,7 @@ export default function AjoutPrestationModal({ dossierId, dateDebutDossier, date
               {vehiculeMode === 'flotte' && (
                 <>
                   <div style={{ marginBottom:'8px' }}>
-                    <select className="select" value={modeleSouhaite} onChange={e => setModeleSouhaite(e.target.value)}>
-                      <option value="">— Catégorie souhaitée —</option>
-                      <option>Berline standard</option><option>Berline premium</option>
-                      <option>Berline prestige</option><option>Van / Minibus</option>
-                      <option>SUV premium</option><option>Électrique</option>
-                    </select>
+                    <VehiculeCategorieSelect categories={categories} value={modeleSouhaite} onChange={setModeleSouhaite} selectClass="select" />
                   </div>
                   <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:'6px' }}>
                     {vehicules.length === 0 ? (

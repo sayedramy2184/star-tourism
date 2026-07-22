@@ -2,9 +2,10 @@
 
 import { useState, useEffect } from 'react'
 import toast from 'react-hot-toast'
-import { Plus, Trash2, Edit, Save, Building2, CreditCard, FileText, Tag } from 'lucide-react'
+import { Plus, Trash2, Edit, Save, Building2, CreditCard, FileText, Tag, Car } from 'lucide-react'
 import DocumentsOfficiels from '@/components/parametres/DocumentsOfficiels'
 import LogoUploader from '@/components/parametres/LogoUploader'
+import CategoriesVehicules from '@/components/parametres/CategoriesVehicules'
 
 interface Societe {
   nom?: string; forme_juridique?: string; siret?: string; numero_tva?: string
@@ -20,7 +21,7 @@ interface Forfait {
   tarif_ht: number; tarif_heure_sup: number; avec_heures_sup: boolean; notes?: string
 }
 
-type Tab = 'societe' | 'facturation' | 'forfaits'
+type Tab = 'societe' | 'facturation' | 'forfaits' | 'vehicules'
 
 function fmt(n: number) {
   return new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' }).format(n)
@@ -95,6 +96,7 @@ export default function ParametresPage() {
     { val:'societe',    label:'Société',      icon:<Building2 size={14}/> },
     { val:'facturation',label:'Facturation',  icon:<CreditCard size={14}/> },
     { val:'forfaits',   label:'Forfaits MAD', icon:<Tag size={14}/> },
+    { val:'vehicules',  label:'Véhicules',    icon:<Car size={14}/> },
   ]
 
   return (
@@ -330,6 +332,9 @@ export default function ParametresPage() {
           </div>
         </div>
       )}
+
+      {/* ── VÉHICULES ── */}
+      {tab === 'vehicules' && <CategoriesVehicules />}
     </div>
   )
 }
