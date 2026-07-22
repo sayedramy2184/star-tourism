@@ -39,7 +39,7 @@ export default function VehiculeEditModal({ vehicule }: { vehicule: Vehicule }) 
   const router = useRouter()
   const [open, setOpen] = useState(false)
   const [saving, setSaving] = useState(false)
-  const [categories, setCategories] = useState<{ id: string; nom: string }[]>([])
+  const [categories, setCategories] = useState<{ id: string; nom: string; modeles?: string[] }[]>([])
   useEffect(() => {
     if (!open) return
     fetch('/api/vehicule-categories').then(r => r.json()).then(d => setCategories(d.data ?? [])).catch(() => {})
@@ -111,7 +111,12 @@ export default function VehiculeEditModal({ vehicule }: { vehicule: Vehicule }) 
             <form onSubmit={save} style={{ padding: '22px 24px' }}>
               <div className="form-grid-2" style={{ marginBottom: '12px' }}>
                 <div><label className="form-label">Marque *</label><input className="input" required value={form.marque} onChange={e => setForm({ ...form, marque: e.target.value })} /></div>
-                <div><label className="form-label">Modèle *</label><input className="input" required value={form.modele} onChange={e => setForm({ ...form, modele: e.target.value })} /></div>
+                <div><label className="form-label">Modèle *</label>
+                  <input className="input" required list="veh-edit-modeles" value={form.modele} onChange={e => setForm({ ...form, modele: e.target.value })} />
+                  <datalist id="veh-edit-modeles">
+                    {(categories.find(c => c.nom === form.categorie)?.modeles ?? []).map((m: string) => <option key={m} value={m} />)}
+                  </datalist>
+                </div>
                 <div><label className="form-label">Immatriculation *</label><input className="input" required value={form.immatriculation} onChange={e => setForm({ ...form, immatriculation: e.target.value.toUpperCase() })} /></div>
                 <div><label className="form-label">Couleur</label><input className="input" value={form.couleur} onChange={e => setForm({ ...form, couleur: e.target.value })} /></div>
               </div>

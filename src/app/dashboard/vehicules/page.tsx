@@ -130,7 +130,7 @@ export default function VehiculesPage() {
   const [filter,    setFilter]    = useState('tous')
   const [form,      setForm]      = useState(emptyForm)
   const [saving,    setSaving]    = useState(false)
-  const [categories, setCategories] = useState<{ id: string; nom: string }[]>([])
+  const [categories, setCategories] = useState<{ id: string; nom: string; modeles?: string[] }[]>([])
 
   useEffect(() => { load() }, [])
   useEffect(() => { fetch('/api/vehicule-categories').then(r => r.json()).then(d => setCategories(d.data ?? [])).catch(() => {}) }, [])
@@ -398,7 +398,14 @@ export default function VehiculesPage() {
                   <div><label className="form-label">Marque *</label>
                     <input type="text" className="input" required value={form.marque} onChange={e => setForm({...form, marque:e.target.value})} placeholder="Mercedes-Benz" /></div>
                   <div><label className="form-label">Modèle *</label>
-                    <input type="text" className="input" required value={form.modele} onChange={e => setForm({...form, modele:e.target.value})} placeholder="Classe E" /></div>
+                    <input type="text" className="input" required list="veh-modeles" value={form.modele} onChange={e => setForm({...form, modele:e.target.value})} placeholder={form.categorie ? 'Choisir ou saisir…' : 'Classe E'} />
+                    <datalist id="veh-modeles">
+                      {(categories.find((c: any) => c.nom === form.categorie)?.modeles ?? []).map((m: string) => <option key={m} value={m} />)}
+                    </datalist>
+                    {form.categorie && (categories.find((c: any) => c.nom === form.categorie)?.modeles?.length ?? 0) > 0 && (
+                      <div style={{ fontSize:'10px', color:'#8a8478', marginTop:'3px' }}>Modèles de « {form.categorie} » proposés</div>
+                    )}
+                  </div>
                 </div>
                 <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr 1fr', gap:'12px', marginBottom:'12px' }}>
                   <div><label className="form-label">Immatriculation *</label>

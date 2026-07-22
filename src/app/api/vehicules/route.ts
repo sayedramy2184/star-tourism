@@ -15,25 +15,9 @@ export async function GET(req: NextRequest) {
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 })
 
-  // Si dates fournies, vérifier disponibilité
+  // Si dates fournies, calculer la disponibilité — SANS masquer les véhicules :
+  // on les renvoie tous en les marquant indisponibles + une raison.
   if (date_debut && date_fin && vehicules) {
-    // Exclure les véhicules hors parc sur la période :
-    //  - sortis du parc avant le début de la mission
-    //  - pas encore entrés dans le parc à la fin de la mission
-    // (comparaison lexicographique sûre sur des dates ISO 'YYYY-MM-DD')
-    const dansLeParc = vehicules.filter(v => {
-      // Hors parc (entrée / sortie)
-      if (v.date_sortie_parc && v.date_sortie_parc < date_debut) return false
-      if (v.date_entree_parc && v.date_entree_parc > date_fin) return false
-      // Hors période de contrat pour les véhicules loués
-      const loue = v.mode_acquisition && v.mode_acquisition !== 'propriete'
-      if (loue) {
-        if (v.contrat_fin && v.contrat_fin < date_debut) return false      // contrat terminé avant la mission
-        if (v.contrat_debut && v.contrat_debut > date_fin) return false    // contrat pas encore commencé
-      }
-      return true
-    })
-
     const { data: occupes } = await supabase
       .from('prestations')
       .select('vehicule_id')
@@ -44,10 +28,16 @@ export async function GET(req: NextRequest) {
 
     const occupesIds = new Set(occupes?.map(p => p.vehicule_id) ?? [])
 
-    const vehiculesWithDispo = dansLeParc.map(v => ({
-      ...v,
-      disponible_periode: !occupesIds.has(v.id)
-    }))
+    const vehiculesWithDispo = vehicules.map(v => {
+      const loue = v.mode_acquisition && v.mode_acquisition !== 'propriete'
+      let raison: string | null = null
+      if (v.date_sortie_parc && v.date_sortie_parc < date_debut)      raison = 'sorti du parc'
+      else if (v.date_entree_parc && v.date_entree_parc > date_fin)   raison = 'pas encore au parc'
+      else if (loue && v.contrat_fin && v.contrat_fin < date_debut)   raison = 'contrat terminé'
+      else if (loue && v.contrat_debut && v.contrat_debut > date_fin) raison = 'hors contrat'
+      else if (occupesIds.has(v.id))                                  raison = 'déjà affecté'
+      return { ...v, disponible_periode: !raison, indisponible_raison: raison }
+    })
 
     return NextResponse.json({ data: vehiculesWithDispo })
   }
