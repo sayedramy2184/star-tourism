@@ -385,7 +385,7 @@ function MissionsView({ days, viewMode, data, onTooltip, onDragStart, router }: 
                         <MBlock key={t.id}
                           bg={nonAff ? '#eef4fb' : siT.bg} border={nonAff ? '#1e3f70' : siT.color} text={siT.color}
                           icon="→" label={`Transfert · ${siT.label}`}
-                          title={nonAff ? '⚠ Sans chauffeur' : `${t.chauffeur?.prenom ?? ''} ${t.chauffeur?.nom ?? ''}`}
+                          title={nonAff ? '⚠ Sans chauffeur' : t.chauffeur ? `${t.chauffeur.prenom} ${t.chauffeur.nom}` : t.sous_traitant ? `ST · ${t.sous_traitant.societe}` : '—'}
                           sub={t.heure_depart ?? null}
                           compact={viewMode==='mois'}
                           draggable={false}
@@ -950,7 +950,9 @@ function buildTransTooltip(t: Transfert) {
     dossier_id: t.dossier.id,
     date: t.date_debut,
     heure: t.heure_depart,
-    chauffeur: t.chauffeur ? `${t.chauffeur.prenom} ${t.chauffeur.nom}` : '⚠ Non affecté',
+    chauffeur: t.chauffeur ? `${t.chauffeur.prenom} ${t.chauffeur.nom}`
+      : t.sous_traitant ? `Sous-traitant · ${t.sous_traitant.societe}`
+      : '⚠ Non affecté',
     vehicule: t.vehicule ? `${t.vehicule.marque} ${t.vehicule.modele} — ${t.vehicule.immatriculation}` : null,
     depart: t.adresse_depart,
     arrivee: t.adresse_arrivee,
