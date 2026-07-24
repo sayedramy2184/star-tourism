@@ -35,11 +35,15 @@ export async function middleware(request: NextRequest) {
 
   // ── Séparation par sous-domaine ───────────
   // partenaire.<domaine> (ou agence.<domaine>) = PORTAIL AGENCE uniquement.
-  // Tout le reste (racine, dashboard, login équipe, chauffeur) y est renvoyé vers /agence.
+  // chauffeur.<domaine>                        = PWA CHAUFFEUR uniquement.
+  // Chaque portail a sa propre page de connexion (/agence/login, /chauffeur/login).
   // Les autres hôtes (app.<domaine>, *.vercel.app, localhost) gardent le comportement normal.
   const host = (request.headers.get('host') ?? '').toLowerCase()
-  const isAgencyHost = host.startsWith('partenaire.') || host.startsWith('agence.')
+  const isAgencyHost    = host.startsWith('partenaire.') || host.startsWith('agence.')
+  const isChauffeurHost = host.startsWith('chauffeur.')
+
   if (isAgencyHost) {
+    // Tout ce qui n'est pas le portail agence y est renvoyé.
     if (
       pathname === '/' ||
       pathname.startsWith('/dashboard') ||
@@ -49,6 +53,19 @@ export async function middleware(request: NextRequest) {
       return NextResponse.redirect(new URL('/agence', request.url))
     }
     // /agence/*, /api/*, assets → laissés passer (le portail agence a ses propres gardes)
+  }
+
+  if (isChauffeurHost) {
+    // Tout ce qui n'est pas la PWA chauffeur y est renvoyé.
+    if (
+      pathname === '/' ||
+      pathname.startsWith('/dashboard') ||
+      pathname.startsWith('/auth') ||
+      pathname.startsWith('/agence')
+    ) {
+      return NextResponse.redirect(new URL('/chauffeur', request.url))
+    }
+    // /chauffeur/*, /api/*, assets → laissés passer (la PWA a ses propres gardes)
   }
 
   // ── Routes publiques ──────────────────────
