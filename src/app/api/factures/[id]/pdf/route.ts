@@ -11,6 +11,8 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return NextResponse.json({ error: 'Non autorisé' }, { status: 401 })
 
+  const langue: 'fr' | 'en' = req.nextUrl.searchParams.get('lang') === 'en' ? 'en' : 'fr'
+
   const { data: profile } = await supabase
     .from('profiles').select('company_id').eq('id', user.id).single()
   if (!profile) return NextResponse.json({ error: 'Profil introuvable' }, { status: 403 })
@@ -62,13 +64,15 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
       iban: null, bic: null, banque: null, mentions_legales: null, conditions_paiement: null,
     },
     dossierNumero: dossier?.numero ?? null,
+    langue,
   })
 
+  const suffixe = langue === 'en' ? '-EN' : ''
   return new NextResponse(new Uint8Array(buffer), {
     status: 200,
     headers: {
       'Content-Type': 'application/pdf',
-      'Content-Disposition': `inline; filename="Facture-${facture.numero}.pdf"`,
+      'Content-Disposition': `inline; filename="Facture-${facture.numero}${suffixe}.pdf"`,
       'Cache-Control': 'no-store',
     },
   })

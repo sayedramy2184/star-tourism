@@ -209,7 +209,8 @@ export default function FacturationPage() {
                 </div>
               </div>
               <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap', marginTop: '10px', paddingTop: '10px', borderTop: '1px solid #ede9e2' }}>
-                <a href={`/api/factures/${f.id}/pdf`} target="_blank" rel="noreferrer" className="btn-ghost" style={{ padding: '4px 10px', fontSize: '10px', textDecoration: 'none' }}><ExternalLink size={11} /> PDF</a>
+                <a href={`/api/factures/${f.id}/pdf`} target="_blank" rel="noreferrer" className="btn-ghost" style={{ padding: '4px 10px', fontSize: '10px', textDecoration: 'none' }}><ExternalLink size={11} /> PDF FR</a>
+                <a href={`/api/factures/${f.id}/pdf?lang=en`} target="_blank" rel="noreferrer" className="btn-ghost" style={{ padding: '4px 10px', fontSize: '10px', textDecoration: 'none' }}><ExternalLink size={11} /> PDF EN</a>
                 {f.type !== 'avoir' && f.statut === 'brouillon' && <FactureFormModal editId={f.id} onDone={load} />}
                 {f.type !== 'avoir' && f.statut !== 'annulee' && <PaiementModal factureId={f.id} numero={f.numero} montantTtc={f.montant_ttc} dejaPaye={paye(f)} onDone={load} />}
                 {f.type !== 'avoir' && f.statut !== 'brouillon' && f.statut !== 'annulee' && (
@@ -282,7 +283,11 @@ export default function FacturationPage() {
                     <div style={{ display: 'flex', gap: '6px', justifyContent: 'flex-end' }}>
                       <a href={`/api/factures/${f.id}/pdf`} target="_blank" rel="noreferrer"
                         className="btn-ghost" style={{ padding: '4px 10px', fontSize: '10px', textDecoration: 'none' }}>
-                        <ExternalLink size={11} /> PDF
+                        <ExternalLink size={11} /> PDF FR
+                      </a>
+                      <a href={`/api/factures/${f.id}/pdf?lang=en`} target="_blank" rel="noreferrer"
+                        className="btn-ghost" style={{ padding: '4px 10px', fontSize: '10px', textDecoration: 'none' }}>
+                        <ExternalLink size={11} /> PDF EN
                       </a>
                       {f.type !== 'avoir' && f.statut === 'brouillon' && (
                         <FactureFormModal editId={f.id} onDone={load} />

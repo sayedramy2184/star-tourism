@@ -80,7 +80,56 @@ export interface FacturePDFData {
     conditions_paiement: string | null
   }
   dossierNumero: string | null
+  langue?: Langue
 }
+
+export type Langue = 'fr' | 'en'
+
+// ── Libellés bilingues ────────────────────────
+const LABELS = {
+  fr: {
+    facture: 'Facture', avoir: 'Avoir',
+    dateEmission: "Date d'émission", echeance: 'Échéance', refDossier: 'Référence dossier',
+    factureA: 'Facturé à', attention: "À l'attention de", tva: 'TVA', tvaShort: 'TVA',
+    designation: 'Désignation', qte: 'Qté', puHt: 'P.U. HT', montantHt: 'Montant HT',
+    ref: 'Réf.', totalHt: 'Total HT', tvaRow: 'TVA', totalTtc: 'Total TTC',
+    conditions: 'Conditions de règlement', echeanceLigne: 'Échéance', paiementDefaut: 'Paiement à 30 jours',
+    banque: 'Coordonnées bancaires',
+  },
+  en: {
+    facture: 'Invoice', avoir: 'Credit note',
+    dateEmission: 'Issue date', echeance: 'Due date', refDossier: 'Reference',
+    factureA: 'Bill to', attention: 'Attn:', tva: 'VAT', tvaShort: 'VAT',
+    designation: 'Description', qte: 'Qty', puHt: 'Unit price', montantHt: 'Amount',
+    ref: 'Ref.', totalHt: 'Subtotal', tvaRow: 'VAT', totalTtc: 'Total',
+    conditions: 'Payment terms', echeanceLigne: 'Due', paiementDefaut: 'Payment within 30 days',
+    banque: 'Bank details',
+  },
+} as const
+
+// Traduction des désignations standard (les seules générées automatiquement).
+// Le texte libre (prestations libres, factures manuelles) est laissé tel quel.
+const DESIGNATIONS_EN: Record<string, string> = {
+  'Mise à disposition avec chauffeur': 'Chauffeur service (daily hire)',
+  'Transfert privé avec chauffeur': 'Private transfer with chauffeur',
+  'Meet & Greet': 'Meet & Greet',
+}
+function designation(s: string, langue: Langue): string {
+  return langue === 'en' ? (DESIGNATIONS_EN[s] ?? s) : s
+}
+
+// Conditions de règlement traduites (mappe les formulations courantes, sinon texte d'origine).
+function conditionsRglt(s: string | null | undefined, langue: Langue): string {
+  const d = LABELS[langue].paiementDefaut
+  if (!s) return d
+  if (langue === 'fr') return safe(s)
+  if (/imm[ée]diat/i.test(s)) return 'Payment on receipt'
+  const m = s.match(/(\d+)/)
+  if (m) return `Payment within ${m[1]} days`
+  return safe(s)
+}
+
+const MOIS_EN = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
 
 // Formatage € en ASCII pur : les polices standard du PDF (Helvetica) ne savent pas
 // dessiner l'espace insécable étroit (U+202F) qu'insère Intl.NumberFormat('fr-FR'),
@@ -105,9 +154,12 @@ function safe(s: string | null | undefined): string {
     .replace(/[–—]/g, '-')
     .replace(/[…]/g, '...')
 }
-function dateFr(d: string) {
+// FR : jj/mm/aaaa · EN : 21 Jul 2026 (évite l'ambiguïté jour/mois anglo-saxonne)
+function fmtDate(d: string, langue: Langue = 'fr') {
   const [y, m, j] = d.split('-')
-  return j && m && y ? `${j}/${m}/${y}` : d
+  if (!(j && m && y)) return d
+  if (langue === 'en') return `${j} ${MOIS_EN[parseInt(m, 10) - 1] ?? m} ${y}`
+  return `${j}/${m}/${y}`
 }
 
 const styles = StyleSheet.create({
@@ -177,7 +229,9 @@ const styles = StyleSheet.create({
   footerTxt: { fontSize: 6.5, color: '#9c968b', textAlign: 'center', lineHeight: 1.4 },
 })
 
-function FactureDocument({ facture, lignes, client, societe, dossierNumero }: FacturePDFData) {
+function FactureDocument({ facture, lignes, client, societe, dossierNumero, langue = 'fr' }: FacturePDFData) {
+  const L = LABELS[langue]
+  const titre = facture.type === 'avoir' ? L.avoir : L.facture
   const villeLigne = [societe.code_postal, societe.ville].filter(Boolean).join(' ')
   const clientVille = [client.code_postal, client.ville].filter(Boolean).join(' ')
   const legalParts = [
@@ -188,7 +242,7 @@ function FactureDocument({ facture, lignes, client, societe, dossierNumero }: Fa
   ].filter(Boolean).join('  ·  ')
 
   return (
-    <Document title={`${facture.type === 'avoir' ? 'Avoir' : 'Facture'} ${facture.numero}`} author={societe.nom ?? 'Star Tourism Services'}>
+    <Document title={`${titre} ${facture.numero}`} author={societe.nom ?? 'Star Tourism Services'}>
       <Page size="A4" style={styles.page}>
 
         {/* En-tête : marque + société émettrice */}
@@ -214,49 +268,49 @@ function FactureDocument({ facture, lignes, client, societe, dossierNumero }: Fa
 
         {/* Titre + numéro */}
         <View style={styles.titleRow}>
-          <Text style={styles.factureTitle}>{facture.type === 'avoir' ? 'Avoir' : 'Facture'}</Text>
+          <Text style={styles.factureTitle}>{titre}</Text>
           <Text style={styles.factureNum}>{facture.numero}</Text>
         </View>
 
         {/* Méta : dates + dossier */}
         <View style={styles.metaRow}>
           <View style={styles.metaCell}>
-            <Text style={styles.metaLabel}>Date d'émission</Text>
-            <Text style={styles.metaVal}>{dateFr(facture.date_emission)}</Text>
+            <Text style={styles.metaLabel}>{L.dateEmission}</Text>
+            <Text style={styles.metaVal}>{fmtDate(facture.date_emission, langue)}</Text>
           </View>
           <View style={styles.metaCell}>
-            <Text style={styles.metaLabel}>Échéance</Text>
-            <Text style={styles.metaVal}>{dateFr(facture.date_echeance)}</Text>
+            <Text style={styles.metaLabel}>{L.echeance}</Text>
+            <Text style={styles.metaVal}>{fmtDate(facture.date_echeance, langue)}</Text>
           </View>
           <View style={styles.metaCell}>
-            <Text style={styles.metaLabel}>Référence dossier</Text>
+            <Text style={styles.metaLabel}>{L.refDossier}</Text>
             <Text style={styles.metaVal}>{dossierNumero ?? '—'}</Text>
           </View>
         </View>
 
         {/* Client */}
         <View style={styles.billTo}>
-          <Text style={styles.billToLabel}>Facturé à</Text>
+          <Text style={styles.billToLabel}>{L.factureA}</Text>
           <Text style={styles.billToNom}>{safe(client.nom)}</Text>
-          {client.contact_nom ? <Text style={styles.billToLine}>À l'attention de {safe(client.contact_nom)}</Text> : null}
+          {client.contact_nom ? <Text style={styles.billToLine}>{L.attention} {safe(client.contact_nom)}</Text> : null}
           {client.adresse ? <Text style={styles.billToLine}>{safe(client.adresse)}</Text> : null}
           {clientVille ? <Text style={styles.billToLine}>{safe(clientVille)}{client.pays && client.pays !== 'France' ? `, ${safe(client.pays)}` : ''}</Text> : null}
-          {client.numero_tva ? <Text style={styles.billToLine}>TVA : {safe(client.numero_tva)}</Text> : null}
+          {client.numero_tva ? <Text style={styles.billToLine}>{L.tvaShort}{langue === 'en' ? ':' : ' :'} {safe(client.numero_tva)}</Text> : null}
         </View>
 
         {/* Tableau des lignes */}
         <View style={styles.tHead}>
-          <Text style={[styles.tHeadCell, styles.cDesc]}>Désignation</Text>
-          <Text style={[styles.tHeadCell, styles.cQte]}>Qté</Text>
-          <Text style={[styles.tHeadCell, styles.cPu]}>P.U. HT</Text>
-          <Text style={[styles.tHeadCell, styles.cTot]}>Montant HT</Text>
+          <Text style={[styles.tHeadCell, styles.cDesc]}>{L.designation}</Text>
+          <Text style={[styles.tHeadCell, styles.cQte]}>{L.qte}</Text>
+          <Text style={[styles.tHeadCell, styles.cPu]}>{L.puHt}</Text>
+          <Text style={[styles.tHeadCell, styles.cTot]}>{L.montantHt}</Text>
         </View>
         {lignes.map((l, i) => (
           <View key={i} style={styles.tRow} wrap={false}>
             <View style={styles.cDesc}>
-              <Text style={styles.desigTxt}>{safe(l.designation)}</Text>
+              <Text style={styles.desigTxt}>{safe(designation(l.designation, langue))}</Text>
               {l.description ? <Text style={styles.descTxt}>{safe(l.description)}</Text> : null}
-              {l.reference ? <Text style={styles.refTxt}>Réf. {safe(l.reference)}</Text> : null}
+              {l.reference ? <Text style={styles.refTxt}>{L.ref} {safe(l.reference)}</Text> : null}
             </View>
             <Text style={[styles.numTxt, styles.cQte]}>{l.quantite}</Text>
             <Text style={[styles.numTxt, styles.cPu]}>{eur(l.prix_unitaire_ht)}</Text>
@@ -268,15 +322,15 @@ function FactureDocument({ facture, lignes, client, societe, dossierNumero }: Fa
         <View style={styles.totalsWrap}>
           <View style={styles.totalsBox}>
             <View style={styles.totalRow}>
-              <Text style={styles.totalLabel}>Total HT</Text>
+              <Text style={styles.totalLabel}>{L.totalHt}</Text>
               <Text style={styles.totalVal}>{eur(facture.montant_ht)}</Text>
             </View>
             <View style={styles.totalRow}>
-              <Text style={styles.totalLabel}>TVA {facture.taux_tva} %</Text>
+              <Text style={styles.totalLabel}>{L.tvaRow} {facture.taux_tva}{langue === 'en' ? '%' : ' %'}</Text>
               <Text style={styles.totalVal}>{eur(facture.montant_tva)}</Text>
             </View>
             <View style={styles.ttcRow}>
-              <Text style={styles.ttcLabel}>Total TTC</Text>
+              <Text style={styles.ttcLabel}>{L.totalTtc}</Text>
               <Text style={styles.ttcVal}>{eur(facture.montant_ttc)}</Text>
             </View>
           </View>
@@ -285,13 +339,13 @@ function FactureDocument({ facture, lignes, client, societe, dossierNumero }: Fa
         {/* Paiement */}
         <View style={styles.payBlock}>
           <View style={styles.payCol}>
-            <Text style={styles.payLabel}>Conditions de règlement</Text>
-            <Text style={styles.payLine}>{safe(societe.conditions_paiement) || 'Paiement à 30 jours'}</Text>
-            <Text style={styles.payLine}>Échéance : {dateFr(facture.date_echeance)}</Text>
+            <Text style={styles.payLabel}>{L.conditions}</Text>
+            <Text style={styles.payLine}>{conditionsRglt(societe.conditions_paiement, langue)}</Text>
+            <Text style={styles.payLine}>{L.echeanceLigne}{langue === 'en' ? ':' : ' :'} {fmtDate(facture.date_echeance, langue)}</Text>
           </View>
           {(societe.iban || societe.bic) ? (
             <View style={styles.payCol}>
-              <Text style={styles.payLabel}>Coordonnées bancaires</Text>
+              <Text style={styles.payLabel}>{L.banque}</Text>
               {societe.banque ? <Text style={styles.payLine}>{safe(societe.banque)}</Text> : null}
               {societe.iban ? <Text style={styles.payMono}>IBAN {safe(societe.iban)}</Text> : null}
               {societe.bic ? <Text style={styles.payMono}>BIC {safe(societe.bic)}</Text> : null}
