@@ -140,7 +140,7 @@ export default function DossiersPage() {
             {dossiers.length === 0 ? 'Aucun dossier — créez le premier !' : 'Aucun résultat.'}
           </div>
         ) : sp.pageItems.map((d: any) => {
-          const types = d.prestations?.reduce((acc: any, p: any) => { acc[p.type] = (acc[p.type] ?? 0) + 1; return acc }, {}) ?? {}
+          const types = d.prestations?.filter((p: any) => p.statut !== 'annule').reduce((acc: any, p: any) => { acc[p.type] = (acc[p.type] ?? 0) + 1; return acc }, {}) ?? {}
           return (
             <div key={d.id} style={{ background:'#fff', border:'1.5px solid #b8b0a4', boxShadow:'0 1px 4px rgba(0,0,0,0.06)' }}>
               <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', padding:'10px 12px', borderBottom:'1px solid #ede9e2' }}>
@@ -184,7 +184,7 @@ export default function DossiersPage() {
             {loadingData ? (
               <tr><td colSpan={8} style={{ padding:'60px', textAlign:'center', color:'#8a8478', fontSize:'12px' }}>Chargement…</td></tr>
             ) : sp.total > 0 ? sp.pageItems.map((d: any) => {
-              const types = d.prestations?.reduce((acc: any, p: any) => {
+              const types = d.prestations?.filter((p: any) => p.statut !== 'annule').reduce((acc: any, p: any) => {
                 acc[p.type] = (acc[p.type] ?? 0) + 1; return acc
               }, {}) ?? {}
               return (

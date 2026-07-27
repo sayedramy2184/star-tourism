@@ -63,8 +63,10 @@ export default async function DossierDetailPage({ params }: { params: { id: stri
 
   if (error || !data) notFound()
 
-  // Trier
-  const prestations = [...(data.prestations ?? [])].sort(byChrono)
+  // Trier — les prestations annulées n'apparaissent plus dans le dossier
+  const prestations = [...(data.prestations ?? [])]
+    .filter((p: any) => p.statut !== 'annule')
+    .sort(byChrono)
   prestations.forEach((p: any) => {
     if (p.jours) p.jours.sort((a: any, b: any) => a.date.localeCompare(b.date))
   })
