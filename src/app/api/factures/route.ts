@@ -74,7 +74,9 @@ export async function POST(req: NextRequest) {
         prestations(
           id, ordre, type, date_debut, date_fin, nb_jours,
           adresse_depart, adresse_arrivee, modele_souhaite, montant_ht, libelle, notes, statut,
-          jours:jours_mad(id)
+          vehicule:vehicules(marque, modele),
+          vehicule_ext:vehicules_ext(marque, modele),
+          jours:jours_mad(id, vehicule:vehicules(marque, modele))
         )
       `)
       .eq('id', body.dossier_id)
@@ -93,12 +95,18 @@ export async function POST(req: NextRequest) {
       const quantite = isMad ? nbj : 1
       const pu = round2(quantite > 0 ? (p.montant_ht ?? 0) / quantite : (p.montant_ht ?? 0))
       const trajet = [p.adresse_depart, p.adresse_arrivee].filter(Boolean).join(' → ')
+      // Modèle réel du véhicule affecté (interne, externe, ou par jour pour les MAD).
+      // Repli sur la catégorie souhaitée si aucun véhicule n'est encore affecté.
+      const one = (x: any) => (Array.isArray(x) ? x[0] : x)
+      const vehLabel = (v: any) => { const o = one(v); return o ? [o.marque, o.modele].filter(Boolean).join(' ').trim() : '' }
+      const vehJour = (p.jours ?? []).map((j: any) => one(j.vehicule)).find(Boolean)
+      const modeleVehicule = vehLabel(p.vehicule) || vehLabel(p.vehicule_ext) || vehLabel(vehJour) || p.modele_souhaite || null
       return {
         ordre: i + 1,
         designation: isLibre ? (p.libelle || 'Prestation') : isMad ? 'Mise à disposition avec chauffeur' : 'Transfert privé avec chauffeur',
         description: isLibre
           ? [p.date_debut, p.notes || null].filter(Boolean).join(' · ') || null
-          : [`${p.date_debut} → ${p.date_fin}`, p.modele_souhaite, trajet || null].filter(Boolean).join(' · '),
+          : [`${p.date_debut} → ${p.date_fin}`, modeleVehicule, trajet || null].filter(Boolean).join(' · '),
         reference: `${dossier.numero} · P-${String(p.ordre).padStart(2, '0')}`,
         quantite,
         prix_unitaire_ht: pu,
