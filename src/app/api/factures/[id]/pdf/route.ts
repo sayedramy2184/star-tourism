@@ -21,8 +21,8 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
     .from('factures')
     .select(`
       numero, type, date_emission, date_echeance, montant_ht, taux_tva, montant_tva, montant_ttc, notes, statut,
-      client:clients(nom, contact_nom, adresse, code_postal, ville, pays, email, telephone, numero_tva),
-      dossier:dossiers(numero),
+      client:clients(nom, contact_nom, adresse, code_postal, ville, pays, email, telephone, numero_tva, type),
+      dossier:dossiers(numero, passagers(nom)),
       lignes:lignes_facture(ordre, designation, description, reference, quantite, prix_unitaire_ht, montant_ht)
     `)
     .eq('id', params.id)
@@ -64,6 +64,10 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
       iban: null, bic: null, banque: null, mentions_legales: null, conditions_paiement: null,
     },
     dossierNumero: dossier?.numero ?? null,
+    // Passagers affichés surtout pour les factures d'agence (identifier le voyage)
+    passagers: (client as any)?.type === 'agence'
+      ? ((dossier as any)?.passagers ?? []).map((p: any) => p.nom).filter(Boolean)
+      : [],
     langue,
   })
 

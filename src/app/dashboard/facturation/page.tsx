@@ -21,9 +21,14 @@ interface Facture {
   montant_ht: number
   montant_tva?: number
   montant_ttc: number
-  client: { id: string; nom: string } | null
-  dossier: { id: string; numero: string } | null
+  client: { id: string; nom: string; type?: string } | null
+  dossier: { id: string; numero: string; passagers?: { nom: string }[] } | null
   paiements?: { montant: number }[]
+}
+
+// Noms des passagers d'une facture (pour identifier une facture d'agence)
+function passagersNoms(f: Facture): string {
+  return (f.dossier?.passagers ?? []).map(p => p.nom).filter(Boolean).join(', ')
 }
 
 const paye = (f: Facture) => (f.paiements ?? []).reduce((s, p) => s + (p.montant ?? 0), 0)
@@ -110,7 +115,7 @@ export default function FacturationPage() {
     ? factures
     : factures.filter(f => f.statut === filtre)
   const sp = useSearchPaginate(visibles, (f: any) =>
-    `${f.numero ?? ''} ${f.client?.nom ?? ''} ${f.dossier?.numero ?? ''}`)
+    `${f.numero ?? ''} ${f.client?.nom ?? ''} ${f.dossier?.numero ?? ''} ${passagersNoms(f)}`)
 
   function handleExport() {
     exportCsv('factures-comptable.csv', sp.filtered.map((f: any) => ({
@@ -195,6 +200,9 @@ export default function FacturationPage() {
                 </select>
               </div>
               <div style={{ fontWeight: 600, color: '#16130e', fontSize: '14px', marginTop: '6px' }}>{f.client?.nom ?? '—'}</div>
+              {f.client?.type === 'agence' && passagersNoms(f) && (
+                <div style={{ fontSize: '11px', color: '#8a8478', marginTop: '2px' }}>Passagers : {passagersNoms(f)}</div>
+              )}
               <div style={{ display: 'flex', justifyContent: 'space-between', gap: '8px', marginTop: '6px', alignItems: 'flex-end' }}>
                 <div className="mono" style={{ fontSize: '10px', color: '#5a564e' }}>
                   {f.dossier && <div>Dossier {f.dossier.numero}</div>}
@@ -253,7 +261,14 @@ export default function FacturationPage() {
                       <span style={{ display: 'inline-block', marginLeft: '6px', fontSize: '8px', fontWeight: 700, letterSpacing: '0.5px', textTransform: 'uppercase', color: '#4a2a6e', background: '#f0ebfa', border: '1px solid rgba(74,42,110,0.2)', padding: '1px 5px' }}>Avoir</span>
                     )}
                   </td>
-                  <td className="td">{f.client?.nom ?? '—'}</td>
+                  <td className="td">
+                    <div>{f.client?.nom ?? '—'}</div>
+                    {f.client?.type === 'agence' && passagersNoms(f) && (
+                      <div style={{ fontSize: '10px', color: '#8a8478', marginTop: '2px' }}>
+                        Passagers : {passagersNoms(f)}
+                      </div>
+                    )}
+                  </td>
                   <td className="td">
                     {f.dossier
                       ? <Link href={`/dashboard/dossiers/${f.dossier.id}`} style={{ fontFamily: 'JetBrains Mono,monospace', fontSize: '11px', color: '#1e3f70', textDecoration: 'none' }}>{f.dossier.numero}</Link>

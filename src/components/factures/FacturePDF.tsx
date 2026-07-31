@@ -80,6 +80,7 @@ export interface FacturePDFData {
     conditions_paiement: string | null
   }
   dossierNumero: string | null
+  passagers?: string[]
   langue?: Langue
 }
 
@@ -90,7 +91,7 @@ const LABELS = {
   fr: {
     facture: 'Facture', avoir: 'Avoir',
     dateEmission: "Date d'émission", echeance: 'Échéance', refDossier: 'Référence dossier',
-    factureA: 'Facturé à', attention: "À l'attention de", tva: 'TVA', tvaShort: 'TVA',
+    factureA: 'Facturé à', attention: "À l'attention de", passagers: 'Passagers', tva: 'TVA', tvaShort: 'TVA',
     designation: 'Désignation', qte: 'Qté', puHt: 'P.U. HT', montantHt: 'Montant HT',
     ref: 'Réf.', totalHt: 'Total HT', tvaRow: 'TVA', totalTtc: 'Total TTC',
     conditions: 'Conditions de règlement', echeanceLigne: 'Échéance', paiementDefaut: 'Paiement à 30 jours',
@@ -99,7 +100,7 @@ const LABELS = {
   en: {
     facture: 'Invoice', avoir: 'Credit note',
     dateEmission: 'Issue date', echeance: 'Due date', refDossier: 'Reference',
-    factureA: 'Bill to', attention: 'Attn:', tva: 'VAT', tvaShort: 'VAT',
+    factureA: 'Bill to', attention: 'Attn:', passagers: 'Passengers', tva: 'VAT', tvaShort: 'VAT',
     designation: 'Description', qte: 'Qty', puHt: 'Unit price', montantHt: 'Amount',
     ref: 'Ref.', totalHt: 'Subtotal', tvaRow: 'VAT', totalTtc: 'Total',
     conditions: 'Payment terms', echeanceLigne: 'Due', paiementDefaut: 'Payment within 30 days',
@@ -229,7 +230,7 @@ const styles = StyleSheet.create({
   footerTxt: { fontSize: 6.5, color: '#9c968b', textAlign: 'center', lineHeight: 1.4 },
 })
 
-function FactureDocument({ facture, lignes, client, societe, dossierNumero, langue = 'fr' }: FacturePDFData) {
+function FactureDocument({ facture, lignes, client, societe, dossierNumero, passagers, langue = 'fr' }: FacturePDFData) {
   const L = LABELS[langue]
   const titre = facture.type === 'avoir' ? L.avoir : L.facture
   const villeLigne = [societe.code_postal, societe.ville].filter(Boolean).join(' ')
@@ -296,6 +297,9 @@ function FactureDocument({ facture, lignes, client, societe, dossierNumero, lang
           {client.adresse ? <Text style={styles.billToLine}>{safe(client.adresse)}</Text> : null}
           {clientVille ? <Text style={styles.billToLine}>{safe(clientVille)}{client.pays && client.pays !== 'France' ? `, ${safe(client.pays)}` : ''}</Text> : null}
           {client.numero_tva ? <Text style={styles.billToLine}>{L.tvaShort}{langue === 'en' ? ':' : ' :'} {safe(client.numero_tva)}</Text> : null}
+          {passagers && passagers.length > 0
+            ? <Text style={styles.billToLine}>{L.passagers}{langue === 'en' ? ':' : ' :'} {safe(passagers.join(', '))}</Text>
+            : null}
         </View>
 
         {/* Tableau des lignes */}

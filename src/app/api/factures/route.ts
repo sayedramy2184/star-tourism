@@ -27,7 +27,7 @@ export async function GET() {
 
   const { data, error } = await supabase
     .from('factures')
-    .select('*, client:clients(id, nom), dossier:dossiers(id, numero), paiements(montant)')
+    .select('*, client:clients(id, nom, type), dossier:dossiers(id, numero, passagers(nom)), paiements(montant)')
     .order('created_at', { ascending: false })
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 })
