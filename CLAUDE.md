@@ -27,13 +27,15 @@ Repo GitHub : `sayedramy2184/star-tourism`. À réparer un jour via Vercel → S
 ## ⚠️ Migrations base de données
 Le projet **n'est pas lié à la CLI Supabase**. Les migrations `supabase/migrations/*.sql`
 s'appliquent **à la main** : copier-coller dans **Supabase → SQL Editor → Run**, dans l'ordre.
-Elles sont idempotentes. Dernière = **024**. Toujours vérifier que la prod est à jour
-(001→024) après avoir ajouté une migration.
+Elles sont idempotentes. Dernière = **025**. Toujours vérifier que la prod est à jour
+(001→025) après avoir ajouté une migration.
 023 = `paiements_chauffeur` (versements paie chauffeur ; RLS `my_company_id()`).
-024 = paie PAR DOSSIER : `salaire_chauffeur_dossier` (tarifs jour/transfert modifiables
-par couple chauffeur×dossier, NULL = défaut 200/50 dans `src/lib/salaireChauffeur.ts`)
-+ `paiements_chauffeur.dossier_id`. Section **Paie** (`/dashboard/paie` liste + `[id]` détail
-par dossier), agrégation dans `src/lib/paieData.ts`. Récap global = missions TERMINÉES only.
+024 = `salaire_chauffeur_dossier` + `paiements_chauffeur.dossier_id` (versements par dossier).
+025 = rémunération PAR UNITÉ : `jours_mad.remuneration_ht` + `prestations.remuneration_ht`
+(NULL = défaut 200/50 dans `src/lib/salaireChauffeur.ts`). Remplace le tarif/dossier de 024
+(table 024 conservée mais inutilisée). Section **Paie** (`/dashboard/paie`), agrégation
+`src/lib/paieData.ts`. Salaire réglable jour par jour / transfert par transfert.
+« TERMINÉ » = date passée (pas le statut stocké). Récap global = unités terminées only.
 020 = prestations libres (services hors transport). 021 = `vehicule_categories` (catégories
 + modèles configurables dans Paramètres → Véhicules, utilisés par les formulaires + portail agence).
 018 = portail agences (rôle 'agence', origine dossier, validation_statut prestations, RLS).

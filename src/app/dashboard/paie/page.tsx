@@ -34,7 +34,7 @@ export default async function PaiePage() {
         ))}
       </div>
       <div style={{ fontSize: '11px', color: '#8a8478', marginBottom: '20px' }}>
-        Salaire calculé sur les <strong>missions terminées</strong> (200 €/jour MAD, 50 €/transfert, ajustables par dossier). Ouvre un chauffeur pour le détail et les versements.
+        Salaire calculé sur les <strong>missions terminées</strong> (dates passées) : 200 €/jour MAD, 50 €/transfert, ajustables par jour et par transfert. Ouvre un chauffeur pour le détail et les versements.
       </div>
 
       {/* Liste mobile */}

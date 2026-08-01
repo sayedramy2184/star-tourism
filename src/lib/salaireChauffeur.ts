@@ -11,23 +11,12 @@
 export const TARIF_MAD_JOUR = 200
 export const TARIF_TRANSFERT = 50
 
-export interface TarifOverride {
-  tarif_jour: number | null
-  tarif_transfert: number | null
+// Rémunération effective d'une unité (override sinon défaut selon le type)
+export function remuJour(remuneration_ht: number | null | undefined) {
+  return remuneration_ht ?? TARIF_MAD_JOUR
 }
-
-// Tarifs effectifs pour un dossier (override sinon défaut)
-export function tarifsFor(override?: TarifOverride | null) {
-  return {
-    tarifJour: override?.tarif_jour ?? TARIF_MAD_JOUR,
-    tarifTransfert: override?.tarif_transfert ?? TARIF_TRANSFERT,
-  }
-}
-
-// Salaire = jours × tarif/jour + transferts × tarif/transfert
-export function montantSalaire(nbJours: number, nbTransferts: number, override?: TarifOverride | null) {
-  const { tarifJour, tarifTransfert } = tarifsFor(override)
-  return round2(nbJours * tarifJour + nbTransferts * tarifTransfert)
+export function remuTransfert(remuneration_ht: number | null | undefined) {
+  return remuneration_ht ?? TARIF_TRANSFERT
 }
 
 export function round2(n: number) {

@@ -46,7 +46,7 @@ export default async function PaieChauffeurPage({ params }: { params: { id: stri
         ))}
       </div>
       <div style={{ fontSize: '11px', color: '#8a8478', marginBottom: '20px' }}>
-        Le récap global ne compte que les <strong>prestations terminées</strong>. Le détail par dossier ci-dessous montre l'ensemble des missions affectées.
+        Le récap global ne compte que les <strong>prestations terminées</strong> (dates passées). Le détail par dossier ci-dessous montre l'ensemble des missions affectées ; clique sur « Modifier les tarifs » pour ajuster la rémunération jour par jour.
       </div>
 
       {/* Détail par dossier */}
