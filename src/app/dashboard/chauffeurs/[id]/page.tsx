@@ -7,6 +7,7 @@ import { ArrowLeft, Phone, Mail, AlertTriangle, CheckCircle } from 'lucide-react
 import AccesChauffeur from '@/components/chauffeurs/AccesChauffeur'
 import ChauffeurEditModal from '@/components/chauffeurs/ChauffeurEditModal'
 import HistoriqueChauffeur, { type HistoItem } from '@/components/chauffeurs/HistoriqueChauffeur'
+import SalaireChauffeur from '@/components/chauffeurs/SalaireChauffeur'
 
 function docStatus(dateStr: string | null) {
   if (!dateStr) return { level: 'none', label: 'Non renseigné', color: '#c2bdb4' }
@@ -65,6 +66,22 @@ export default async function ChauffeurDetailPage({ params }: { params: { id: st
     .eq('type', 'transfert')
     .order('date_debut', { ascending: false })
     .limit(100)
+
+  // Paie : compte TOUS les jours MAD et transferts affectés (hors annulés), sans limite d'affichage
+  const { data: joursPaie } = await supabase
+    .from('jours_mad')
+    .select('statut, prestation:prestations(statut)')
+    .eq('chauffeur_id', params.id)
+  const { data: transPaie } = await supabase
+    .from('prestations')
+    .select('statut')
+    .eq('chauffeur_id', params.id)
+    .eq('type', 'transfert')
+  const nbJoursMadPaie = (joursPaie ?? []).filter((j: any) => {
+    const prest = Array.isArray(j.prestation) ? j.prestation[0] : j.prestation
+    return j.statut !== 'annule' && prest?.statut !== 'annule'
+  }).length
+  const nbTransfertsPaie = (transPaie ?? []).filter((t: any) => t.statut !== 'annule').length
 
   const st        = STATUTS[c.statut] ?? STATUTS.disponible
   const vtc       = docStatus(c.vtc_card_expiry)
@@ -208,6 +225,8 @@ export default async function ChauffeurDetailPage({ params }: { params: { id: st
           </div>
 
           {/* ── Historique des prestations (avec filtres) ── */}
+          <SalaireChauffeur chauffeurId={c.id} nbJoursMad={nbJoursMadPaie} nbTransferts={nbTransfertsPaie} />
+
           <HistoriqueChauffeur items={histoItems} />
 
         </div>
