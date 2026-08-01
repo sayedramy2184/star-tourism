@@ -7,7 +7,9 @@ import { ArrowLeft, Phone, Mail, AlertTriangle, CheckCircle } from 'lucide-react
 import AccesChauffeur from '@/components/chauffeurs/AccesChauffeur'
 import ChauffeurEditModal from '@/components/chauffeurs/ChauffeurEditModal'
 import HistoriqueChauffeur, { type HistoItem } from '@/components/chauffeurs/HistoriqueChauffeur'
-import SalaireChauffeur from '@/components/chauffeurs/SalaireChauffeur'
+import { loadPaieChauffeurDetail } from '@/lib/paieData'
+import { fmtEur } from '@/lib/salaireChauffeur'
+import { Wallet } from 'lucide-react'
 
 function docStatus(dateStr: string | null) {
   if (!dateStr) return { level: 'none', label: 'Non renseigné', color: '#c2bdb4' }
@@ -67,21 +69,8 @@ export default async function ChauffeurDetailPage({ params }: { params: { id: st
     .order('date_debut', { ascending: false })
     .limit(100)
 
-  // Paie : compte TOUS les jours MAD et transferts affectés (hors annulés), sans limite d'affichage
-  const { data: joursPaie } = await supabase
-    .from('jours_mad')
-    .select('statut, prestation:prestations(statut)')
-    .eq('chauffeur_id', params.id)
-  const { data: transPaie } = await supabase
-    .from('prestations')
-    .select('statut')
-    .eq('chauffeur_id', params.id)
-    .eq('type', 'transfert')
-  const nbJoursMadPaie = (joursPaie ?? []).filter((j: any) => {
-    const prest = Array.isArray(j.prestation) ? j.prestation[0] : j.prestation
-    return j.statut !== 'annule' && prest?.statut !== 'annule'
-  }).length
-  const nbTransfertsPaie = (transPaie ?? []).filter((t: any) => t.statut !== 'annule').length
+  // Paie : récap global (missions terminées) — détail complet dans la section Paie
+  const paie = await loadPaieChauffeurDetail(supabase, params.id)
 
   const st        = STATUTS[c.statut] ?? STATUTS.disponible
   const vtc       = docStatus(c.vtc_card_expiry)
@@ -225,7 +214,23 @@ export default async function ChauffeurDetailPage({ params }: { params: { id: st
           </div>
 
           {/* ── Historique des prestations (avec filtres) ── */}
-          <SalaireChauffeur chauffeurId={c.id} nbJoursMad={nbJoursMadPaie} nbTransferts={nbTransfertsPaie} />
+          {/* Résumé paie — détail & versements dans la section Paie */}
+          <div className="card" style={{ marginBottom: '16px' }}>
+            <div className="card-header">
+              <span className="card-header-title">
+                <Wallet size={13} style={{ display: 'inline', marginRight: 6, verticalAlign: '-2px' }} />
+                Paie
+              </span>
+              <Link href={`/dashboard/paie/${c.id}`} className="btn-or" style={{ padding: '5px 12px', fontSize: '11px', textDecoration: 'none' }}>
+                Gérer la paie →
+              </Link>
+            </div>
+            <div style={{ padding: '16px', display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '8px' }}>
+              <PaieStat label="Acquis (terminé)" val={fmtEur(paie.acquis)} color="#16130e" />
+              <PaieStat label="Versé" val={fmtEur(paie.verse)} color="#1e5e3a" />
+              <PaieStat label="Restant dû" val={paie.restant <= 0 ? '✓ Soldé' : fmtEur(paie.restant)} color={paie.restant > 0 ? '#9e2a2a' : '#1e5e3a'} />
+            </div>
+          </div>
 
           <HistoriqueChauffeur items={histoItems} />
 
@@ -308,6 +313,15 @@ export default async function ChauffeurDetailPage({ params }: { params: { id: st
 }
 
 // ── Helpers ───────────────────────────────────
+
+function PaieStat({ label, val, color }: { label: string; val: string; color: string }) {
+  return (
+    <div style={{ background: '#faf9f7', border: '1px solid #ede9e2', padding: '10px 8px', textAlign: 'center' }}>
+      <div style={{ fontSize: '8px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '1px', color: '#8a8478', marginBottom: '4px' }}>{label}</div>
+      <div style={{ fontFamily: 'JetBrains Mono,monospace', fontSize: '13px', fontWeight: 700, color }}>{val}</div>
+    </div>
+  )
+}
 
 function DocCard({ label, numero, status }: { label: string; numero: string | null; status: ReturnType<typeof docStatus> }) {
   return (

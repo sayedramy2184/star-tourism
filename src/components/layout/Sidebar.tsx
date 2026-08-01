@@ -7,7 +7,7 @@ import { useRouter } from 'next/navigation'
 import type { Profile } from '@/types'
 import {
   FolderOpen, Calendar, Car, Users, UserCheck,
-  Building2, Receipt, BarChart3, LogOut, Settings, Handshake, LayoutDashboard, KeyRound
+  Building2, Receipt, BarChart3, LogOut, Settings, Handshake, LayoutDashboard, KeyRound, Wallet
 } from 'lucide-react'
 import clsx from 'clsx'
 
@@ -40,6 +40,7 @@ const navSections = [
     label: 'Finances',
     items: [
       { href: '/dashboard/facturation', label: 'Facturation',   icon: Receipt,     badge: null },
+      { href: '/dashboard/paie',        label: 'Paie',          icon: Wallet,      badge: null },
       { href: '/dashboard/rapports',    label: 'Rapports',      icon: BarChart3,   badge: null },
     ],
   },

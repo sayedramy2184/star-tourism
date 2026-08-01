@@ -42,6 +42,7 @@ export async function POST(req: NextRequest) {
     .insert({
       company_id:    profile.company_id,
       chauffeur_id:  body.chauffeur_id,
+      dossier_id:    body.dossier_id || null,
       montant,
       date_paiement: body.date_paiement || new Date().toISOString().slice(0, 10),
       moyen:         body.moyen || null,
