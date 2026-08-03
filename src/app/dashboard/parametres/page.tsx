@@ -106,7 +106,7 @@ export default function ParametresPage() {
       </div>
 
       {/* Tabs */}
-      <div style={{ display:'flex', gap:'0', marginBottom:'24px', borderBottom:'1.5px solid #e4e6ea' }}>
+      <div style={{ display:'flex', gap:'0', marginBottom:'24px', borderBottom:'1px solid #e4e6ea' }}>
         {TABS.map(t => (
           <button key={t.val} onClick={() => setTab(t.val)}
             style={{
@@ -165,7 +165,7 @@ export default function ParametresPage() {
                 <input type="url" className="input" value={societe.site_web ?? ''} onChange={e => setSociete({...societe, site_web:e.target.value})} placeholder="https://elitedrive.fr" /></div>
             </div>
 
-            <div style={{ display:'flex', justifyContent:'flex-end', paddingTop:'16px', borderTop:'1.5px solid #e4e6ea' }}>
+            <div style={{ display:'flex', justifyContent:'flex-end', paddingTop:'16px', borderTop:'1px solid #e4e6ea' }}>
               <button className="btn-primary" onClick={saveSociete} disabled={saving}>
                 <Save size={13}/> {saving ? 'Sauvegarde…' : 'Sauvegarder'}
               </button>
@@ -205,7 +205,7 @@ export default function ParametresPage() {
             <div><label className="form-label">Mentions légales (pied de facture)</label>
               <textarea className="textarea" value={societe.mentions_legales ?? ''} onChange={e => setSociete({...societe, mentions_legales:e.target.value})} placeholder="En cas de retard de paiement, une pénalité de 3 fois le taux légal sera appliquée..." style={{ minHeight:'80px' }} /></div>
 
-            <div style={{ display:'flex', justifyContent:'flex-end', paddingTop:'16px', borderTop:'1.5px solid #e4e6ea', marginTop:'16px' }}>
+            <div style={{ display:'flex', justifyContent:'flex-end', paddingTop:'16px', borderTop:'1px solid #e4e6ea', marginTop:'16px' }}>
               <button className="btn-primary" onClick={saveSociete} disabled={saving}>
                 <Save size={13}/> {saving ? 'Sauvegarde…' : 'Sauvegarder'}
               </button>
@@ -268,7 +268,7 @@ export default function ParametresPage() {
                     <input type="text" className="input" value={editForfait.notes ?? ''} onChange={e => setEditForfait({...editForfait, notes:e.target.value})} placeholder="Description, conditions particulières…" />
                   </div>
                 </div>
-                <div style={{ display:'flex', justifyContent:'flex-end', gap:'8px', paddingTop:'12px', borderTop:'1.5px solid #e4e6ea' }}>
+                <div style={{ display:'flex', justifyContent:'flex-end', gap:'8px', paddingTop:'12px', borderTop:'1px solid #e4e6ea' }}>
                   <button className="btn-ghost" onClick={() => { setShowForfaitForm(false); setEditForfait(null) }}>Annuler</button>
                   <button className="btn-primary" onClick={saveForfait} disabled={saving}>
                     {saving ? 'Sauvegarde…' : editForfait.id ? 'Modifier' : 'Créer le forfait'}

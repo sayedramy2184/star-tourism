@@ -107,7 +107,7 @@ export default async function DossierDetailPage({ params }: { params: { id: stri
 
           {/* Header card */}
           <div className="card" style={{ marginBottom:'16px' }}>
-            <div style={{ background:'#16130e', padding:'12px 22px', display:'flex', alignItems:'center', justifyContent:'space-between', flexWrap:'wrap', gap:'8px' }}>
+            <div style={{ background:'#16130e', padding:'12px 22px', borderRadius:'12px 12px 0 0', display:'flex', alignItems:'center', justifyContent:'space-between', flexWrap:'wrap', gap:'8px' }}>
               <span style={{ fontFamily:'JetBrains Mono,monospace', fontSize:'13px', color:'#9a7a28' }}>{data.numero}</span>
               <div style={{ display:'flex', gap:'8px', flexWrap:'wrap' }}>
                 <BoutonValiderDossier
@@ -251,7 +251,7 @@ export default async function DossierDetailPage({ params }: { params: { id: stri
                 </div>
               )}
 
-              <div style={{ display:'flex', justifyContent:'space-between', padding:'6px 0', borderBottom:'1px solid #d8d2c8', marginTop:'4px', borderTop:'1.5px solid #e4e6ea' }}>
+              <div style={{ display:'flex', justifyContent:'space-between', padding:'6px 0', borderBottom:'1px solid #d8d2c8', marginTop:'4px', borderTop:'1px solid #e4e6ea' }}>
                 <span style={{ fontSize:'10px', color:'#5a564e' }}>Sous-total HT</span>
                 <span style={{ fontFamily:'JetBrains Mono,monospace', fontSize:'11px' }}>{fmt(data.montant_ht)}</span>
               </div>

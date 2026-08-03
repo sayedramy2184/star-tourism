@@ -124,9 +124,9 @@ export default function AffecterSousTraitantModal({ prestationId, dossierId, pri
 
       {open && (
         <div style={{ position:'fixed', inset:0, background:'rgba(0,0,0,0.5)', zIndex:200, display:'flex', alignItems:'center', justifyContent:'center' }}>
-          <div style={{ background:'#fff', width:'560px', maxWidth:'96vw', maxHeight:'90vh', overflowY:'auto', boxShadow:'0 32px 80px rgba(0,0,0,0.3)', border:'1.5px solid #e4e6ea' }}>
+          <div style={{ background:'#fff', width:'560px', maxWidth:'96vw', maxHeight:'90vh', overflowY:'auto', boxShadow:'0 32px 80px rgba(0,0,0,0.3)', border:'1px solid #e4e6ea', borderRadius:'12px' }}>
 
-            <div style={{ background:'#16130e', padding:'16px 24px', display:'flex', alignItems:'center', justifyContent:'space-between' }}>
+            <div style={{ background:'#16130e', padding:'16px 24px', borderRadius:'12px 12px 0 0', display:'flex', alignItems:'center', justifyContent:'space-between' }}>
               <span style={{ fontFamily:'Cormorant Garamond,serif', fontSize:'19px', fontWeight:500, color:'#fff', letterSpacing:'1px' }}>
                 Affecter un sous-traitant
               </span>
@@ -241,7 +241,7 @@ export default function AffecterSousTraitantModal({ prestationId, dossierId, pri
                 </div>
               )}
 
-              <div style={{ display:'flex', justifyContent:'space-between', paddingTop:'16px', borderTop:'1.5px solid #e4e6ea' }}>
+              <div style={{ display:'flex', justifyContent:'space-between', paddingTop:'16px', borderTop:'1px solid #e4e6ea' }}>
                 <div>
                   {sousTraitantActuel && (
                     <button className="btn-ghost" onClick={handleRetirer} disabled={saving}

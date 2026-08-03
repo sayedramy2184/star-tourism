@@ -37,7 +37,7 @@ function DropdownStatut({ anchorRef, current, onSelect }: {
   if (!pos) return null
 
   return (
-    <div style={{ position:'absolute', top:pos.top, left:pos.left, zIndex:9999, minWidth:'200px', background:'#fff', border:'1.5px solid #e4e6ea', boxShadow:'0 8px 28px rgba(0,0,0,0.18)' }}>
+    <div style={{ position:'absolute', top:pos.top, left:pos.left, zIndex:9999, minWidth:'200px', background:'#fff', border:'1px solid #e4e6ea', borderRadius:'12px', boxShadow:'0 8px 28px rgba(0,0,0,0.18)' }}>
       <div style={{ padding:'6px 14px 4px', fontSize:'8px', fontWeight:700, letterSpacing:'2px', textTransform:'uppercase', color:'#63605a', borderBottom:'1px solid #f5f2ed' }}>
         Changer le statut
       </div>
@@ -145,7 +145,7 @@ function StatutSelector({ prestation }: { prestation: any }) {
       <button
         onMouseDown={() => !saving && setOpen(o => !o)}
         disabled={saving}
-        style={{ background:'none', border:'1.5px solid #e4e6ea', padding:'3px 8px', fontSize:'11px', fontWeight:700, cursor:'pointer', color:'#5a564e', lineHeight:1 }}
+        style={{ background:'none', border:'1px solid #e4e6ea', borderRadius:'12px', padding:'3px 8px', fontSize:'11px', fontWeight:700, cursor:'pointer', color:'#5a564e', lineHeight:1 }}
         onMouseEnter={e => { e.currentTarget.style.borderColor='#9a7a28'; e.currentTarget.style.color='#9a7a28' }}
         onMouseLeave={e => { e.currentTarget.style.borderColor='#e4e6ea'; e.currentTarget.style.color='#5a564e' }}
       >
@@ -413,7 +413,7 @@ export default function PrestationCard({ p, dossierId, passagers = [] }: { p: an
       )}
 
       {/* Header */}
-      <div style={{ display:'flex', alignItems:'stretch', borderBottom:'1.5px solid #e4e6ea' }}>
+      <div style={{ display:'flex', alignItems:'stretch', borderBottom:'1px solid #e4e6ea' }}>
         <div style={{ width:'5px', background:typeColor, flexShrink:0 }} />
         <div style={{ flex:1, padding:'10px 16px', display:'flex', alignItems:'center', gap:'14px', flexWrap:'wrap' }}>
           <span style={{ fontFamily:'JetBrains Mono,monospace', fontSize:'10px', color:'#63605a', background:'#f5f2ed', border:'1px solid #d8d2c8', padding:'2px 8px' }}>
@@ -736,7 +736,7 @@ export default function PrestationCard({ p, dossierId, passagers = [] }: { p: an
               )
             })}
             </>)}
-            <div style={{ display:'flex', justifyContent:'space-between', padding:'8px 8px 0', borderTop:'1.5px solid #e4e6ea', marginTop:'4px' }}>
+            <div style={{ display:'flex', justifyContent:'space-between', padding:'8px 8px 0', borderTop:'1px solid #e4e6ea', marginTop:'4px' }}>
               <span style={{ fontSize:'9px', fontWeight:600, letterSpacing:'1.5px', textTransform:'uppercase', color:'#63605a' }}>
                 Sous-total · {jours.length} j
               </span>

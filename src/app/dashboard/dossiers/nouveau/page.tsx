@@ -457,7 +457,7 @@ export default function NouveauDossierPage() {
             {passagers.length > 0 && (
               <div style={{ display:'flex', flexDirection:'column', gap:'8px' }}>
                 {passagers.map((pax) => (
-                  <div key={pax.id} style={{ display:'flex', flexWrap:'wrap', gap:'8px', alignItems:'flex-end', background:'#f5f2ed', border:'1.5px solid #e4e6ea', padding:'10px' }}>
+                  <div key={pax.id} style={{ display:'flex', flexWrap:'wrap', gap:'8px', alignItems:'flex-end', background:'#f5f2ed', border:'1px solid #e4e6ea', borderRadius:'12px', padding:'10px' }}>
                     <span style={{ fontSize:'18px', paddingBottom:'6px' }}>{flag(pax.nationalite) || '👤'}</span>
                     <div style={{ flex:'2 1 150px', minWidth:'130px' }}>
                       <label className="form-label">Nom du passager *</label>
@@ -573,10 +573,10 @@ function PrestationBlock({ p, idx, chauffeurs, vehicules, forfaits, clientTarifs
 }) {
   const tarifsMatch = (clientTarifs ?? []).filter((t: any) => t.type === p.type)
   return (
-    <div style={{ background:'#f5f2ed', border:'1.5px solid #e4e6ea', overflow:'hidden' }}>
+    <div style={{ background:'#f5f2ed', border:'1px solid #e4e6ea', borderRadius:'12px', overflow:'hidden' }}>
 
       {/* ── Header avec sélecteur de type visuel ── */}
-      <div style={{ background:'#16130e', padding:'12px 16px', display:'flex', alignItems:'center', gap:'12px' }}>
+      <div style={{ background:'#16130e', padding:'12px 16px', borderRadius:'12px 12px 0 0', display:'flex', alignItems:'center', gap:'12px' }}>
         <span style={{ color:'rgba(255,255,255,0.25)', fontSize:'14px', cursor:'grab' }}>⠿</span>
 
         {/* Type selector — boutons radio visuels */}
@@ -871,7 +871,7 @@ function PrestationBlock({ p, idx, chauffeurs, vehicules, forfaits, clientTarifs
 
               {/* Sélecteur de forfait */}
               {forfaits.length > 0 && (
-                <div style={{ marginBottom:'12px', padding:'12px 14px', background:'#f5f2ed', border:'1.5px solid #e4e6ea' }}>
+                <div style={{ marginBottom:'12px', padding:'12px 14px', background:'#f5f2ed', border:'1px solid #e4e6ea', borderRadius:'12px' }}>
                   <div style={{ fontSize:'9px', fontWeight:700, letterSpacing:'2.5px', textTransform:'uppercase', color:'#9a7a28', marginBottom:'10px' }}>
                     Appliquer un forfait prédéfini
                   </div>
@@ -959,7 +959,7 @@ function PrestationBlock({ p, idx, chauffeurs, vehicules, forfaits, clientTarifs
                   </div>
                 )
               })}
-              <div style={{ display:'flex', justifyContent:'space-between', padding:'8px 8px 0', borderTop:'1.5px solid #e4e6ea', marginTop:'4px' }}>
+              <div style={{ display:'flex', justifyContent:'space-between', padding:'8px 8px 0', borderTop:'1px solid #e4e6ea', marginTop:'4px' }}>
                 <span style={{ fontSize:'9px', fontWeight:600, letterSpacing:'1.5px', textTransform:'uppercase', color:'#63605a' }}>
                   Sous-total · {p.jours.length} j
                 </span>
@@ -1067,7 +1067,7 @@ function AddressField({ label, value, onChange, placeholder, icon }: {
       {showSugg && suggestions.length > 0 && (
         <div style={{
           position:'absolute', top:'100%', left:0, right:0, zIndex:50,
-          background:'#fff', border:'1.5px solid #e4e6ea', boxShadow:'0 4px 16px rgba(0,0,0,0.12)',
+          background:'#fff', border:'1px solid #e4e6ea', borderRadius:'12px', boxShadow:'0 4px 16px rgba(0,0,0,0.12)',
           maxHeight:'200px', overflowY:'auto',
         }}>
           {suggestions.map((s: any) => (
@@ -1113,7 +1113,7 @@ function VehiculeSelector({ p, vehicules, onUpdate }: { p: PrestationForm; vehic
       <label className="form-label">Catégorie de véhicule souhaitée</label>
       <VehiculeCategorieSelect categories={categories} value={p.modele_souhaite} onChange={v => onUpdate({ modele_souhaite: v })} selectClass="select" anyLabel="— Toutes catégories —" />
     </div>
-    <div style={{ border:'1.5px solid #e4e6ea', overflow:'hidden', marginBottom:'12px' }}>
+    <div style={{ border:'1px solid #e4e6ea', borderRadius:'12px', overflow:'hidden', marginBottom:'12px' }}>
       <div style={{ display:'flex', background:'#f5f2ed' }}>
         {([['flotte','Flotte'],['externe','Externe'],['plus_tard','Plus tard']] as const).map(([mode, lbl]) => (
           <button key={mode} type="button"

@@ -189,7 +189,7 @@ export default function FacturationPage() {
         ) : sp.pageItems.map((f: any) => {
           const overdue = isOverdue(f); const st = STATUTS[overdue ? 'en_retard' : f.statut] ?? STATUTS.brouillon
           return (
-            <div key={f.id} style={{ background: '#fff', border: '1.5px solid #e4e6ea', boxShadow: '0 1px 4px rgba(0,0,0,0.06)', padding: '12px' }}>
+            <div key={f.id} style={{ background: '#fff', border: '1px solid #e4e6ea', boxShadow: '0 1px 4px rgba(0,0,0,0.06)', padding: '12px' }}>
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '8px' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '6px', minWidth: 0 }}>
                   <span style={{ fontFamily: 'JetBrains Mono,monospace', fontSize: '13px', color: '#9a7a28', fontWeight: 600 }}>{f.numero}</span>

@@ -120,10 +120,10 @@ export default function AjoutPrestationModal({ dossierId, dateDebutDossier, date
 
       {open && (
         <div style={{ position:'fixed', inset:0, background:'rgba(22,19,14,0.55)', zIndex:200, display:'flex', alignItems:'center', justifyContent:'center', backdropFilter:'blur(3px)' }}>
-          <div style={{ background:'#fff', border:'1.5px solid #e4e6ea', width:'600px', maxWidth:'96vw', maxHeight:'90vh', overflowY:'auto', boxShadow:'0 24px 60px rgba(0,0,0,0.2)' }}>
+          <div style={{ background:'#fff', border:'1px solid #e4e6ea', borderRadius:'12px', width:'600px', maxWidth:'96vw', maxHeight:'90vh', overflowY:'auto', boxShadow:'0 24px 60px rgba(0,0,0,0.2)' }}>
 
             {/* Header */}
-            <div style={{ background:'#16130e', padding:'18px 24px', display:'flex', alignItems:'center', justifyContent:'space-between' }}>
+            <div style={{ background:'#16130e', padding:'18px 24px', borderRadius:'12px 12px 0 0', display:'flex', alignItems:'center', justifyContent:'space-between' }}>
               <span style={{ fontFamily:'Cormorant Garamond,serif', fontSize:'19px', fontWeight:500, color:'#fff', letterSpacing:'1px' }}>Ajouter une prestation</span>
               <button onClick={() => setOpen(false)} style={{ background:'none', border:'none', color:'rgba(255,255,255,0.4)', cursor:'pointer', fontSize:'18px' }}><X size={18}/></button>
             </div>
@@ -280,7 +280,7 @@ export default function AjoutPrestationModal({ dossierId, dateDebutDossier, date
                 </div>
               )}
 
-              <div style={{ display:'flex', justifyContent:'flex-end', gap:'8px', marginTop:'20px', paddingTop:'16px', borderTop:'1.5px solid #e4e6ea' }}>
+              <div style={{ display:'flex', justifyContent:'flex-end', gap:'8px', marginTop:'20px', paddingTop:'16px', borderTop:'1px solid #e4e6ea' }}>
                 <button type="button" className="btn-ghost" onClick={() => setOpen(false)}>Annuler</button>
                 <button type="submit" className="btn-primary" disabled={saving}>{saving ? 'Ajout…' : 'Ajouter la prestation'}</button>
               </div>

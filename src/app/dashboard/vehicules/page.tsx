@@ -266,7 +266,7 @@ export default function VehiculesPage() {
           const stt = statutAffiche(v); const m = MODES[v.mode_acquisition] ?? MODES.propriete
           const ct = docAlert(v.ct_date); const ass = docAlert(v.assurance_date); const ca = contratAlert(v.contrat_fin)
           return (
-            <Link key={v.id} href={`/dashboard/vehicules/${v.id}`} style={{ display:'block', background:'#fff', border:'1.5px solid #e4e6ea', boxShadow:'0 1px 4px rgba(0,0,0,0.06)', padding:'12px', textDecoration:'none', color:'inherit' }}>
+            <Link key={v.id} href={`/dashboard/vehicules/${v.id}`} style={{ display:'block', background:'#fff', border:'1px solid #e4e6ea', borderRadius:'12px', boxShadow:'0 1px 4px rgba(0,0,0,0.06)', padding:'12px', textDecoration:'none', color:'inherit' }}>
               <div style={{ display:'flex', alignItems:'flex-start', justifyContent:'space-between', gap:'8px' }}>
                 <div style={{ minWidth:0 }}>
                   <div style={{ fontFamily:'Cormorant Garamond,serif', fontSize:'16px', fontWeight:500, color:'#16130e' }}>{v.marque} {v.modele}</div>
@@ -385,7 +385,7 @@ export default function VehiculesPage() {
       {showForm && (
         <div style={{ position:'fixed', inset:0, background:'rgba(0,0,0,0.5)', zIndex:200, display:'flex', alignItems:'center', justifyContent:'center'}}>
           <div style={{ background:'#fff', width:'560px', maxWidth:'95vw', maxHeight:'92vh', overflowY:'auto', boxShadow:'0 24px 60px rgba(0,0,0,0.2)' }}>
-            <div style={{ background:'#16130e', padding:'18px 24px', display:'flex', alignItems:'center', justifyContent:'space-between' }}>
+            <div style={{ background:'#16130e', padding:'18px 24px', borderRadius:'12px 12px 0 0', display:'flex', alignItems:'center', justifyContent:'space-between' }}>
               <span style={{ fontFamily:'Cormorant Garamond,serif', fontSize:'19px', fontWeight:500, color:'#fff', letterSpacing:'1px' }}>
                 Ajouter un véhicule
               </span>
@@ -507,7 +507,7 @@ export default function VehiculesPage() {
                 </div>
               </VFormSection>
 
-              <div style={{ display:'flex', justifyContent:'flex-end', gap:'8px', paddingTop:'16px', borderTop:'1.5px solid #e4e6ea' }}>
+              <div style={{ display:'flex', justifyContent:'flex-end', gap:'8px', paddingTop:'16px', borderTop:'1px solid #e4e6ea' }}>
                 <button type="button" className="btn-ghost" onClick={() => setShowForm(false)}>Annuler</button>
                 <button type="submit" className="btn-primary" disabled={saving}>
                   {saving ? 'Ajout…' : 'Ajouter le véhicule'}

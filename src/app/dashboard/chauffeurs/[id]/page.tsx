@@ -131,7 +131,7 @@ export default async function ChauffeurDetailPage({ params }: { params: { id: st
 
           {/* Fiche chauffeur */}
           <div className="card" style={{ marginBottom:'16px' }}>
-            <div style={{ background:'#16130e', padding:'12px 22px', display:'flex', alignItems:'center', justifyContent:'space-between' }}>
+            <div style={{ background:'#16130e', padding:'12px 22px', borderRadius:'12px 12px 0 0', display:'flex', alignItems:'center', justifyContent:'space-between' }}>
               <span style={{ fontFamily:'JetBrains Mono,monospace', fontSize:'11px', color:'#9a7a28' }}>FICHE CHAUFFEUR</span>
               <ChauffeurEditModal chauffeur={c} />
             </div>

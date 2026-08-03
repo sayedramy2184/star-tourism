@@ -188,7 +188,7 @@ export default function DocumentsControle({ jours, transferts, chauffeur }: {
 
           {/* ── Barre supérieure ── */}
           {!presenting && (
-            <div style={{ background: '#16130e', padding: 'max(env(safe-area-inset-top), 12px) 14px 12px', display: 'flex', alignItems: 'center', gap: '10px', flexShrink: 0 }}>
+            <div style={{ background: '#16130e', padding: 'max(env(safe-area-inset-top), 12px) 14px 12px', borderRadius:'12px 12px 0 0', display: 'flex', alignItems: 'center', gap: '10px', flexShrink: 0 }}>
               {view !== 'menu' ? (
                 <button onClick={() => setView(view === 'ordre' && missions.length > 1 ? 'pick' : 'menu')}
                   style={{ background: 'none', border: 'none', color: '#fff', display: 'flex', alignItems: 'center', gap: '4px', cursor: 'pointer', fontSize: '13px' }}>

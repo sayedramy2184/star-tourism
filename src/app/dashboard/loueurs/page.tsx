@@ -58,7 +58,7 @@ export default async function LoueursPage() {
           const solde = Math.round(r.solde * 100) / 100
           const statut = solde > 0 ? { label:'À payer', color:'#9e2a2a', bg:'#faeaea' } : { label:'Soldé', color:'#1e5e3a', bg:'#eaf4ee' }
           return (
-            <Link key={r.id} href={`/dashboard/loueurs/${r.id}`} style={{ display:'block', background:'#fff', border:'1.5px solid #e4e6ea', boxShadow:'0 1px 4px rgba(0,0,0,0.06)', padding:'12px', textDecoration:'none', color:'inherit' }}>
+            <Link key={r.id} href={`/dashboard/loueurs/${r.id}`} style={{ display:'block', background:'#fff', border:'1px solid #e4e6ea', borderRadius:'12px', boxShadow:'0 1px 4px rgba(0,0,0,0.06)', padding:'12px', textDecoration:'none', color:'inherit' }}>
               <div style={{ display:'flex', alignItems:'flex-start', justifyContent:'space-between', gap:'8px' }}>
                 <div style={{ minWidth:0 }}>
                   <div style={{ fontFamily:'Cormorant Garamond,serif', fontSize:'16px', fontWeight:500, color:'#16130e' }}>{r.nom}</div>

@@ -40,7 +40,7 @@ export default async function PaiePage() {
       {/* Liste mobile */}
       <div className="only-mobile" style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
         {chauffeurs.map(c => (
-          <Link key={c.id} href={`/dashboard/paie/${c.id}`} style={{ textDecoration: 'none', color: 'inherit', background: '#fff', border: '1.5px solid #e4e6ea', boxShadow: '0 1px 4px rgba(0,0,0,0.06)', padding: '12px' }}>
+          <Link key={c.id} href={`/dashboard/paie/${c.id}`} style={{ textDecoration: 'none', color: 'inherit', background: '#fff', border: '1px solid #e4e6ea', boxShadow: '0 1px 4px rgba(0,0,0,0.06)', padding: '12px' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
               <span style={{ fontWeight: 600, fontSize: '14px', color: '#16130e' }}>{c.prenom} {c.nom}</span>
               <ChevronRight size={16} color="#e4e6ea" />

@@ -763,7 +763,7 @@ function PlanningMobile({ days, data, router }: { days: Date[]; data: any; route
 
 function MobileMissionCard({ type, typeColor, client, numero, heure, itineraire, chauffeur, vehicule, siLabel, siColor, siBg, siBorder, onOpen }: any) {
   return (
-    <div onClick={onOpen} style={{ background: '#fff', border: '1.5px solid #e4e6ea', borderLeft: `3px solid ${typeColor}`, boxShadow: '0 1px 4px rgba(0,0,0,0.06)', cursor: 'pointer' }}>
+    <div onClick={onOpen} style={{ background: '#fff', border: '1px solid #e4e6ea', borderLeft: `3px solid ${typeColor}`, boxShadow: '0 1px 4px rgba(0,0,0,0.06)', cursor: 'pointer' }}>
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '8px', padding: '9px 12px', borderBottom: '1px solid #f4f5f7' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px', minWidth: 0 }}>
           <span style={{ fontSize: '9px', fontWeight: 700, color: typeColor }}>{type}</span>
@@ -788,14 +788,14 @@ function GanttHeader({ days, viewMode, firstColLabel }: { days: Date[]; viewMode
   return (
     <thead style={{ position:'sticky', top:0, zIndex:20 }}>
       <tr>
-        <th style={{ background:'#fff', padding:'12px 14px', textAlign:'left', borderRight:'1px solid #e4e6ea', borderBottom:'1.5px solid #e4e6ea', fontSize:'10.5px', letterSpacing:'0.4px', textTransform:'uppercase', color:'#44474e', fontWeight:700, position:'sticky', left:0, top:0, zIndex:30 }}>
+        <th style={{ background:'#fff', padding:'12px 14px', textAlign:'left', borderRight:'1px solid #e4e6ea', borderBottom:'1px solid #e4e6ea', fontSize:'10.5px', letterSpacing:'0.4px', textTransform:'uppercase', color:'#44474e', fontWeight:700, position:'sticky', left:0, top:0, zIndex:30 }}>
           {firstColLabel}
         </th>
         {days.map(day => {
           const today = isToday(day)
           const weekend = [0, 6].includes(day.getDay())
           return (
-            <th key={day.toISOString()} style={{ background: today ? '#faf3e2' : '#fff', padding: viewMode==='semaine' ? '7px 6px 6px' : '6px 3px', textAlign:'center', borderRight:'1px solid #eef0f3', borderBottom: today ? '2px solid #9a7a28' : '1.5px solid #e4e6ea', color: today ? '#9a7a28' : weekend ? '#9aa0aa' : '#5f636b', fontWeight: today ? 700 : 500 }}>
+            <th key={day.toISOString()} style={{ background: today ? '#faf3e2' : '#fff', padding: viewMode==='semaine' ? '7px 6px 6px' : '6px 3px', textAlign:'center', borderRight:'1px solid #eef0f3', borderBottom: today ? '2px solid #9a7a28' : '1px solid #e4e6ea', color: today ? '#9a7a28' : weekend ? '#9aa0aa' : '#5f636b', fontWeight: today ? 700 : 500 }}>
               {viewMode === 'semaine' ? (
                 <>
                   <div style={{ fontSize:'8.5px', textTransform:'uppercase', letterSpacing:'0.8px' }}>{format(day,'EEE',{locale:fr})}</div>

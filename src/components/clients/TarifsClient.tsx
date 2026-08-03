@@ -52,7 +52,7 @@ export default function TarifsClient({ clientId }: { clientId: string }) {
     <div className="card">
       <div className="card-header" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
         <span className="card-header-title"><Tag size={13} style={{ display: 'inline', marginRight: 6, verticalAlign: '-2px' }} />Tarifs dédiés</span>
-        <button className="btn-ghost" style={{ padding: '4px 10px', fontSize: '10px', color: 'rgba(255,255,255,0.6)', borderColor: 'rgba(255,255,255,0.2)' }} onClick={() => setShowForm(s => !s)}>
+        <button className="btn-ghost" style={{ padding: '4px 10px', fontSize: '10px' }} onClick={() => setShowForm(s => !s)}>
           <Plus size={11} /> Ajouter
         </button>
       </div>

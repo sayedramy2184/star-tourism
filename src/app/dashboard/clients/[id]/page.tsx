@@ -51,7 +51,7 @@ export default async function ClientDetailPage({ params }: { params: { id: strin
         {/* Colonne principale */}
         <div>
           <div className="card" style={{ marginBottom: '16px' }}>
-            <div style={{ background: '#16130e', padding: '12px 22px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <div style={{ background: '#16130e', padding: '12px 22px', borderRadius:'12px 12px 0 0', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
               <span style={{ fontFamily: 'JetBrains Mono,monospace', fontSize: '11px', color: '#9a7a28' }}>FICHE CLIENT</span>
               <ClientEditModal client={c as any} />
             </div>
@@ -103,7 +103,7 @@ export default async function ClientDetailPage({ params }: { params: { id: strin
             ) : D.map((d: any) => {
               const st = DOSSIER_STATUTS[d.statut] ?? DOSSIER_STATUTS.en_attente
               return (
-                <Link key={d.id} href={`/dashboard/dossiers/${d.id}`} style={{ display: 'block', background: '#fff', border: '1.5px solid #e4e6ea', boxShadow: '0 1px 4px rgba(0,0,0,0.06)', padding: '12px', textDecoration: 'none', color: 'inherit' }}>
+                <Link key={d.id} href={`/dashboard/dossiers/${d.id}`} style={{ display: 'block', background: '#fff', border: '1px solid #e4e6ea', boxShadow: '0 1px 4px rgba(0,0,0,0.06)', padding: '12px', textDecoration: 'none', color: 'inherit' }}>
                   <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '8px' }}>
                     <span style={{ fontFamily: 'JetBrains Mono,monospace', fontSize: '11px', color: '#9a7a28' }}>{d.numero}</span>
                     <span style={{ fontSize: '10px', fontWeight: 700, padding: '2px 8px', color: st.color, background: st.bg }}>{st.label}</span>

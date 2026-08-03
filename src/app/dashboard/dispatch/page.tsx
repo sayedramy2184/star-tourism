@@ -226,7 +226,7 @@ function MissionCard({ m, onOpen }: { m: any; onOpen: () => void }) {
   else aff = <span style={{ color: '#9e2a2a', fontWeight: 600 }}>⚠ À affecter</span>
 
   return (
-    <div onClick={onOpen} style={{ background: '#fff', border: '1.5px solid #e4e6ea', borderLeft: `3px solid ${typeCol}`, boxShadow: '0 1px 4px rgba(0,0,0,0.06)', cursor: 'pointer' }}>
+    <div onClick={onOpen} style={{ background: '#fff', border: '1px solid #e4e6ea', borderLeft: `3px solid ${typeCol}`, boxShadow: '0 1px 4px rgba(0,0,0,0.06)', cursor: 'pointer' }}>
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '9px 12px', borderBottom: '1px solid #f4f5f7', gap: '8px' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px', minWidth: 0 }}>
           <span style={{ fontSize: '9px', fontWeight: 700, color: typeCol }}>{isMad ? 'MAD' : 'TRANSF'}</span>

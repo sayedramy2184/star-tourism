@@ -176,19 +176,21 @@ body {
     align-items: center;
     justify-content: space-between;
     gap: 12px;
-    background: var(--dark);
-    padding: 12px 18px;
-    min-height: 48px;
+    background: var(--surface);
+    padding: 14px 18px;
+    min-height: 52px;
+    border-bottom: 1px solid var(--border);
     border-radius: calc(var(--radius) - 1px) calc(var(--radius) - 1px) 0 0;
   }
   .card-header-title {
     display: inline-flex;
     align-items: center;
+    gap: 8px;
     font-family: 'Cormorant Garamond', var(--font-display), serif;
-    font-size: 17px;
-    font-weight: 500;
-    letter-spacing: 0.3px;
-    color: #f3efe6;
+    font-size: 18px;
+    font-weight: 600;
+    letter-spacing: 0.2px;
+    color: var(--ink);
   }
 
   /* ── Status badges ── */

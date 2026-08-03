@@ -175,7 +175,7 @@ export default function ChauffeursPage() {
           const vtc = docStatus(c.vtc_card_expiry); const permis = docStatus(c.permis_expiry)
           const st = STATUTS[c.statut]; const initials = `${c.prenom[0]}${c.nom[0]}`.toUpperCase()
           return (
-            <div key={c.id} style={{ background:'#fff', border:'1.5px solid #e4e6ea', boxShadow:'0 1px 4px rgba(0,0,0,0.06)' }}>
+            <div key={c.id} style={{ background:'#fff', border:'1px solid #e4e6ea', borderRadius:'12px', boxShadow:'0 1px 4px rgba(0,0,0,0.06)' }}>
               <Link href={`/dashboard/chauffeurs/${c.id}`} style={{ display:'block', padding:'12px', textDecoration:'none', color:'inherit' }}>
                 <div style={{ display:'flex', alignItems:'center', gap:'10px' }}>
                   <div style={{ width:'36px', height:'36px', borderRadius:'50%', flexShrink:0, background:st.bg, border:`1.5px solid ${st.color}`, display:'flex', alignItems:'center', justifyContent:'center', fontSize:'12px', fontWeight:700, color:st.color }}>{initials}</div>
@@ -309,7 +309,7 @@ export default function ChauffeursPage() {
       {showForm && (
         <div style={{ position:'fixed', inset:0, background:'rgba(0,0,0,0.5)', zIndex:200, display:'flex', alignItems:'center', justifyContent:'center'}}>
           <div style={{ background:'#fff', width:'540px', maxWidth:'95vw', maxHeight:'90vh', overflowY:'auto', boxShadow:'0 24px 60px rgba(0,0,0,0.2)' }}>
-            <div style={{ background:'#16130e', padding:'18px 24px', display:'flex', alignItems:'center', justifyContent:'space-between' }}>
+            <div style={{ background:'#16130e', padding:'18px 24px', borderRadius:'12px 12px 0 0', display:'flex', alignItems:'center', justifyContent:'space-between' }}>
               <span style={{ fontFamily:'Cormorant Garamond,serif', fontSize:'19px', fontWeight:500, color:'#fff', letterSpacing:'1px' }}>
                 Nouveau chauffeur
               </span>
@@ -391,7 +391,7 @@ export default function ChauffeursPage() {
                   placeholder="Langues parlées, spécialités, informations particulières…" />
               </div>
 
-              <div style={{ display:'flex', justifyContent:'flex-end', gap:'8px', marginTop:'16px', paddingTop:'16px', borderTop:'1.5px solid #e4e6ea' }}>
+              <div style={{ display:'flex', justifyContent:'flex-end', gap:'8px', marginTop:'16px', paddingTop:'16px', borderTop:'1px solid #e4e6ea' }}>
                 <button type="button" className="btn-ghost" onClick={() => setShowForm(false)}>Annuler</button>
                 <button type="submit" className="btn-primary" disabled={saving}>
                   {saving ? 'Création…' : 'Créer le chauffeur'}
@@ -469,7 +469,7 @@ function StatutToggle({ chauffeur, onChange }: { chauffeur: Chauffeur; onChange:
 
           <div style={{
             position:'absolute', right:0, top:'100%', zIndex:50, marginTop:'4px',
-            background:'#fff', border:'1.5px solid #e4e6ea',
+            background:'#fff', border:'1px solid #e4e6ea', borderRadius:'12px',
             boxShadow:'0 6px 20px rgba(0,0,0,0.15)', minWidth:'200px',
           }}>
             {/* Statuts automatiques — info seulement */}

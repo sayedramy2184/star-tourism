@@ -101,7 +101,7 @@ export default function CategoriesVehicules() {
         )}
 
         {/* Ajouter une catégorie */}
-        <div style={{ display: 'flex', gap: '8px', marginTop: '16px', paddingTop: '14px', borderTop: '1.5px solid #e4e6ea' }}>
+        <div style={{ display: 'flex', gap: '8px', marginTop: '16px', paddingTop: '14px', borderTop: '1px solid #e4e6ea' }}>
           <input value={newCat} onChange={e => setNewCat(e.target.value)}
             onKeyDown={e => { if (e.key === 'Enter') addCategorie() }}
             placeholder="Nouvelle catégorie (ex. Berline électrique)"

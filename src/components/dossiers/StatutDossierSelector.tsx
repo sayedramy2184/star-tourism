@@ -36,7 +36,7 @@ function InfoDropdown({ anchorRef, statut, onClose }: {
   if (!pos) return null
 
   return (
-    <div style={{ position:'absolute', top:pos.top, left:pos.left, zIndex:9999, width:'220px', background:'#fff', border:'1.5px solid #e4e6ea', boxShadow:'0 8px 28px rgba(0,0,0,0.15)', padding:'12px 14px' }}>
+    <div style={{ position:'absolute', top:pos.top, left:pos.left, zIndex:9999, width:'220px', background:'#fff', border:'1px solid #e4e6ea', borderRadius:'12px', boxShadow:'0 8px 28px rgba(0,0,0,0.15)', padding:'12px 14px' }}>
       <div style={{ fontSize:'9px', fontWeight:700, letterSpacing:'2px', textTransform:'uppercase', color:'#63605a', marginBottom:'10px' }}>
         Statuts du dossier
       </div>

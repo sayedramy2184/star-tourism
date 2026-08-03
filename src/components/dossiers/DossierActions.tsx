@@ -40,8 +40,8 @@ function Modal({ title, onClose, children }: { title: string; onClose: () => voi
   return (
     <div style={{ position:'fixed', inset:0, background:'rgba(22,19,14,0.55)', zIndex:200, display:'flex', alignItems:'center', justifyContent:'center', backdropFilter:'blur(3px)' }}
       onClick={e => e.target === e.currentTarget && onClose()}>
-      <div style={{ background:'#fff', border:'1.5px solid #e4e6ea', width:'580px', maxWidth:'96vw', maxHeight:'90vh', overflowY:'auto', boxShadow:'0 24px 60px rgba(0,0,0,0.2)' }}>
-        <div style={{ background:'#16130e', padding:'16px 24px', display:'flex', alignItems:'center', justifyContent:'space-between', position:'sticky', top:0, zIndex:10 }}>
+      <div style={{ background:'#fff', border:'1px solid #e4e6ea', borderRadius:'12px', width:'580px', maxWidth:'96vw', maxHeight:'90vh', overflowY:'auto', boxShadow:'0 24px 60px rgba(0,0,0,0.2)' }}>
+        <div style={{ background:'#16130e', padding:'16px 24px', borderRadius:'12px 12px 0 0', display:'flex', alignItems:'center', justifyContent:'space-between', position:'sticky', top:0, zIndex:10 }}>
           <span style={{ fontFamily:'Cormorant Garamond,serif', fontSize:'19px', fontWeight:500, color:'#fff', letterSpacing:'1px' }}>{title}</span>
           <button onClick={onClose} style={{ background:'none', border:'none', color:'rgba(255,255,255,0.4)', cursor:'pointer', padding:'4px' }}><X size={18}/></button>
         </div>
@@ -125,7 +125,7 @@ export function BoutonModifierDossier({ dossier }: {
               <label className="form-label">Notes internes</label>
               <textarea className="textarea" value={notes} onChange={e => setNotes(e.target.value)} placeholder="Instructions, préférences client…" style={{ minHeight:'80px' }} />
             </div>
-            <div style={{ display:'flex', justifyContent:'flex-end', gap:'8px', paddingTop:'16px', borderTop:'1.5px solid #e4e6ea' }}>
+            <div style={{ display:'flex', justifyContent:'flex-end', gap:'8px', paddingTop:'16px', borderTop:'1px solid #e4e6ea' }}>
               <button type="button" className="btn-ghost" onClick={() => setOpen(false)}>Annuler</button>
               <button type="submit" className="btn-primary" disabled={saving}>{saving ? 'Sauvegarde…' : 'Sauvegarder'}</button>
             </div>
@@ -392,7 +392,7 @@ export function BoutonAjoutPrestation({ dossierId, dateDebutDossier, dateFinDoss
               </div>
             )}
 
-            <div style={{ display:'flex', justifyContent:'flex-end', gap:'8px', paddingTop:'16px', borderTop:'1.5px solid #e4e6ea' }}>
+            <div style={{ display:'flex', justifyContent:'flex-end', gap:'8px', paddingTop:'16px', borderTop:'1px solid #e4e6ea' }}>
               <button type="button" className="btn-ghost" onClick={() => setOpen(false)}>Annuler</button>
               <button type="submit" className="btn-primary" disabled={saving}>{saving ? 'Ajout…' : 'Ajouter la prestation'}</button>
             </div>
@@ -452,7 +452,7 @@ export function BoutonAffecterVehicule({ prestationId, dateDebut, dateFin, vehic
       {open && (
         <Modal title="Affecter un véhicule" onClose={() => setOpen(false)}>
           {vehiculeActuel && (
-            <div style={{ padding:'10px 14px', background:'#f5f2ed', border:'1.5px solid #e4e6ea', marginBottom:'16px' }}>
+            <div style={{ padding:'10px 14px', background:'#f5f2ed', border:'1px solid #e4e6ea', borderRadius:'12px', marginBottom:'16px' }}>
               <div style={{ fontSize:'9px', color:'#63605a', marginBottom:'3px', fontWeight:600, letterSpacing:'1px', textTransform:'uppercase' }}>Véhicule actuel</div>
               <div style={{ fontSize:'13px', fontWeight:600 }}>{vehiculeActuel.marque} {vehiculeActuel.modele}</div>
               <div style={{ fontFamily:'JetBrains Mono,monospace', fontSize:'10px', color:'#5a564e' }}>{vehiculeActuel.immatriculation}</div>
@@ -478,7 +478,7 @@ export function BoutonAffecterVehicule({ prestationId, dateDebut, dateFin, vehic
               )
             })}
           </div>
-          <div style={{ display:'flex', justifyContent:'flex-end', gap:'8px', paddingTop:'16px', borderTop:'1.5px solid #e4e6ea' }}>
+          <div style={{ display:'flex', justifyContent:'flex-end', gap:'8px', paddingTop:'16px', borderTop:'1px solid #e4e6ea' }}>
             <button className="btn-ghost" onClick={() => setOpen(false)}>Annuler</button>
             <button className="btn-primary" onClick={handleSave} disabled={saving || !selected}>
               {saving ? 'Affectation…' : 'Affecter ce véhicule'}
@@ -533,7 +533,7 @@ export function BoutonValiderDossier({ dossierId, statut, numero }: {
 
       {confirm && (
         <div style={{ position:'fixed', inset:0, background:'rgba(22,19,14,0.55)', zIndex:200, display:'flex', alignItems:'center', justifyContent:'center', backdropFilter:'blur(3px)' }}>
-          <div style={{ background:'#fff', border:'1.5px solid #e4e6ea', width:'420px', boxShadow:'0 24px 60px rgba(0,0,0,0.2)', padding:'28px' }}>
+          <div style={{ background:'#fff', border:'1px solid #e4e6ea', borderRadius:'12px', width:'420px', boxShadow:'0 24px 60px rgba(0,0,0,0.2)', padding:'28px' }}>
             <div style={{ fontFamily:'Cormorant Garamond,serif', fontSize:'22px', fontWeight:500, color:'#16130e', marginBottom:'12px' }}>
               Valider le dossier {numero} ?
             </div>

@@ -143,7 +143,7 @@ export default function SousTraitantsPage() {
         ) : sp.total === 0 ? (
           <div style={{ padding:'40px', textAlign:'center', color:'#63605a', fontSize:'12px' }}>{list.length === 0 ? 'Aucun sous-traitant — ajoutez le premier !' : 'Aucun résultat'}</div>
         ) : sp.pageItems.map((st: any) => (
-          <div key={st.id} style={{ background:'#fff', border:'1.5px solid #e4e6ea', boxShadow:'0 1px 4px rgba(0,0,0,0.06)' }}>
+          <div key={st.id} style={{ background:'#fff', border:'1px solid #e4e6ea', borderRadius:'12px', boxShadow:'0 1px 4px rgba(0,0,0,0.06)' }}>
             <Link href={`/dashboard/sous-traitants/${st.id}`} style={{ display:'block', padding:'12px', textDecoration:'none', color:'inherit' }}>
               <div style={{ fontFamily:'Cormorant Garamond,serif', fontSize:'16px', fontWeight:500, color:'#16130e' }}>{st.societe}</div>
               {st.contact_nom && <div style={{ fontSize:'11px', color:'#5a564e', marginTop:'2px' }}>{st.contact_nom}</div>}
@@ -228,8 +228,8 @@ export default function SousTraitantsPage() {
       {/* Modal création/édition */}
       {showForm && (
         <div style={{ position:'fixed', inset:0, background:'rgba(0,0,0,0.5)', zIndex:200, display:'flex', alignItems:'center', justifyContent:'center' }}>
-          <div style={{ background:'#fff', width:'520px', maxWidth:'96vw', maxHeight:'90vh', overflowY:'auto', boxShadow:'0 32px 80px rgba(0,0,0,0.3)', border:'1.5px solid #e4e6ea' }}>
-            <div style={{ background:'#16130e', padding:'18px 24px', display:'flex', alignItems:'center', justifyContent:'space-between' }}>
+          <div style={{ background:'#fff', width:'520px', maxWidth:'96vw', maxHeight:'90vh', overflowY:'auto', boxShadow:'0 32px 80px rgba(0,0,0,0.3)', border:'1px solid #e4e6ea', borderRadius:'12px' }}>
+            <div style={{ background:'#16130e', padding:'18px 24px', borderRadius:'12px 12px 0 0', display:'flex', alignItems:'center', justifyContent:'space-between' }}>
               <span style={{ fontFamily:'Cormorant Garamond,serif', fontSize:'19px', fontWeight:500, color:'#fff', letterSpacing:'1px' }}>
                 {editing ? 'Modifier le sous-traitant' : 'Nouveau sous-traitant'}
               </span>
@@ -279,7 +279,7 @@ export default function SousTraitantsPage() {
                   onChange={e => setForm({...form, notes:e.target.value})}
                   placeholder="Spécialités, zone géographique, conditions tarifaires habituelles…" />
               </div>
-              <div style={{ display:'flex', justifyContent:'flex-end', gap:'8px', marginTop:'16px', paddingTop:'16px', borderTop:'1.5px solid #e4e6ea' }}>
+              <div style={{ display:'flex', justifyContent:'flex-end', gap:'8px', marginTop:'16px', paddingTop:'16px', borderTop:'1px solid #e4e6ea' }}>
                 <button type="button" className="btn-ghost" onClick={() => setShowForm(false)}>Annuler</button>
                 <button type="submit" className="btn-primary" disabled={saving}>
                   {saving ? 'Sauvegarde…' : editing ? 'Modifier' : 'Créer'}

@@ -50,8 +50,8 @@ function PaiementModal({ prestation, onClose, onSave }: {
 
   return (
     <div style={{ position:'fixed', inset:0, background:'rgba(0,0,0,0.5)', zIndex:300, display:'flex', alignItems:'center', justifyContent:'center' }}>
-      <div style={{ background:'#fff', width:'420px', boxShadow:'0 32px 80px rgba(0,0,0,0.3)', border:'1.5px solid #e4e6ea' }}>
-        <div style={{ background:'#16130e', padding:'16px 24px', display:'flex', alignItems:'center', justifyContent:'space-between' }}>
+      <div style={{ background:'#fff', width:'420px', boxShadow:'0 32px 80px rgba(0,0,0,0.3)', border:'1px solid #e4e6ea', borderRadius:'12px' }}>
+        <div style={{ background:'#16130e', padding:'16px 24px', borderRadius:'12px 12px 0 0', display:'flex', alignItems:'center', justifyContent:'space-between' }}>
           <span style={{ fontFamily:'Cormorant Garamond,serif', fontSize:'18px', fontWeight:500, color:'#fff' }}>
             Statut du paiement
           </span>
@@ -60,7 +60,7 @@ function PaiementModal({ prestation, onClose, onSave }: {
           </button>
         </div>
         <div style={{ padding:'20px 24px' }}>
-          <div style={{ marginBottom:'16px', padding:'10px 14px', background:'#f5f2ed', border:'1.5px solid #e4e6ea' }}>
+          <div style={{ marginBottom:'16px', padding:'10px 14px', background:'#f5f2ed', border:'1px solid #e4e6ea', borderRadius:'12px' }}>
             <div style={{ fontSize:'10px', color:'#63605a', marginBottom:'4px' }}>Prestation</div>
             <div style={{ fontSize:'13px', fontWeight:600 }}>
               {prestation.dossier.numero} · {prestation.dossier.client.nom}
@@ -93,7 +93,7 @@ function PaiementModal({ prestation, onClose, onSave }: {
             </>
           )}
 
-          <div style={{ display:'flex', justifyContent:'flex-end', gap:'8px', paddingTop:'14px', borderTop:'1.5px solid #e4e6ea' }}>
+          <div style={{ display:'flex', justifyContent:'flex-end', gap:'8px', paddingTop:'14px', borderTop:'1px solid #e4e6ea' }}>
             <button className="btn-ghost" onClick={onClose}>Annuler</button>
             <button className="btn-primary" disabled={saving}
               onClick={async () => {
@@ -177,7 +177,7 @@ export default function SousTraitantDetailPage() {
 
       {/* Header */}
       <div className="card" style={{ marginBottom:'16px' }}>
-        <div style={{ background:'#16130e', padding:'16px 24px', display:'flex', alignItems:'center', justifyContent:'space-between' }}>
+        <div style={{ background:'#16130e', padding:'16px 24px', borderRadius:'12px 12px 0 0', display:'flex', alignItems:'center', justifyContent:'space-between' }}>
           <span style={{ fontFamily:'Cormorant Garamond,serif', fontSize:'22px', fontWeight:500, color:'#fff', letterSpacing:'1px' }}>
             {st.societe}
           </span>
@@ -269,7 +269,7 @@ export default function SousTraitantDetailPage() {
         ) : filtered.map(p => {
           const isPaye = p.st_paiement_statut === 'paye'; const marge = p.st_marge_ht ?? 0
           return (
-            <div key={p.id} style={{ background:'#fff', border:'1.5px solid #e4e6ea', boxShadow:'0 1px 4px rgba(0,0,0,0.06)', padding:'12px' }}>
+            <div key={p.id} style={{ background:'#fff', border:'1px solid #e4e6ea', borderRadius:'12px', boxShadow:'0 1px 4px rgba(0,0,0,0.06)', padding:'12px' }}>
               <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', gap:'8px' }}>
                 <div style={{ display:'flex', alignItems:'center', gap:'8px', minWidth:0 }}>
                   <span style={{ fontSize:'9px', fontWeight:700, padding:'2px 8px', background: p.type==='mad' ? '#f8ece7' : '#e8eef8', color: p.type==='mad' ? '#a6432a' : '#1e3f70' }}>{p.type === 'mad' ? 'MAD' : 'Transfert'}</span>

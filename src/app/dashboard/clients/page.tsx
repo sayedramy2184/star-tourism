@@ -72,7 +72,7 @@ export default function ClientsPage() {
       {showForm && (
         <div style={{ position:'fixed', inset:0, background:'rgba(0,0,0,0.5)', zIndex:200, display:'flex', alignItems:'center', justifyContent:'center'}}>
           <div style={{ background:'#fff', width:'520px', maxWidth:'95vw', maxHeight:'90vh', overflowY:'auto', boxShadow:'0 24px 60px rgba(0,0,0,0.2)' }}>
-            <div style={{ background:'#16130e', padding:'18px 24px', display:'flex', alignItems:'center', justifyContent:'space-between' }}>
+            <div style={{ background:'#16130e', padding:'18px 24px', borderRadius:'12px 12px 0 0', display:'flex', alignItems:'center', justifyContent:'space-between' }}>
               <span style={{ fontFamily:'Cormorant Garamond,serif', fontSize:'19px', fontWeight:500, color:'#fff', letterSpacing:'1px' }}>Nouveau client</span>
               <button onClick={() => setShowForm(false)} style={{ background:'none', border:'none', color:'rgba(255,255,255,0.4)', cursor:'pointer', fontSize:'18px' }}>✕</button>
             </div>
@@ -130,7 +130,7 @@ export default function ClientsPage() {
                 <label className="form-label">Notes</label>
                 <textarea className="textarea" value={form.notes} onChange={e => setForm({...form, notes:e.target.value})} placeholder="Informations particulières, conditions tarifaires…" />
               </div>
-              <div style={{ display:'flex', justifyContent:'flex-end', gap:'8px', marginTop:'16px', paddingTop:'16px', borderTop:'1.5px solid #e4e6ea' }}>
+              <div style={{ display:'flex', justifyContent:'flex-end', gap:'8px', marginTop:'16px', paddingTop:'16px', borderTop:'1px solid #e4e6ea' }}>
                 <button type="button" className="btn-ghost" onClick={() => setShowForm(false)}>Annuler</button>
                 <button type="submit" className="btn-primary">Créer le client</button>
               </div>
@@ -148,7 +148,7 @@ export default function ClientsPage() {
         ) : sp.pageItems.map((c: any) => {
           const typeStyle = c.type === 'agence' ? { background:'#fdf6e3', color:'#9a7a28' } : c.type === 'entreprise' ? { background:'#e8eef8', color:'#1e3f70' } : { background:'#eaf4ee', color:'#1e5e3a' }
           return (
-            <Link key={c.id} href={`/dashboard/clients/${c.id}`} style={{ display:'block', background:'#fff', border:'1.5px solid #e4e6ea', boxShadow:'0 1px 4px rgba(0,0,0,0.06)', padding:'12px', textDecoration:'none', color:'inherit' }}>
+            <Link key={c.id} href={`/dashboard/clients/${c.id}`} style={{ display:'block', background:'#fff', border:'1px solid #e4e6ea', borderRadius:'12px', boxShadow:'0 1px 4px rgba(0,0,0,0.06)', padding:'12px', textDecoration:'none', color:'inherit' }}>
               <div style={{ display:'flex', alignItems:'flex-start', justifyContent:'space-between', gap:'8px' }}>
                 <div style={{ minWidth:0 }}>
                   <div style={{ fontWeight:600, color:'#16130e', fontSize:'14px' }}>{c.nom}</div>

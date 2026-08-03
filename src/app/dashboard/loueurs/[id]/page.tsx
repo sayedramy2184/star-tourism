@@ -70,7 +70,7 @@ export default async function LoueurDetailPage({ params }: { params: { id: strin
             {vehs.length === 0 ? (
               <div style={{ padding:'30px', textAlign:'center', color:'#63605a', fontSize:'12px' }}>Aucun véhicule rattaché à ce loueur.</div>
             ) : vehs.map(({ v, c }) => (
-              <Link key={v.id} href={`/dashboard/vehicules/${v.id}`} style={{ display:'block', background:'#fff', border:'1.5px solid #e4e6ea', boxShadow:'0 1px 4px rgba(0,0,0,0.06)', padding:'12px', textDecoration:'none', color:'inherit' }}>
+              <Link key={v.id} href={`/dashboard/vehicules/${v.id}`} style={{ display:'block', background:'#fff', border:'1px solid #e4e6ea', borderRadius:'12px', boxShadow:'0 1px 4px rgba(0,0,0,0.06)', padding:'12px', textDecoration:'none', color:'inherit' }}>
                 <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', gap:'8px' }}>
                   <div style={{ minWidth:0 }}>
                     <div style={{ fontFamily:'Cormorant Garamond,serif', fontSize:'15px', fontWeight:500, color:'#16130e' }}>{v.marque} {v.modele}</div>
