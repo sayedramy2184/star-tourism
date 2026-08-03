@@ -62,7 +62,7 @@ export default function LogoUploader() {
           overflow: 'hidden',
         }}>
           {loading ? (
-            <span style={{ fontSize: '10px', color: '#8a8478' }}>…</span>
+            <span style={{ fontSize: '10px', color: '#63605a' }}>…</span>
           ) : logo ? (
             // eslint-disable-next-line @next/next/no-img-element
             <img src={logo.url} alt="Logo société" style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }} />
@@ -74,7 +74,7 @@ export default function LogoUploader() {
         {/* Actions */}
         <div style={{ flex: 1, minWidth: 0 }}>
           <div style={{ fontSize: '13px', fontWeight: 600, color: '#16130e' }}>Logo de la société</div>
-          <div style={{ fontSize: '11px', color: '#8a8478', marginTop: '2px', lineHeight: 1.5 }}>
+          <div style={{ fontSize: '11px', color: '#63605a', marginTop: '2px', lineHeight: 1.5 }}>
             Image carrée de préférence (PNG, JPG ou WEBP). Fond transparent recommandé.
           </div>
           <input

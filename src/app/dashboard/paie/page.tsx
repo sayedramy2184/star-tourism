@@ -28,12 +28,12 @@ export default async function PaiePage() {
           { label: 'Restant dû', val: totalRestant <= 0 ? '✓ Soldé' : fmtEur(totalRestant), color: totalRestant > 0 ? '#9e2a2a' : '#1e5e3a' },
         ].map(s => (
           <div key={s.label} style={{ background: '#fff', border: '1px solid #e0d9cd', padding: '16px 18px' }}>
-            <div style={{ fontSize: '9px', letterSpacing: '2px', textTransform: 'uppercase', color: '#8a8478', marginBottom: '8px' }}>{s.label}</div>
+            <div style={{ fontSize: '9px', letterSpacing: '2px', textTransform: 'uppercase', color: '#63605a', marginBottom: '8px' }}>{s.label}</div>
             <div style={{ fontFamily: 'Cormorant Garamond,serif', fontSize: '24px', color: s.color }}>{s.val}</div>
           </div>
         ))}
       </div>
-      <div style={{ fontSize: '11px', color: '#8a8478', marginBottom: '20px' }}>
+      <div style={{ fontSize: '11px', color: '#63605a', marginBottom: '20px' }}>
         Salaire calculé sur les <strong>missions terminées</strong> (dates passées) : 200 €/jour MAD, 50 €/transfert, ajustables par jour et par transfert. Ouvre un chauffeur pour le détail et les versements.
       </div>
 
@@ -66,7 +66,7 @@ export default async function PaiePage() {
           </thead>
           <tbody>
             {chauffeurs.length === 0 ? (
-              <tr><td colSpan={5} className="td" style={{ textAlign: 'center', padding: '50px', color: '#8a8478' }}>Aucun chauffeur.</td></tr>
+              <tr><td colSpan={5} className="td" style={{ textAlign: 'center', padding: '50px', color: '#63605a' }}>Aucun chauffeur.</td></tr>
             ) : chauffeurs.map(c => (
               <tr key={c.id} className="tr-body">
                 <td className="td" style={{ background: 'rgba(154,122,40,0.04)' }}>

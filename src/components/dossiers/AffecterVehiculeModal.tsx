@@ -75,9 +75,9 @@ export default function AffecterVehiculeModal({ prestationId, dateDebut, dateFin
             <div style={{ padding:'20px 24px' }}>
               {vehiculeActuel && (
                 <div style={{ padding:'10px 14px', background:'#f5f2ed', border:'1.5px solid #e4e6ea', marginBottom:'16px', display:'flex', alignItems:'center', gap:'10px' }}>
-                  <Car size={14} style={{ color:'#8a8478' }} />
+                  <Car size={14} style={{ color:'#63605a' }} />
                   <div>
-                    <div style={{ fontSize:'11px', color:'#8a8478', marginBottom:'2px' }}>Véhicule actuel</div>
+                    <div style={{ fontSize:'11px', color:'#63605a', marginBottom:'2px' }}>Véhicule actuel</div>
                     <div style={{ fontSize:'13px', fontWeight:600 }}>{vehiculeActuel.marque} {vehiculeActuel.modele}</div>
                     <div style={{ fontFamily:'JetBrains Mono,monospace', fontSize:'10px', color:'#5a564e' }}>{vehiculeActuel.immatriculation}</div>
                   </div>
@@ -89,7 +89,7 @@ export default function AffecterVehiculeModal({ prestationId, dateDebut, dateFin
               </div>
 
               {vehicules.length === 0 ? (
-                <div style={{ padding:'20px', textAlign:'center', color:'#8a8478', fontSize:'12px' }}>Chargement…</div>
+                <div style={{ padding:'20px', textAlign:'center', color:'#63605a', fontSize:'12px' }}>Chargement…</div>
               ) : (
                 <div style={{ display:'flex', flexDirection:'column', gap:'6px' }}>
                   {vehicules.map(v => {
@@ -107,13 +107,13 @@ export default function AffecterVehiculeModal({ prestationId, dateDebut, dateFin
                           transition:'all 0.14s',
                         }}>
                         <div style={{ width:'36px', height:'36px', background: isSelected ? '#fdf6e3' : '#f5f2ed', border:`1.5px solid ${isSelected ? '#9a7a28' : '#e4e6ea'}`, display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0 }}>
-                          <Car size={16} style={{ color: isSelected ? '#9a7a28' : '#8a8478' }} />
+                          <Car size={16} style={{ color: isSelected ? '#9a7a28' : '#63605a' }} />
                         </div>
                         <div style={{ flex:1 }}>
                           <div style={{ fontFamily:'Cormorant Garamond,serif', fontSize:'15px', fontWeight:500, color:'#16130e' }}>{v.marque} {v.modele}</div>
                           <div style={{ display:'flex', gap:'8px', alignItems:'center', marginTop:'2px' }}>
                             <span style={{ fontFamily:'JetBrains Mono,monospace', fontSize:'10px', color:'#5a564e', letterSpacing:'1px' }}>{v.immatriculation}</span>
-                            <span style={{ fontSize:'9px', color:'#8a8478' }}>{CATEGORIES[v.categorie] ?? v.categorie}</span>
+                            <span style={{ fontSize:'9px', color:'#63605a' }}>{CATEGORIES[v.categorie] ?? v.categorie}</span>
                           </div>
                         </div>
                         <span style={{ fontSize:'9px', fontWeight:700, letterSpacing:'1px', textTransform:'uppercase', padding:'3px 8px', background: dispo ? '#eaf4ee' : '#faeaea', color: dispo ? '#1e5e3a' : '#9e2a2a', border:`1px solid ${dispo ? 'rgba(30,94,58,0.2)' : 'rgba(158,42,42,0.2)'}` }}>

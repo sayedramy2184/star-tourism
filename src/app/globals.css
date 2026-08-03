@@ -12,8 +12,8 @@
   --surface:    #ffffff;   /* cartes / panneaux */
   --surface-2:  #f7f8fa;   /* remplissage subtil (input, entête tableau, hover) */
   --ink:        #1a1712;   /* texte principal (near-black chaud, cohérent avec l'existant) */
-  --ink-2:      #5c606a;   /* texte secondaire */
-  --ink-3:      #8b8f99;   /* texte discret / labels */
+  --ink-2:      #44474e;   /* texte secondaire (foncé, lisible) */
+  --ink-3:      #5f636b;   /* texte discret / labels (foncé, lisible) */
   --border:     #e4e6ea;   /* bordure douce */
   --border-2:   #eef0f3;   /* filet très léger (lignes de tableau) */
   --accent:     #9a7a28;   /* or de marque */
@@ -210,8 +210,8 @@ body {
   /* ── Table ── */
   .table-container { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); overflow-x:auto; overflow-y:hidden; -webkit-overflow-scrolling:touch; box-shadow:var(--shadow-sm); }
   .table-container > table { min-width:680px; }
-  .table-head { background: var(--surface-2); }
-  .th { padding:13px 16px; text-align:left; font-size:10.5px; letter-spacing:0.6px; text-transform:uppercase; color:var(--ink-3); font-weight:600; white-space:nowrap; border-bottom:1px solid var(--border); }
+  .table-head { background: var(--surface); }
+  .th { padding:14px 16px; text-align:left; font-size:11px; letter-spacing:0.4px; text-transform:uppercase; color:var(--ink-2); font-weight:700; white-space:nowrap; border-bottom:1.5px solid var(--border); }
   .tr-body { border-bottom:1px solid var(--border-2); cursor:pointer; transition:background 0.12s; }
   .tr-body:last-child { border-bottom:none; }
   .tr-body:hover { background:var(--surface-2) !important; }

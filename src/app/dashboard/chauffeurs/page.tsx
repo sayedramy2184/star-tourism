@@ -168,9 +168,9 @@ export default function ChauffeursPage() {
       {/* Liste mobile (cartes) */}
       <div className="only-mobile" style={{ display:'flex', flexDirection:'column', gap:'10px' }}>
         {loading ? (
-          <div style={{ padding:'40px', textAlign:'center', color:'#8a8478', fontSize:'12px' }}>Chargement…</div>
+          <div style={{ padding:'40px', textAlign:'center', color:'#63605a', fontSize:'12px' }}>Chargement…</div>
         ) : sp.total === 0 ? (
-          <div style={{ padding:'40px', textAlign:'center', color:'#8a8478', fontSize:'12px' }}>{chauffeurs.length === 0 ? 'Aucun chauffeur — créez le premier !' : 'Aucun résultat'}</div>
+          <div style={{ padding:'40px', textAlign:'center', color:'#63605a', fontSize:'12px' }}>{chauffeurs.length === 0 ? 'Aucun chauffeur — créez le premier !' : 'Aucun résultat'}</div>
         ) : sp.pageItems.map((c: any) => {
           const vtc = docStatus(c.vtc_card_expiry); const permis = docStatus(c.permis_expiry)
           const st = STATUTS[c.statut]; const initials = `${c.prenom[0]}${c.nom[0]}`.toUpperCase()
@@ -212,9 +212,9 @@ export default function ChauffeursPage() {
           </thead>
           <tbody>
             {loading ? (
-              <tr><td colSpan={6} style={{ padding:'40px', textAlign:'center', color:'#8a8478' }}>Chargement…</td></tr>
+              <tr><td colSpan={6} style={{ padding:'40px', textAlign:'center', color:'#63605a' }}>Chargement…</td></tr>
             ) : sp.total === 0 ? (
-              <tr><td colSpan={6} style={{ padding:'60px', textAlign:'center', color:'#8a8478' }}>
+              <tr><td colSpan={6} style={{ padding:'60px', textAlign:'center', color:'#63605a' }}>
                 {chauffeurs.length === 0 ? 'Aucun chauffeur — créez le premier !' : 'Aucun résultat'}
               </td></tr>
             ) : sp.pageItems.map(c => {
@@ -239,7 +239,7 @@ export default function ChauffeursPage() {
                       <div>
                         <div style={{ fontWeight:600, color:'#16130e' }}>{c.prenom} {c.nom}</div>
                         {c.vtc_card_numero && (
-                          <div style={{ fontFamily:'JetBrains Mono,monospace', fontSize:'9px', color:'#8a8478' }}>
+                          <div style={{ fontFamily:'JetBrains Mono,monospace', fontSize:'9px', color:'#63605a' }}>
                             VTC {c.vtc_card_numero}
                           </div>
                         )}
@@ -251,11 +251,11 @@ export default function ChauffeursPage() {
                   <td className="td">
                     <div style={{ display:'flex', flexDirection:'column', gap:'3px' }}>
                       <div style={{ display:'flex', alignItems:'center', gap:'5px', fontSize:'11px', color:'#2e2b25' }}>
-                        <Phone size={10} style={{ color:'#8a8478' }} /> {c.telephone}
+                        <Phone size={10} style={{ color:'#63605a' }} /> {c.telephone}
                       </div>
                       {c.email && (
                         <div style={{ display:'flex', alignItems:'center', gap:'5px', fontSize:'11px', color:'#5a564e' }}>
-                          <Mail size={10} style={{ color:'#8a8478' }} /> {c.email}
+                          <Mail size={10} style={{ color:'#63605a' }} /> {c.email}
                         </div>
                       )}
                     </div>
@@ -474,21 +474,21 @@ function StatutToggle({ chauffeur, onChange }: { chauffeur: Chauffeur; onChange:
           }}>
             {/* Statuts automatiques — info seulement */}
             <div style={{ padding:'8px 14px 6px', borderBottom:'1px solid #f4f5f7' }}>
-              <div style={{ fontSize:'8px', fontWeight:700, letterSpacing:'1.5px', textTransform:'uppercase', color:'#8a8478', marginBottom:'6px' }}>
+              <div style={{ fontSize:'8px', fontWeight:700, letterSpacing:'1.5px', textTransform:'uppercase', color:'#63605a', marginBottom:'6px' }}>
                 Automatiques
               </div>
               {(['disponible','en_mission'] as Statut[]).map(s => (
                 <div key={s} style={{ padding:'4px 8px', fontSize:'11px', fontWeight:600, color:STATUTS[s].color, opacity:0.5, display:'flex', alignItems:'center', gap:'6px' }}>
                   <span style={{ width:'6px', height:'6px', borderRadius:'50%', background:STATUTS[s].color, flexShrink:0 }} />
                   {STATUTS[s].label}
-                  <span style={{ fontSize:'9px', color:'#9aa0aa', fontWeight:400, marginLeft:'auto' }}>auto</span>
+                  <span style={{ fontSize:'9px', color:'#63605a', fontWeight:400, marginLeft:'auto' }}>auto</span>
                 </div>
               ))}
             </div>
 
             {/* Statuts manuels */}
             <div style={{ padding:'6px 14px 8px' }}>
-              <div style={{ fontSize:'8px', fontWeight:700, letterSpacing:'1.5px', textTransform:'uppercase', color:'#8a8478', marginBottom:'6px' }}>
+              <div style={{ fontSize:'8px', fontWeight:700, letterSpacing:'1.5px', textTransform:'uppercase', color:'#63605a', marginBottom:'6px' }}>
                 Manuel
               </div>
               {MANUELS.map(s => (

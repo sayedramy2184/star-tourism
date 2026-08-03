@@ -50,7 +50,7 @@ export const STATUT_MAP: Record<PrestationStatut, StatutInfo> = {
   },
   termine: {
     label:  'Terminé',
-    color:  '#8a8478',
+    color:  '#63605a',
     bg:     '#f5f2ed',
     border: 'rgba(138,132,120,0.25)',
     dot:    '#c2bdb4',

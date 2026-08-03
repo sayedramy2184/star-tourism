@@ -72,7 +72,7 @@ const STATUTS: Record<StatutVehicule, { label: string; color: string; bg: string
   disponible:  { label: 'Disponible',  color: '#1e5e3a', bg: '#eaf4ee' },
   en_mission:  { label: 'En mission',  color: '#1e3f70', bg: '#e8eef8' },
   maintenance: { label: 'Maintenance', color: '#7a5c10', bg: '#fdf3dc' },
-  inactif:     { label: 'Inactif',     color: '#8a8478', bg: '#f5f2ed' },
+  inactif:     { label: 'Inactif',     color: '#63605a', bg: '#f5f2ed' },
 }
 
 const CATEGORIES: Record<CategorieVehicule, string> = {
@@ -259,9 +259,9 @@ export default function VehiculesPage() {
       {/* Liste mobile (cartes) */}
       <div className="only-mobile" style={{ display:'flex', flexDirection:'column', gap:'10px' }}>
         {loading ? (
-          <div style={{ padding:'40px', textAlign:'center', color:'#8a8478', fontSize:'12px' }}>Chargement…</div>
+          <div style={{ padding:'40px', textAlign:'center', color:'#63605a', fontSize:'12px' }}>Chargement…</div>
         ) : sp.total === 0 ? (
-          <div style={{ padding:'40px', textAlign:'center', color:'#8a8478', fontSize:'12px' }}>{vehicules.length === 0 ? 'Aucun véhicule — ajoutez le premier !' : 'Aucun résultat'}</div>
+          <div style={{ padding:'40px', textAlign:'center', color:'#63605a', fontSize:'12px' }}>{vehicules.length === 0 ? 'Aucun véhicule — ajoutez le premier !' : 'Aucun résultat'}</div>
         ) : sp.pageItems.map((v: any) => {
           const stt = statutAffiche(v); const m = MODES[v.mode_acquisition] ?? MODES.propriete
           const ct = docAlert(v.ct_date); const ass = docAlert(v.assurance_date); const ca = contratAlert(v.contrat_fin)
@@ -300,9 +300,9 @@ export default function VehiculesPage() {
           </thead>
           <tbody>
             {loading ? (
-              <tr><td colSpan={8} style={{ padding:'40px', textAlign:'center', color:'#8a8478' }}>Chargement…</td></tr>
+              <tr><td colSpan={8} style={{ padding:'40px', textAlign:'center', color:'#63605a' }}>Chargement…</td></tr>
             ) : sp.total === 0 ? (
-              <tr><td colSpan={8} style={{ padding:'60px', textAlign:'center', color:'#8a8478' }}>
+              <tr><td colSpan={8} style={{ padding:'60px', textAlign:'center', color:'#63605a' }}>
                 {vehicules.length === 0 ? 'Aucun véhicule — ajoutez le premier !' : 'Aucun résultat'}
               </td></tr>
             ) : sp.pageItems.map(v => {
@@ -315,7 +315,7 @@ export default function VehiculesPage() {
                     <div style={{ fontFamily:'Cormorant Garamond,serif', fontSize:'15px', fontWeight:500 }}>
                       {v.marque} {v.modele}
                     </div>
-                    {v.annee && <div style={{ fontSize:'10px', color:'#8a8478' }}>{v.annee} · {v.nb_places} places</div>}
+                    {v.annee && <div style={{ fontSize:'10px', color:'#63605a' }}>{v.annee} · {v.nb_places} places</div>}
                     {v.chauffeur && (
                       <div style={{ fontSize:'10px', color:'#5a564e', marginTop:'2px' }}>
                         👤 {v.chauffeur.prenom} {v.chauffeur.nom}
@@ -403,7 +403,7 @@ export default function VehiculesPage() {
                       {(categories.find((c: any) => c.nom === form.categorie)?.modeles ?? []).map((m: string) => <option key={m} value={m} />)}
                     </datalist>
                     {form.categorie && (categories.find((c: any) => c.nom === form.categorie)?.modeles?.length ?? 0) > 0 && (
-                      <div style={{ fontSize:'10px', color:'#8a8478', marginTop:'3px' }}>Modèles de « {form.categorie} » proposés</div>
+                      <div style={{ fontSize:'10px', color:'#63605a', marginTop:'3px' }}>Modèles de « {form.categorie} » proposés</div>
                     )}
                   </div>
                 </div>

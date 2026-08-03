@@ -37,7 +37,7 @@ function InfoDropdown({ anchorRef, statut, onClose }: {
 
   return (
     <div style={{ position:'absolute', top:pos.top, left:pos.left, zIndex:9999, width:'220px', background:'#fff', border:'1.5px solid #e4e6ea', boxShadow:'0 8px 28px rgba(0,0,0,0.15)', padding:'12px 14px' }}>
-      <div style={{ fontSize:'9px', fontWeight:700, letterSpacing:'2px', textTransform:'uppercase', color:'#8a8478', marginBottom:'10px' }}>
+      <div style={{ fontSize:'9px', fontWeight:700, letterSpacing:'2px', textTransform:'uppercase', color:'#63605a', marginBottom:'10px' }}>
         Statuts du dossier
       </div>
       {(Object.entries(STATUTS) as [DossierStatut, typeof STATUTS[DossierStatut]][]).map(([key, s]) => (
@@ -45,12 +45,12 @@ function InfoDropdown({ anchorRef, statut, onClose }: {
           <span style={{ width:'7px', height:'7px', borderRadius:'50%', background:s.dot, flexShrink:0, marginTop:'3px' }} />
           <div>
             <div style={{ fontSize:'11px', fontWeight:700, color:s.color }}>{s.label}</div>
-            <div style={{ fontSize:'9px', color:'#8a8478' }}>{s.desc}</div>
+            <div style={{ fontSize:'9px', color:'#63605a' }}>{s.desc}</div>
           </div>
           {statut === key && <span style={{ marginLeft:'auto', fontSize:'10px', color:s.color }}>✓</span>}
         </div>
       ))}
-      <div style={{ fontSize:'9px', color:'#9aa0aa', marginTop:'8px', fontStyle:'italic' }}>
+      <div style={{ fontSize:'9px', color:'#63605a', marginTop:'8px', fontStyle:'italic' }}>
         Le statut est géré automatiquement
       </div>
     </div>

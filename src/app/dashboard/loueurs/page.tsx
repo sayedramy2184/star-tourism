@@ -53,7 +53,7 @@ export default async function LoueursPage() {
       {/* Liste mobile (cartes) */}
       <div className="only-mobile" style={{ display:'flex', flexDirection:'column', gap:'10px' }}>
         {rows.length === 0 ? (
-          <div style={{ padding:'40px', textAlign:'center', color:'#8a8478', fontSize:'12px' }}>Aucun loueur — ajoutez-en un puis rattachez vos véhicules loués.</div>
+          <div style={{ padding:'40px', textAlign:'center', color:'#63605a', fontSize:'12px' }}>Aucun loueur — ajoutez-en un puis rattachez vos véhicules loués.</div>
         ) : rows.map(r => {
           const solde = Math.round(r.solde * 100) / 100
           const statut = solde > 0 ? { label:'À payer', color:'#9e2a2a', bg:'#faeaea' } : { label:'Soldé', color:'#1e5e3a', bg:'#eaf4ee' }
@@ -62,14 +62,14 @@ export default async function LoueursPage() {
               <div style={{ display:'flex', alignItems:'flex-start', justifyContent:'space-between', gap:'8px' }}>
                 <div style={{ minWidth:0 }}>
                   <div style={{ fontFamily:'Cormorant Garamond,serif', fontSize:'16px', fontWeight:500, color:'#16130e' }}>{r.nom}</div>
-                  <div style={{ fontSize:'11px', color:'#8a8478' }}>{r.nbVehicules} véhicule{r.nbVehicules > 1 ? 's' : ''}{r.contact_nom ? ` · ${r.contact_nom}` : ''}</div>
+                  <div style={{ fontSize:'11px', color:'#63605a' }}>{r.nbVehicules} véhicule{r.nbVehicules > 1 ? 's' : ''}{r.contact_nom ? ` · ${r.contact_nom}` : ''}</div>
                 </div>
                 <span style={{ flexShrink:0, padding:'3px 10px', fontSize:'10px', fontWeight:700, background:statut.bg, color:statut.color, border:`1px solid ${statut.color}33` }}>{statut.label}</span>
               </div>
               <div style={{ display:'flex', justifyContent:'space-between', gap:'8px', marginTop:'10px', paddingTop:'8px', borderTop:'1px solid #f4f5f7' }}>
-                <div><div style={{ fontSize:'8px', textTransform:'uppercase', letterSpacing:'1px', color:'#8a8478' }}>Coût couru</div><div className="mono" style={{ fontSize:'12px', color:'#9a7a28' }}>{fmt(r.coutCouru)}</div></div>
-                <div><div style={{ fontSize:'8px', textTransform:'uppercase', letterSpacing:'1px', color:'#8a8478' }}>Payé</div><div className="mono" style={{ fontSize:'12px', color:'#1e5e3a' }}>{fmt(r.paye)}</div></div>
-                <div style={{ textAlign:'right' }}><div style={{ fontSize:'8px', textTransform:'uppercase', letterSpacing:'1px', color:'#8a8478' }}>Solde dû</div><div className="mono" style={{ fontSize:'13px', fontWeight:700, color: solde > 0 ? '#9e2a2a' : '#1e5e3a' }}>{fmt(solde)}</div></div>
+                <div><div style={{ fontSize:'8px', textTransform:'uppercase', letterSpacing:'1px', color:'#63605a' }}>Coût couru</div><div className="mono" style={{ fontSize:'12px', color:'#9a7a28' }}>{fmt(r.coutCouru)}</div></div>
+                <div><div style={{ fontSize:'8px', textTransform:'uppercase', letterSpacing:'1px', color:'#63605a' }}>Payé</div><div className="mono" style={{ fontSize:'12px', color:'#1e5e3a' }}>{fmt(r.paye)}</div></div>
+                <div style={{ textAlign:'right' }}><div style={{ fontSize:'8px', textTransform:'uppercase', letterSpacing:'1px', color:'#63605a' }}>Solde dû</div><div className="mono" style={{ fontSize:'13px', fontWeight:700, color: solde > 0 ? '#9e2a2a' : '#1e5e3a' }}>{fmt(solde)}</div></div>
               </div>
             </Link>
           )
@@ -88,7 +88,7 @@ export default async function LoueursPage() {
           </thead>
           <tbody>
             {rows.length === 0 ? (
-              <tr><td colSpan={7} style={{ padding:'60px', textAlign:'center', color:'#8a8478', fontSize:'12px' }}>
+              <tr><td colSpan={7} style={{ padding:'60px', textAlign:'center', color:'#63605a', fontSize:'12px' }}>
                 Aucun loueur — ajoutez-en un puis rattachez vos véhicules loués.
               </td></tr>
             ) : rows.map(r => {
@@ -101,7 +101,7 @@ export default async function LoueursPage() {
                   <td className="td" style={{ background:'rgba(154,122,40,0.04)' }}>
                     <Link href={`/dashboard/loueurs/${r.id}`} style={{ textDecoration:'none' }}>
                       <div style={{ fontFamily:'Cormorant Garamond,serif', fontSize:'15px', fontWeight:500, color:'#16130e' }}>{r.nom}</div>
-                      {r.contact_nom && <div style={{ fontSize:'10px', color:'#8a8478' }}>{r.contact_nom}{r.telephone ? ` · ${r.telephone}` : ''}</div>}
+                      {r.contact_nom && <div style={{ fontSize:'10px', color:'#63605a' }}>{r.contact_nom}{r.telephone ? ` · ${r.telephone}` : ''}</div>}
                     </Link>
                   </td>
                   <td className="td"><span style={{ fontFamily:'JetBrains Mono,monospace', fontSize:'12px' }}>{r.nbVehicules}</span></td>

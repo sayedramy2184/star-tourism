@@ -14,10 +14,10 @@ function fmt(n: number) {
 function fmtDate(d: string) { return format(new Date(d), 'dd/MM/yyyy', { locale: fr }) }
 
 const DOSSIER_STATUTS: Record<string, { label: string; color: string; bg: string }> = {
-  brouillon:  { label: 'Brouillon',  color: '#8a8478', bg: '#f5f2ed' },
+  brouillon:  { label: 'Brouillon',  color: '#63605a', bg: '#f5f2ed' },
   en_attente: { label: 'En attente', color: '#7a5c10', bg: '#fdf3dc' },
   en_cours:   { label: 'En cours',   color: '#1e3f70', bg: '#e8eef8' },
-  termine:    { label: 'Terminé',    color: '#8a8478', bg: '#f5f2ed' },
+  termine:    { label: 'Terminé',    color: '#63605a', bg: '#f5f2ed' },
 }
 
 export default async function ClientDetailPage({ params }: { params: { id: string } }) {
@@ -42,7 +42,7 @@ export default async function ClientDetailPage({ params }: { params: { id: strin
   return (
     <div>
       <div style={{ marginBottom: '20px' }}>
-        <Link href="/dashboard/clients" style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', fontSize: '12px', color: '#8a8478', textDecoration: 'none' }}>
+        <Link href="/dashboard/clients" style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', fontSize: '12px', color: '#63605a', textDecoration: 'none' }}>
           <ArrowLeft size={13} /> Retour aux clients
         </Link>
       </div>
@@ -66,7 +66,7 @@ export default async function ClientDetailPage({ params }: { params: { id: strin
                       </div>
                       <div>
                         <div style={{ fontFamily: 'Cormorant Garamond,serif', fontSize: '26px', fontWeight: 500, color: '#16130e', lineHeight: 1 }}>{c.nom}</div>
-                        <div style={{ fontSize: '11px', color: '#8a8478', marginTop: '4px', textTransform: 'uppercase', letterSpacing: '1px' }}>
+                        <div style={{ fontSize: '11px', color: '#63605a', marginTop: '4px', textTransform: 'uppercase', letterSpacing: '1px' }}>
                           {ti.label}{c.contact_nom ? ` · ${c.contact_nom}` : ''}{c.pays && c.pays !== 'France' ? ` · ${c.pays}` : ''}
                         </div>
                       </div>
@@ -99,7 +99,7 @@ export default async function ClientDetailPage({ params }: { params: { id: strin
           {/* Liste mobile (cartes) */}
           <div className="only-mobile" style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
             {D.length === 0 ? (
-              <div style={{ padding: '30px', textAlign: 'center', color: '#8a8478', fontSize: '12px' }}>Aucun dossier pour ce client</div>
+              <div style={{ padding: '30px', textAlign: 'center', color: '#63605a', fontSize: '12px' }}>Aucun dossier pour ce client</div>
             ) : D.map((d: any) => {
               const st = DOSSIER_STATUTS[d.statut] ?? DOSSIER_STATUTS.en_attente
               return (
@@ -110,7 +110,7 @@ export default async function ClientDetailPage({ params }: { params: { id: strin
                   </div>
                   <div className="mono" style={{ fontSize: '11px', color: '#5a564e', marginTop: '6px' }}>{fmtDate(d.date_debut)} → {fmtDate(d.date_fin)}</div>
                   <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '6px', fontSize: '11px' }}>
-                    <span style={{ color: '#8a8478' }}>{d.prestations?.length ?? 0} prestation{(d.prestations?.length ?? 0) > 1 ? 's' : ''}</span>
+                    <span style={{ color: '#63605a' }}>{d.prestations?.length ?? 0} prestation{(d.prestations?.length ?? 0) > 1 ? 's' : ''}</span>
                     <span className="mono" style={{ fontWeight: 700 }}>{fmt(d.montant_ht)}</span>
                   </div>
                 </Link>
@@ -128,7 +128,7 @@ export default async function ClientDetailPage({ params }: { params: { id: strin
               </thead>
               <tbody>
                 {D.length === 0 ? (
-                  <tr><td colSpan={6} className="td" style={{ textAlign: 'center', padding: '40px', color: '#8a8478' }}>Aucun dossier pour ce client</td></tr>
+                  <tr><td colSpan={6} className="td" style={{ textAlign: 'center', padding: '40px', color: '#63605a' }}>Aucun dossier pour ce client</td></tr>
                 ) : D.map((d: any) => {
                   const st = DOSSIER_STATUTS[d.statut] ?? DOSSIER_STATUTS.en_attente
                   return (
@@ -188,7 +188,7 @@ function Info({ icon, label, value, mono }: { icon: React.ReactNode; label: stri
     <div>
       <div className="form-label" style={{ marginBottom: '3px' }}>{label}</div>
       <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '13px', color: '#16130e', fontFamily: mono ? 'JetBrains Mono,monospace' : 'inherit' }}>
-        <span style={{ color: '#8a8478', flexShrink: 0 }}>{icon}</span> {value}
+        <span style={{ color: '#63605a', flexShrink: 0 }}>{icon}</span> {value}
       </div>
     </div>
   )

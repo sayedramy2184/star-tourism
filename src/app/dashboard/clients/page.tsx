@@ -142,9 +142,9 @@ export default function ClientsPage() {
       {/* Liste mobile (cartes) */}
       <div className="only-mobile" style={{ display:'flex', flexDirection:'column', gap:'10px' }}>
         {loading ? (
-          <div style={{ padding:'40px', textAlign:'center', color:'#8a8478', fontSize:'12px' }}>Chargement…</div>
+          <div style={{ padding:'40px', textAlign:'center', color:'#63605a', fontSize:'12px' }}>Chargement…</div>
         ) : sp.total === 0 ? (
-          <div style={{ padding:'40px', textAlign:'center', color:'#8a8478', fontSize:'12px' }}>{clients.length === 0 ? 'Aucun client — créez le premier !' : 'Aucun résultat.'}</div>
+          <div style={{ padding:'40px', textAlign:'center', color:'#63605a', fontSize:'12px' }}>{clients.length === 0 ? 'Aucun client — créez le premier !' : 'Aucun résultat.'}</div>
         ) : sp.pageItems.map((c: any) => {
           const typeStyle = c.type === 'agence' ? { background:'#fdf6e3', color:'#9a7a28' } : c.type === 'entreprise' ? { background:'#e8eef8', color:'#1e3f70' } : { background:'#eaf4ee', color:'#1e5e3a' }
           return (
@@ -179,9 +179,9 @@ export default function ClientsPage() {
           </thead>
           <tbody>
             {loading ? (
-              <tr><td colSpan={7} className="td" style={{ textAlign:'center', padding:'40px', color:'#8a8478' }}>Chargement…</td></tr>
+              <tr><td colSpan={7} className="td" style={{ textAlign:'center', padding:'40px', color:'#63605a' }}>Chargement…</td></tr>
             ) : sp.total === 0 ? (
-              <tr><td colSpan={7} className="td" style={{ textAlign:'center', padding:'60px', color:'#8a8478' }}>{clients.length === 0 ? 'Aucun client — créez le premier !' : 'Aucun résultat.'}</td></tr>
+              <tr><td colSpan={7} className="td" style={{ textAlign:'center', padding:'60px', color:'#63605a' }}>{clients.length === 0 ? 'Aucun client — créez le premier !' : 'Aucun résultat.'}</td></tr>
             ) : sp.pageItems.map((c, i) => (
               <tr key={c.id} className="tr-body">
                 <td className="td" style={{ background:'rgba(154,122,40,0.04)' }}>
@@ -191,7 +191,7 @@ export default function ClientsPage() {
                 </td>
                 <td className="td">
                   <div style={{ fontWeight:600, color:'#16130e' }}>{c.nom}</div>
-                  {c.numero_tva && <div style={{ fontSize:'10px', color:'#8a8478', fontFamily:'JetBrains Mono,monospace' }}>{c.numero_tva}</div>}
+                  {c.numero_tva && <div style={{ fontSize:'10px', color:'#63605a', fontFamily:'JetBrains Mono,monospace' }}>{c.numero_tva}</div>}
                 </td>
                 <td className="td" style={{ color:'#5a564e' }}>{c.contact_nom ?? '—'}</td>
                 <td className="td" style={{ fontFamily:'JetBrains Mono,monospace', fontSize:'11px' }}>{c.email ?? '—'}</td>

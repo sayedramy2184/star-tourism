@@ -54,13 +54,13 @@ export default function DashboardHome() {
             >
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                 <Icon size={16} style={{ color: '#9a7a28' }} />
-                <ArrowUpRight size={14} style={{ color: '#9aa0aa' }} />
+                <ArrowUpRight size={14} style={{ color: '#63605a' }} />
               </div>
               <div>
                 <div style={{ fontFamily: 'Cormorant Garamond,serif', fontSize: '30px', fontWeight: 500, color: '#16130e', lineHeight: 1 }}>
                   {value === undefined ? '—' : value === null ? '×' : value}
                 </div>
-                <div style={{ fontSize: '10px', letterSpacing: '2px', textTransform: 'uppercase', color: '#8a8478', marginTop: '6px' }}>
+                <div style={{ fontSize: '10px', letterSpacing: '2px', textTransform: 'uppercase', color: '#63605a', marginTop: '6px' }}>
                   {s.label}
                 </div>
               </div>

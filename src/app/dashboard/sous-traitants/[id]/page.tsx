@@ -61,7 +61,7 @@ function PaiementModal({ prestation, onClose, onSave }: {
         </div>
         <div style={{ padding:'20px 24px' }}>
           <div style={{ marginBottom:'16px', padding:'10px 14px', background:'#f5f2ed', border:'1.5px solid #e4e6ea' }}>
-            <div style={{ fontSize:'10px', color:'#8a8478', marginBottom:'4px' }}>Prestation</div>
+            <div style={{ fontSize:'10px', color:'#63605a', marginBottom:'4px' }}>Prestation</div>
             <div style={{ fontSize:'13px', fontWeight:600 }}>
               {prestation.dossier.numero} · {prestation.dossier.client.nom}
             </div>
@@ -164,14 +164,14 @@ export default function SousTraitantDetailPage() {
   const totalVerse = paiements.reduce((s, p) => s + Number(p.montant ?? 0), 0)  // versements libres
   const solde      = Math.round((totalCout - totalVerse) * 100) / 100           // reste à payer
 
-  if (loading) return <div style={{ padding:'40px', color:'#8a8478' }}>Chargement…</div>
+  if (loading) return <div style={{ padding:'40px', color:'#63605a' }}>Chargement…</div>
   if (!st)     return <div style={{ padding:'40px', color:'#9e2a2a' }}>Sous-traitant introuvable</div>
 
   return (
     <div>
       {/* Retour */}
       <Link href="/dashboard/sous-traitants"
-        style={{ display:'inline-flex', alignItems:'center', gap:'6px', fontSize:'12px', color:'#8a8478', textDecoration:'none', marginBottom:'20px' }}>
+        style={{ display:'inline-flex', alignItems:'center', gap:'6px', fontSize:'12px', color:'#63605a', textDecoration:'none', marginBottom:'20px' }}>
         <ArrowLeft size={14}/> Retour aux sous-traitants
       </Link>
 
@@ -193,21 +193,21 @@ export default function SousTraitantDetailPage() {
           )}
           {st.telephone && (
             <div style={{ display:'flex', alignItems:'center', gap:'8px', fontSize:'12px', color:'#5a564e' }}>
-              <Phone size={13} style={{ color:'#8a8478' }}/> {st.telephone}
+              <Phone size={13} style={{ color:'#63605a' }}/> {st.telephone}
             </div>
           )}
           {st.email && (
             <div style={{ display:'flex', alignItems:'center', gap:'8px', fontSize:'12px', color:'#5a564e' }}>
-              <Mail size={13} style={{ color:'#8a8478' }}/> {st.email}
+              <Mail size={13} style={{ color:'#63605a' }}/> {st.email}
             </div>
           )}
           {st.siret && (
-            <div style={{ fontFamily:'JetBrains Mono,monospace', fontSize:'11px', color:'#8a8478' }}>
+            <div style={{ fontFamily:'JetBrains Mono,monospace', fontSize:'11px', color:'#63605a' }}>
               SIRET : {st.siret}
             </div>
           )}
           {st.notes && (
-            <div style={{ fontSize:'11px', color:'#8a8478', fontStyle:'italic', borderLeft:'2px solid #e4e6ea', paddingLeft:'12px' }}>
+            <div style={{ fontSize:'11px', color:'#63605a', fontStyle:'italic', borderLeft:'2px solid #e4e6ea', paddingLeft:'12px' }}>
               {st.notes}
             </div>
           )}
@@ -265,7 +265,7 @@ export default function SousTraitantDetailPage() {
       {/* Liste mobile (cartes) */}
       <div className="only-mobile" style={{ display:'flex', flexDirection:'column', gap:'10px' }}>
         {filtered.length === 0 ? (
-          <div style={{ padding:'30px', textAlign:'center', color:'#8a8478', fontSize:'12px' }}>Aucune prestation</div>
+          <div style={{ padding:'30px', textAlign:'center', color:'#63605a', fontSize:'12px' }}>Aucune prestation</div>
         ) : filtered.map(p => {
           const isPaye = p.st_paiement_statut === 'paye'; const marge = p.st_marge_ht ?? 0
           return (
@@ -274,7 +274,7 @@ export default function SousTraitantDetailPage() {
                 <div style={{ display:'flex', alignItems:'center', gap:'8px', minWidth:0 }}>
                   <span style={{ fontSize:'9px', fontWeight:700, padding:'2px 8px', background: p.type==='mad' ? '#f8ece7' : '#e8eef8', color: p.type==='mad' ? '#a6432a' : '#1e3f70' }}>{p.type === 'mad' ? 'MAD' : 'Transfert'}</span>
                   <Link href={`/dashboard/dossiers/${p.dossier.id}`} style={{ fontFamily:'JetBrains Mono,monospace', fontSize:'11px', color:'#9a7a28', textDecoration:'none', fontWeight:600 }}>{p.dossier.numero}</Link>
-                  <span className="mono" style={{ fontSize:'10px', color:'#8a8478' }}>{format(new Date(p.date_debut), 'dd/MM/yy', { locale: fr })}</span>
+                  <span className="mono" style={{ fontSize:'10px', color:'#63605a' }}>{format(new Date(p.date_debut), 'dd/MM/yy', { locale: fr })}</span>
                 </div>
                 <button onClick={() => setModalP(p)} style={{ flexShrink:0, display:'inline-flex', alignItems:'center', gap:'5px', padding:'4px 10px', fontSize:'10px', fontWeight:700, cursor:'pointer', background: isPaye ? '#eaf4ee' : '#fdf3dc', border:`1.5px solid ${isPaye ? 'rgba(30,94,58,0.3)' : 'rgba(122,92,16,0.3)'}`, color: isPaye ? '#1e5e3a' : '#7a5c10' }}>
                   {isPaye ? <CheckCircle size={11}/> : <Clock size={11}/>}{isPaye ? 'Payé' : 'À payer'}
@@ -285,9 +285,9 @@ export default function SousTraitantDetailPage() {
                 {p.st_chauffeur_nom ?? '—'}{p.st_vehicule_marque ? ` · ${p.st_vehicule_marque} ${p.st_vehicule_modele}` : ''}
               </div>
               <div style={{ display:'flex', justifyContent:'space-between', gap:'8px', marginTop:'8px', paddingTop:'8px', borderTop:'1px solid #f4f5f7' }}>
-                <div><div style={{ fontSize:'8px', textTransform:'uppercase', letterSpacing:'1px', color:'#8a8478' }}>Prix client</div><div className="mono" style={{ fontSize:'11px', color:'#9a7a28' }}>{fmt(p.montant_ht)}</div></div>
-                <div><div style={{ fontSize:'8px', textTransform:'uppercase', letterSpacing:'1px', color:'#8a8478' }}>Coût ST</div><div className="mono" style={{ fontSize:'11px', fontWeight:600 }}>{fmt(p.st_cout_ht)}</div></div>
-                <div style={{ textAlign:'right' }}><div style={{ fontSize:'8px', textTransform:'uppercase', letterSpacing:'1px', color:'#8a8478' }}>Marge</div><div className="mono" style={{ fontSize:'12px', fontWeight:700, color: marge > 0 ? '#1e5e3a' : '#9e2a2a' }}>{fmt(marge)}</div></div>
+                <div><div style={{ fontSize:'8px', textTransform:'uppercase', letterSpacing:'1px', color:'#63605a' }}>Prix client</div><div className="mono" style={{ fontSize:'11px', color:'#9a7a28' }}>{fmt(p.montant_ht)}</div></div>
+                <div><div style={{ fontSize:'8px', textTransform:'uppercase', letterSpacing:'1px', color:'#63605a' }}>Coût ST</div><div className="mono" style={{ fontSize:'11px', fontWeight:600 }}>{fmt(p.st_cout_ht)}</div></div>
+                <div style={{ textAlign:'right' }}><div style={{ fontSize:'8px', textTransform:'uppercase', letterSpacing:'1px', color:'#63605a' }}>Marge</div><div className="mono" style={{ fontSize:'12px', fontWeight:700, color: marge > 0 ? '#1e5e3a' : '#9e2a2a' }}>{fmt(marge)}</div></div>
               </div>
             </div>
           )
@@ -306,7 +306,7 @@ export default function SousTraitantDetailPage() {
           </thead>
           <tbody>
             {filtered.length === 0 ? (
-              <tr><td colSpan={10} style={{ padding:'40px', textAlign:'center', color:'#8a8478' }}>
+              <tr><td colSpan={10} style={{ padding:'40px', textAlign:'center', color:'#63605a' }}>
                 Aucune prestation
               </td></tr>
             ) : filtered.map(p => {
@@ -338,7 +338,7 @@ export default function SousTraitantDetailPage() {
                     {p.st_vehicule_marque ? (
                       <div>
                         <div style={{ fontSize:'11px', fontWeight:500 }}>{p.st_vehicule_marque} {p.st_vehicule_modele}</div>
-                        <div style={{ fontFamily:'JetBrains Mono,monospace', fontSize:'9px', color:'#8a8478' }}>{p.st_vehicule_immat}</div>
+                        <div style={{ fontFamily:'JetBrains Mono,monospace', fontSize:'9px', color:'#63605a' }}>{p.st_vehicule_immat}</div>
                       </div>
                     ) : <span style={{ color:'#c2bdb4', fontSize:'11px' }}>—</span>}
                   </td>
@@ -367,7 +367,7 @@ export default function SousTraitantDetailPage() {
                       {isPaye ? 'Payé' : 'À payer'}
                     </button>
                     {isPaye && p.st_paiement_date && (
-                      <div style={{ fontSize:'9px', color:'#8a8478', marginTop:'2px', fontFamily:'JetBrains Mono,monospace' }}>
+                      <div style={{ fontSize:'9px', color:'#63605a', marginTop:'2px', fontFamily:'JetBrains Mono,monospace' }}>
                         {format(new Date(p.st_paiement_date), 'dd/MM/yy')}
                         {p.st_paiement_ref && ` · ${p.st_paiement_ref}`}
                       </div>

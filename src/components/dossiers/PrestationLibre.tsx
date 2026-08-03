@@ -110,7 +110,7 @@ export function PrestationLibreCard({ p, dossierId }: { p: any; dossierId: strin
       <div style={{ display: 'flex', alignItems: 'stretch', borderBottom: '1.5px solid #e4e6ea' }}>
         <div style={{ width: '5px', background: '#9a7a28', flexShrink: 0 }} />
         <div style={{ flex: 1, padding: '10px 16px', display: 'flex', alignItems: 'center', gap: '14px', flexWrap: 'wrap' }}>
-          <span style={{ fontFamily: 'JetBrains Mono,monospace', fontSize: '10px', color: '#8a8478', background: '#f5f2ed', border: '1px solid #d8d2c8', padding: '2px 8px' }}>
+          <span style={{ fontFamily: 'JetBrains Mono,monospace', fontSize: '10px', color: '#63605a', background: '#f5f2ed', border: '1px solid #d8d2c8', padding: '2px 8px' }}>
             P-0{p.ordre}
           </span>
           <span style={{ display: 'inline-flex', alignItems: 'center', gap: '5px', fontSize: '10px', fontWeight: 700, letterSpacing: '1px', textTransform: 'uppercase', color: '#9a7a28' }}>
@@ -135,12 +135,12 @@ export function PrestationLibreCard({ p, dossierId }: { p: any; dossierId: strin
       {/* Body — mêmes libellés/tailles que les autres prestations */}
       <div style={{ padding: '14px 16px', display: 'grid', gridTemplateColumns: '1fr auto', gap: '16px', alignItems: 'start' }}>
         <div>
-          <div style={{ fontSize: '8px', fontWeight: 600, letterSpacing: '2px', textTransform: 'uppercase', color: '#8a8478', marginBottom: '3px' }}>Désignation</div>
+          <div style={{ fontSize: '8px', fontWeight: 600, letterSpacing: '2px', textTransform: 'uppercase', color: '#63605a', marginBottom: '3px' }}>Désignation</div>
           <div style={{ fontSize: '13px', fontWeight: 500, color: '#16130e' }}>{p.libelle || 'Prestation'}</div>
-          {p.notes && <div style={{ fontSize: '11px', color: '#8a8478', marginTop: '4px', fontStyle: 'italic' }}>{p.notes}</div>}
+          {p.notes && <div style={{ fontSize: '11px', color: '#63605a', marginTop: '4px', fontStyle: 'italic' }}>{p.notes}</div>}
         </div>
         <div style={{ textAlign: 'right' }}>
-          <div style={{ fontSize: '8px', fontWeight: 600, letterSpacing: '2px', textTransform: 'uppercase', color: '#8a8478', marginBottom: '3px' }}>Montant HT</div>
+          <div style={{ fontSize: '8px', fontWeight: 600, letterSpacing: '2px', textTransform: 'uppercase', color: '#63605a', marginBottom: '3px' }}>Montant HT</div>
           <div style={{ fontFamily: 'JetBrains Mono,monospace', fontSize: '13px', fontWeight: 700, color: '#9a7a28' }}>{fmt(p.montant_ht ?? 0)}</div>
         </div>
       </div>

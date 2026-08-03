@@ -67,7 +67,7 @@ export default function PaiementModal({ factureId, numero, montantTtc, dejaPaye,
               <div style={{ display: 'flex', gap: '10px', marginBottom: '18px' }}>
                 {[['Montant TTC', eur(montantTtc), '#16130e'], ['Déjà réglé', eur(dejaPaye), '#1e5e3a'], ['Reste dû', eur(solde), solde > 0 ? '#7a5c10' : '#1e5e3a']].map(([l, v, col]) => (
                   <div key={l} style={{ flex: 1, background: '#f5f2ed', border: '1px solid #d8d2c8', padding: '10px 12px' }}>
-                    <div style={{ fontSize: '8px', letterSpacing: '1.5px', textTransform: 'uppercase', color: '#8a8478', marginBottom: '4px' }}>{l}</div>
+                    <div style={{ fontSize: '8px', letterSpacing: '1.5px', textTransform: 'uppercase', color: '#63605a', marginBottom: '4px' }}>{l}</div>
                     <div style={{ fontFamily: 'JetBrains Mono,monospace', fontSize: '13px', color: col as string, fontWeight: 600 }}>{v}</div>
                   </div>
                 ))}

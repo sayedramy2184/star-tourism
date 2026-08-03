@@ -102,7 +102,7 @@ export default function ModifierPrestationModal({ p }: { p: any }) {
                     <div><label className="form-label">Date début *</label><input type="date" className="input" required value={dateDebutMad} onChange={e => setDateDebutMad(e.target.value)} /></div>
                     <div><label className="form-label">Date fin *</label><input type="date" className="input" required value={dateFinMad} min={dateDebutMad} onChange={e => setDateFinMad(e.target.value)} /></div>
                   </div>
-                  <div style={{ fontSize: '10px', color: '#8a8478', marginBottom: '12px' }}>
+                  <div style={{ fontSize: '10px', color: '#63605a', marginBottom: '12px' }}>
                     Prolonger ajoute les nouveaux jours (au tarif/jour) ; réduire retire les jours hors période. Les jours conservés gardent leur chauffeur/véhicule/heures.
                   </div>
 
@@ -113,7 +113,7 @@ export default function ModifierPrestationModal({ p }: { p: any }) {
                       <label className="form-label">Horaires journaliers</label>
                       <div style={{ display: 'flex', gap: '6px', alignItems: 'center' }}>
                         <input type="time" className="input" value={heureDebJ} onChange={e => setHeureDebJ(e.target.value)} />
-                        <span style={{ color: '#8a8478', flexShrink: 0 }}>→</span>
+                        <span style={{ color: '#63605a', flexShrink: 0 }}>→</span>
                         <input type="time" className="input" value={heureFinJ} onChange={e => setHeureFinJ(e.target.value)} />
                       </div>
                     </div>
@@ -121,7 +121,7 @@ export default function ModifierPrestationModal({ p }: { p: any }) {
                   <div style={{ marginBottom: '12px' }}>
                     <label className="form-label">Tarif / jour HT (€)</label>
                     <input type="number" className="input" value={tarifJour || ''} onChange={e => setTarifJour(parseFloat(e.target.value) || 0)} min={0} step={0.01} />
-                    <div style={{ fontSize: '10px', color: '#8a8478', marginTop: '4px' }}>S'applique à tous les jours de la période et recalcule le montant.</div>
+                    <div style={{ fontSize: '10px', color: '#63605a', marginTop: '4px' }}>S'applique à tous les jours de la période et recalcule le montant.</div>
                   </div>
                 </>
               )}

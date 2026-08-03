@@ -111,7 +111,7 @@ export default function DossierPaieCard({ chauffeurId, dossier, dossierHref }: {
           <Link href={dossierHref} style={{ fontFamily: 'JetBrains Mono,monospace', fontSize: '12px', color: '#1e3f70', fontWeight: 600, textDecoration: 'none' }}>{dossier.numero}</Link>
           <span style={{ fontSize: '12px', color: '#5a564e', marginLeft: '10px' }}>{dossier.clientNom}</span>
           {periode(dossier) && (
-            <div style={{ fontSize: '11px', color: '#8a8478', marginTop: '2px' }}>
+            <div style={{ fontSize: '11px', color: '#63605a', marginTop: '2px' }}>
               {periode(dossier)}
               <span style={{ marginLeft: '8px' }}>· {dossier.nbJours > 0 && `${dossier.nbJours} j MAD`}{dossier.nbJours > 0 && dossier.nbTransferts > 0 && ' · '}{dossier.nbTransferts > 0 && `${dossier.nbTransferts} transfert${dossier.nbTransferts > 1 ? 's' : ''}`}</span>
             </div>
@@ -133,7 +133,7 @@ export default function DossierPaieCard({ chauffeurId, dossier, dossierHref }: {
           <div style={{ background: '#faf9f7', border: '1px solid #f4f5f7', padding: '10px 12px', marginBottom: '12px' }}>
             {/* Appliquer à tous */}
             <div style={{ display: 'flex', gap: '6px', alignItems: 'center', marginBottom: '10px', flexWrap: 'wrap' }}>
-              <span style={{ fontSize: '10px', color: '#8a8478' }}>Appliquer à tous&nbsp;:</span>
+              <span style={{ fontSize: '10px', color: '#63605a' }}>Appliquer à tous&nbsp;:</span>
               <input type="number" min={0} step={0.01} value={bulk} onChange={e => setBulk(e.target.value)} className="input" style={{ width: '90px', padding: '4px 8px', fontSize: '12px' }} placeholder="€" />
               <button onClick={applyBulk} className="btn-ghost" style={{ padding: '4px 10px', fontSize: '10px' }}>Appliquer</button>
               <button onClick={resetAll} className="btn-ghost" style={{ padding: '4px 10px', fontSize: '10px', marginLeft: 'auto' }} title="Tarifs par défaut (200 / 50)">Défaut</button>
@@ -149,7 +149,7 @@ export default function DossierPaieCard({ chauffeurId, dossier, dossierHref }: {
                   <span style={{ flex: 1, minWidth: 0, fontSize: '11px', color: '#5a564e', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{u.label}</span>
                   <input type="number" min={0} step={0.01} value={tarifs[u.id] ?? ''} onChange={e => setTarifs({ ...tarifs, [u.id]: e.target.value })}
                     className="input" style={{ width: '80px', padding: '4px 8px', fontSize: '12px', textAlign: 'right' }} />
-                  <span style={{ fontSize: '10px', color: '#8a8478', width: '10px' }}>€</span>
+                  <span style={{ fontSize: '10px', color: '#63605a', width: '10px' }}>€</span>
                 </div>
               ))}
             </div>
@@ -174,11 +174,11 @@ export default function DossierPaieCard({ chauffeurId, dossier, dossierHref }: {
         {/* Versé / restant */}
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px', marginBottom: '10px' }}>
           <div style={{ background: '#eaf4ee', border: '1px solid #1e5e3a22', padding: '8px 10px' }}>
-            <div style={{ fontSize: '9px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '1px', color: '#8a8478', marginBottom: '3px' }}>Versé</div>
+            <div style={{ fontSize: '9px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '1px', color: '#63605a', marginBottom: '3px' }}>Versé</div>
             <div style={{ fontFamily: 'JetBrains Mono,monospace', fontSize: '13px', fontWeight: 700, color: '#1e5e3a' }}>{fmtEur(verse)}</div>
           </div>
           <div style={{ background: restant > 0 ? '#faeaea' : '#eaf4ee', border: `1px solid ${restant > 0 ? '#9e2a2a22' : '#1e5e3a22'}`, padding: '8px 10px' }}>
-            <div style={{ fontSize: '9px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '1px', color: '#8a8478', marginBottom: '3px' }}>Restant dû</div>
+            <div style={{ fontSize: '9px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '1px', color: '#63605a', marginBottom: '3px' }}>Restant dû</div>
             <div style={{ fontFamily: 'JetBrains Mono,monospace', fontSize: '13px', fontWeight: 700, color: restant > 0 ? '#9e2a2a' : '#1e5e3a' }}>{restant <= 0 ? '✓ Soldé' : fmtEur(restant)}</div>
           </div>
         </div>
@@ -190,9 +190,9 @@ export default function DossierPaieCard({ chauffeurId, dossier, dossierHref }: {
               <div key={p.id} style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '6px 9px', background: '#faf9f7', border: '1px solid #f4f5f7' }}>
                 <div style={{ flex: 1, minWidth: 0 }}>
                   <span style={{ fontFamily: 'JetBrains Mono,monospace', fontSize: '12px', fontWeight: 600, color: '#1e5e3a' }}>{fmtEur(Number(p.montant))}</span>
-                  <span style={{ fontSize: '10px', color: '#8a8478', marginLeft: '8px' }}>{format(parseISO(p.date_paiement), 'dd/MM/yyyy', { locale: fr })}</span>
+                  <span style={{ fontSize: '10px', color: '#63605a', marginLeft: '8px' }}>{format(parseISO(p.date_paiement), 'dd/MM/yyyy', { locale: fr })}</span>
                   {p.moyen && <span style={{ fontSize: '9px', color: '#5a564e', marginLeft: '6px', textTransform: 'uppercase' }}>{p.moyen}</span>}
-                  {p.note && <span style={{ fontSize: '10px', color: '#8a8478', marginLeft: '6px' }}>· {p.note}</span>}
+                  {p.note && <span style={{ fontSize: '10px', color: '#63605a', marginLeft: '6px' }}>· {p.note}</span>}
                 </div>
                 <button onClick={() => removeVersement(p.id)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#9e2a2a' }}><Trash2 size={12} /></button>
               </div>

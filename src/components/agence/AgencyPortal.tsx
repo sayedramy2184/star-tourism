@@ -14,7 +14,7 @@ const EXEC: Record<string, { label: string; color: string; bg: string }> = {
   en_attente: { label: 'Scheduled', color: '#7a5c10', bg: '#fdf3dc' },
   confirme:   { label: 'Confirmed', color: '#1e5e3a', bg: '#eaf4ee' },
   en_cours:   { label: 'In progress', color: '#1e3f70', bg: '#e8eef8' },
-  termine:    { label: 'Completed', color: '#8a8478', bg: '#f0eeeb' },
+  termine:    { label: 'Completed', color: '#63605a', bg: '#f0eeeb' },
   annule:     { label: 'Cancelled', color: '#9e2a2a', bg: '#faeaea' },
 }
 
@@ -98,7 +98,7 @@ export default function AgencyPortal({ agencyName }: { agencyName: string }) {
 
 // ── Requests list ──────────────────────────────
 function RequestsList({ dossiers, loading, onNew, onEdit, onAdd, onEditService, onReload }: { dossiers: any[]; loading: boolean; onNew: () => void; onEdit: (d: any) => void; onAdd: (d: any) => void; onEditService: (d: any, p: any) => void; onReload: () => void }) {
-  if (loading) return <div style={{ padding: '60px', textAlign: 'center', color: '#8a8478' }}>Loading…</div>
+  if (loading) return <div style={{ padding: '60px', textAlign: 'center', color: '#63605a' }}>Loading…</div>
   if (dossiers.length === 0) return (
     <div style={{ padding: '60px 20px', textAlign: 'center' }}>
       <div style={{ fontSize: '14px', color: '#5a564e', marginBottom: '14px' }}>No requests yet.</div>
@@ -171,7 +171,7 @@ function DossierCard({ d, onEdit, onAdd, onEditService, onReload }: { d: any; on
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
           {pending > 0 && <span style={{ fontSize: '10px', fontWeight: 700, color: '#7a5c10', background: '#fdf3dc', padding: '3px 9px', borderRadius: '999px' }}>{pending} pending</span>}
-          <ChevronRight size={16} color="#8a8478" style={{ transform: open ? 'rotate(90deg)' : 'none', transition: 'transform .15s' }} />
+          <ChevronRight size={16} color="#63605a" style={{ transform: open ? 'rotate(90deg)' : 'none', transition: 'transform .15s' }} />
         </div>
       </button>
       {open && (
@@ -198,7 +198,7 @@ function DossierCard({ d, onEdit, onAdd, onEditService, onReload }: { d: any; on
                   <span style={{ fontSize: '11px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.5px', color: '#16130e' }}>Total (incl. VAT)</span>
                   <span style={{ fontFamily: 'Cormorant Garamond,serif', fontSize: '20px', color: '#9a7a28' }}>{eur(ttc)}</span>
                 </div>
-                {totalPending && <div style={{ fontSize: '10px', color: '#8a8478', marginTop: '4px', fontStyle: 'italic' }}>Excludes services still pending review.</div>}
+                {totalPending && <div style={{ fontSize: '10px', color: '#63605a', marginTop: '4px', fontStyle: 'italic' }}>Excludes services still pending review.</div>}
               </div>
             )
           })()}
@@ -274,7 +274,7 @@ function assignedInfo(p: any): { chauffeurs: { nom: string; tel: string | null }
 function DRow({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <div style={{ display: 'flex', gap: '8px', fontSize: '12px', lineHeight: 1.4 }}>
-      <span style={{ flexShrink: 0, width: '92px', color: '#8a8478', fontSize: '10px', fontWeight: 700, letterSpacing: '0.4px', textTransform: 'uppercase', paddingTop: '1px' }}>{label}</span>
+      <span style={{ flexShrink: 0, width: '92px', color: '#63605a', fontSize: '10px', fontWeight: 700, letterSpacing: '0.4px', textTransform: 'uppercase', paddingTop: '1px' }}>{label}</span>
       <span style={{ flex: 1, color: '#16130e', minWidth: 0 }}>{children}</span>
     </div>
   )
@@ -341,9 +341,9 @@ function ServiceLine({ p, onEdit, onCancel }: { p: any; onEdit?: () => void; onC
         {price > 0 && (
           <DRow label="Price">
             {isMad && p.tarif_journalier_ht ? (
-              <span><span style={{ color: '#8a8478' }}>{eur(p.tarif_journalier_ht)}/day × {p.nb_jours} day{p.nb_jours > 1 ? 's' : ''} = </span><span style={{ fontWeight: 700 }}>{eur(price)}</span> <span style={{ fontSize: '10px', color: '#8a8478' }}>excl. VAT</span></span>
+              <span><span style={{ color: '#63605a' }}>{eur(p.tarif_journalier_ht)}/day × {p.nb_jours} day{p.nb_jours > 1 ? 's' : ''} = </span><span style={{ fontWeight: 700 }}>{eur(price)}</span> <span style={{ fontSize: '10px', color: '#63605a' }}>excl. VAT</span></span>
             ) : (
-              <span><span style={{ fontWeight: 700 }}>{eur(price)}</span> <span style={{ fontSize: '10px', color: '#8a8478' }}>excl. VAT</span></span>
+              <span><span style={{ fontWeight: 700 }}>{eur(price)}</span> <span style={{ fontSize: '10px', color: '#63605a' }}>excl. VAT</span></span>
             )}
           </DRow>
         )}
@@ -360,7 +360,7 @@ function ServiceLine({ p, onEdit, onCancel }: { p: any; onEdit?: () => void; onC
         <div style={{ marginTop: '10px', display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
           {onEdit && <button onClick={onEdit} className="btn-ghost" style={{ padding: '5px 12px', fontSize: '11px', gap: '5px' }}><Pencil size={12} /> Edit service</button>}
           {onCancel && <button onClick={onCancel} style={{ display: 'inline-flex', alignItems: 'center', gap: '5px', padding: '5px 12px', fontSize: '11px', background: 'none', border: '1.5px solid rgba(158,42,42,0.35)', color: '#9e2a2a', borderRadius: '8px', cursor: 'pointer' }}><Trash2 size={12} /> Request cancellation</button>}
-          {validated && <span style={{ fontSize: '10px', color: '#8a8478', fontStyle: 'italic' }}>Editing sends it back for review.</span>}
+          {validated && <span style={{ fontSize: '10px', color: '#63605a', fontStyle: 'italic' }}>Editing sends it back for review.</span>}
         </div>
       )}
     </div>
@@ -418,7 +418,7 @@ function NewRequest({ onDone, initial, mode = 'new', dossierId, prestationId }: 
   }
 
   const inp: React.CSSProperties = { width: '100%', background: '#fff', border: '1.5px solid #c9c2b6', borderRadius: '8px', padding: '9px 11px', fontSize: '13px', outline: 'none', color: '#16130e' }
-  const lbl: React.CSSProperties = { fontSize: '9px', fontWeight: 700, letterSpacing: '1px', textTransform: 'uppercase', color: '#8a8478', display: 'block', marginBottom: '4px' }
+  const lbl: React.CSSProperties = { fontSize: '9px', fontWeight: 700, letterSpacing: '1px', textTransform: 'uppercase', color: '#63605a', display: 'block', marginBottom: '4px' }
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
@@ -512,7 +512,7 @@ function NewRequest({ onDone, initial, mode = 'new', dossierId, prestationId }: 
       <button onClick={submit} disabled={saving} className="btn-primary" style={{ justifyContent: 'center', padding: '14px', fontSize: '14px' }}>
         <Send size={16} /> {saving ? 'Saving…' : mode === 'new' ? 'Submit request' : mode === 'add' ? 'Add to request' : isEditService ? 'Save & resubmit' : 'Save changes'}
       </button>
-      <p style={{ fontSize: '11px', color: '#8a8478', textAlign: 'center', lineHeight: 1.5 }}>
+      <p style={{ fontSize: '11px', color: '#63605a', textAlign: 'center', lineHeight: 1.5 }}>
         Each service will be reviewed and priced by Star Tourism Services. You will see the status update here.
       </p>
     </div>

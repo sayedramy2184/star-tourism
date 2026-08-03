@@ -21,11 +21,11 @@ function fmtDate(d: string) {
 
 function StatusBadge({ statut }: { statut: string }) {
   const map: Record<string, { label: string; color: string; dot: string }> = {
-    brouillon:  { label:'Brouillon',  color:'#8a8478', dot:'#c2bdb4' },
+    brouillon:  { label:'Brouillon',  color:'#63605a', dot:'#c2bdb4' },
     en_attente: { label:'En attente', color:'#7a5c10', dot:'#7a5c10' },
     confirme:   { label:'Confirmé',   color:'#1e5e3a', dot:'#1e5e3a' },
     en_cours:   { label:'En cours',   color:'#1e3f70', dot:'#1e3f70' },
-    termine:    { label:'Terminé',    color:'#8a8478', dot:'#c2bdb4' },
+    termine:    { label:'Terminé',    color:'#63605a', dot:'#c2bdb4' },
     annule:     { label:'Annulé',     color:'#9e2a2a', dot:'#9e2a2a' },
   }
   const s = map[statut] ?? map.brouillon
@@ -94,7 +94,7 @@ export default async function DossierDetailPage({ params }: { params: { id: stri
       {/* Breadcrumb */}
       <div style={{ marginBottom:'20px' }}>
         <Link href="/dashboard/dossiers"
-          style={{ display:'inline-flex', alignItems:'center', gap:'6px', fontSize:'12px', color:'#8a8478', textDecoration:'none' }}
+          style={{ display:'inline-flex', alignItems:'center', gap:'6px', fontSize:'12px', color:'#63605a', textDecoration:'none' }}
           className="hover:text-noir">
           <ArrowLeft size={13} /> Retour aux dossiers
         </Link>
@@ -144,7 +144,7 @@ export default async function DossierDetailPage({ params }: { params: { id: stri
                   </div>
                 </div>
                 <div style={{ textAlign:'right' }}>
-                  <div style={{ fontSize:'8px', fontWeight:600, letterSpacing:'2.5px', textTransform:'uppercase', color:'#8a8478', marginBottom:'5px' }}>
+                  <div style={{ fontSize:'8px', fontWeight:600, letterSpacing:'2.5px', textTransform:'uppercase', color:'#63605a', marginBottom:'5px' }}>
                     Période du dossier
                   </div>
                   <div style={{ fontFamily:'Cormorant Garamond,serif', fontSize:'18px', color:'#16130e' }}>
@@ -166,7 +166,7 @@ export default async function DossierDetailPage({ params }: { params: { id: stri
                   { label:'Facturation', val: <span style={{ fontSize:'11px', fontWeight:600, color:'#7a5c10' }}>Non facturé</span> },
                 ].map((m, i) => (
                   <div key={m.label} style={{ flex:1, minWidth:'120px', padding:'10px 16px', borderRight: i < 4 ? '1px solid #d8d2c8' : 'none' }}>
-                    <div style={{ fontSize:'8px', fontWeight:600, letterSpacing:'2px', textTransform:'uppercase', color:'#8a8478', marginBottom:'4px' }}>{m.label}</div>
+                    <div style={{ fontSize:'8px', fontWeight:600, letterSpacing:'2px', textTransform:'uppercase', color:'#63605a', marginBottom:'4px' }}>{m.label}</div>
                     <div>{m.val}</div>
                   </div>
                 ))}
@@ -202,7 +202,7 @@ export default async function DossierDetailPage({ params }: { params: { id: stri
 
           {data.notes && (
             <div className="card" style={{ marginTop:'16px', padding:'16px' }}>
-              <div style={{ fontSize:'8px', fontWeight:600, letterSpacing:'2.5px', textTransform:'uppercase', color:'#8a8478', marginBottom:'8px' }}>Notes internes</div>
+              <div style={{ fontSize:'8px', fontWeight:600, letterSpacing:'2.5px', textTransform:'uppercase', color:'#63605a', marginBottom:'8px' }}>Notes internes</div>
               <p style={{ fontSize:'11px', color:'#5a564e', lineHeight:1.7, fontStyle:'italic' }}>{data.notes}</p>
             </div>
           )}
@@ -266,7 +266,7 @@ export default async function DossierDetailPage({ params }: { params: { id: stri
 
               {couts_ext > 0 && (
                 <div style={{ display:'flex', justifyContent:'space-between', padding:'6px 0', borderTop:'1px solid #d8d2c8', marginTop:'6px' }}>
-                  <span style={{ fontSize:'9px', fontWeight:600, letterSpacing:'1.5px', textTransform:'uppercase', color:'#8a8478' }}>Marge nette</span>
+                  <span style={{ fontSize:'9px', fontWeight:600, letterSpacing:'1.5px', textTransform:'uppercase', color:'#63605a' }}>Marge nette</span>
                   <span style={{ fontFamily:'JetBrains Mono,monospace', fontSize:'12px', color:'#1e5e3a' }}>
                     + {fmt(data.montant_ht - couts_ext)}
                   </span>
@@ -304,7 +304,7 @@ export default async function DossierDetailPage({ params }: { params: { id: stri
                         : `${fmtDate(p.date_debut)}${p.heure_depart ? ` · ${p.heure_depart}` : ''}`}
                     </div>
                     {p.adresse_depart && (
-                      <div style={{ fontSize:'10px', color:'#8a8478', marginTop:'1px' }}>
+                      <div style={{ fontSize:'10px', color:'#63605a', marginTop:'1px' }}>
                         {p.adresse_depart}{p.adresse_arrivee ? ` → ${p.adresse_arrivee}` : ''}
                       </div>
                     )}

@@ -68,7 +68,7 @@ export default function CategoriesVehicules() {
         </p>
 
         {loading ? (
-          <div style={{ padding: '30px', textAlign: 'center', color: '#8a8478', fontSize: '12px' }}>Chargement…</div>
+          <div style={{ padding: '30px', textAlign: 'center', color: '#63605a', fontSize: '12px' }}>Chargement…</div>
         ) : (
           <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
             {cats.map(cat => (

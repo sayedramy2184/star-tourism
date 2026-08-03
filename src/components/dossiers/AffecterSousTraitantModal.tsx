@@ -211,7 +211,7 @@ export default function AffecterSousTraitantModal({ prestationId, dossierId, pri
                 <div>
                   <label className="form-label">
                     Coût / jour HT *
-                    {nbJours > 1 && <span style={{ color:'#8a8478', fontSize:'9px', marginLeft:'4px' }}>× {nbJours} j</span>}
+                    {nbJours > 1 && <span style={{ color:'#63605a', fontSize:'9px', marginLeft:'4px' }}>× {nbJours} j</span>}
                   </label>
                   <input type="number" className="input" value={coutHT || ''}
                     onChange={e => setCoutHT(parseFloat(e.target.value) || 0)}
@@ -228,7 +228,7 @@ export default function AffecterSousTraitantModal({ prestationId, dossierId, pri
                   <input readOnly className="input" value={coutHT > 0 ? `${fmt(marge)} (${margePct}%)` : '—'}
                     style={{
                       background:'#f5f2ed', cursor:'default', fontFamily:'JetBrains Mono,monospace',
-                      color: marge > 0 ? '#1e5e3a' : marge < 0 ? '#9e2a2a' : '#8a8478',
+                      color: marge > 0 ? '#1e5e3a' : marge < 0 ? '#9e2a2a' : '#63605a',
                       fontWeight: 600,
                     }} />
                 </div>

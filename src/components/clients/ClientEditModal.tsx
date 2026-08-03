@@ -81,7 +81,7 @@ export default function ClientEditModal({ client }: { client: Client }) {
                     onChange={e => setForm({ ...form, type: e.target.value })}>
                     {TYPES.map(t => <option key={t.val} value={t.val}>{t.label}</option>)}
                   </select>
-                  {aAcces && <p style={{ fontSize: '9px', color: '#8a8478', marginTop: '3px' }}>Accès portail actif — révoquez-le pour changer le type.</p>}
+                  {aAcces && <p style={{ fontSize: '9px', color: '#63605a', marginTop: '3px' }}>Accès portail actif — révoquez-le pour changer le type.</p>}
                 </div>
                 <div>
                   <label className="form-label">{form.type === 'particulier' ? 'Nom complet *' : 'Raison sociale *'}</label>

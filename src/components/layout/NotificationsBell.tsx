@@ -45,11 +45,11 @@ export default function NotificationsBell() {
         <div style={{ position: 'absolute', top: '100%', right: 0, marginTop: '8px', width: '340px', maxWidth: '92vw', maxHeight: '70vh', overflowY: 'auto', background: '#fff', border: '1.5px solid #e4e6ea', boxShadow: '0 12px 40px rgba(0,0,0,0.18)', zIndex: 60 }}>
           <div style={{ padding: '12px 16px', borderBottom: '1.5px solid #d8d2c8', display: 'flex', alignItems: 'center', justifyContent: 'space-between', position: 'sticky', top: 0, background: '#fff' }}>
             <span style={{ fontFamily: 'Cormorant Garamond,serif', fontSize: '16px', color: '#16130e' }}>Alertes</span>
-            <span style={{ fontSize: '11px', color: '#8a8478' }}>{total} au total</span>
+            <span style={{ fontSize: '11px', color: '#63605a' }}>{total} au total</span>
           </div>
 
           {total === 0 ? (
-            <div style={{ padding: '36px 20px', textAlign: 'center', color: '#8a8478', fontSize: '12px' }}>
+            <div style={{ padding: '36px 20px', textAlign: 'center', color: '#63605a', fontSize: '12px' }}>
               ✓ Aucune alerte — tout est à jour.
             </div>
           ) : (
@@ -78,7 +78,7 @@ function Section({ icon, title, items, onNav }: { icon: React.ReactNode; title: 
           <span style={{ width: '7px', height: '7px', borderRadius: '50%', flexShrink: 0, marginTop: '4px', background: a.severity === 'danger' ? '#9e2a2a' : '#7a5c10' }} />
           <div style={{ flex: 1, minWidth: 0 }}>
             <div style={{ fontSize: '12px', color: '#16130e', fontWeight: 500 }}>{a.title}</div>
-            <div style={{ fontSize: '10px', color: '#8a8478', marginTop: '1px' }}>{a.detail}</div>
+            <div style={{ fontSize: '10px', color: '#63605a', marginTop: '1px' }}>{a.detail}</div>
           </div>
         </Link>
       ))}

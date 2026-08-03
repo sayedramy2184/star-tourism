@@ -171,7 +171,7 @@ export default function PlanningPage() {
     <div style={{ display:'flex', flexDirection:'column', height:'calc(100dvh - 56px - 40px)', minHeight:'420px', overflow:'hidden' }}>
 
       {/* ══ Toolbar ══ */}
-      <div style={{ background:'#fff', border:'1.5px solid #e4e6ea', padding:'10px 16px', display:'flex', alignItems:'center', gap:'10px', marginBottom:'10px', flexShrink:0, boxShadow:'0 1px 4px rgba(0,0,0,0.06)', flexWrap:'wrap' }}>
+      <div style={{ background:'#fff', border:'1px solid #e4e6ea', borderRadius:'8px', padding:'10px 16px', display:'flex', alignItems:'center', gap:'10px', marginBottom:'10px', flexShrink:0, boxShadow:'0 1px 4px rgba(0,0,0,0.06)', flexWrap:'wrap' }}>
 
         {/* Navigation */}
         <div style={{ display:'flex', alignItems:'center', gap:'5px' }}>
@@ -186,7 +186,7 @@ export default function PlanningPage() {
             {periodLabel}
           </div>
           {data && (
-            <div style={{ fontSize:'10px', color:'#8a8478', marginTop:'1px' }}>
+            <div style={{ fontSize:'10px', color:'#63605a', marginTop:'1px' }}>
               {totalMissions} mission{totalMissions > 1 ? 's' : ''}
               {(joursSansChauf.length + transfertsSansChauf.length) > 0 && (
                 <span style={{ color:'#7a5c10', fontWeight:600 }}> · {joursSansChauf.length + transfertsSansChauf.length} à affecter</span>
@@ -199,21 +199,21 @@ export default function PlanningPage() {
         <div style={{ display:'flex', gap:'3px' }}>
           {([['semaine','Semaine'],['mois','Mois']] as const).map(([v,l]) => (
             <button key={v} onClick={() => setViewMode(v)}
-              style={{ padding:'5px 12px', fontSize:'10px', fontWeight:700, letterSpacing:'1px', textTransform:'uppercase', cursor:'pointer', border:'1.5px solid #e4e6ea', background: viewMode===v ? '#16130e' : 'transparent', color: viewMode===v ? '#fff' : '#5a564e', transition:'all 0.14s' }}>
+              style={{ padding:'5px 12px', fontSize:'10px', fontWeight:700, letterSpacing:'1px', textTransform:'uppercase', cursor:'pointer', border:'1px solid #e4e6ea', borderRadius:'8px', background: viewMode===v ? '#16130e' : 'transparent', color: viewMode===v ? '#fff' : '#5a564e', transition:'all 0.14s' }}>
               {l}
             </button>
           ))}
         </div>
 
         {/* Onglets missions / chauffeurs / véhicules */}
-        <div className="hidden md:flex" style={{ gap:'3px', borderLeft:'1px solid #d8d2c8', paddingLeft:'10px' }}>
+        <div className="hidden md:flex" style={{ gap:'3px', borderLeft:'1px solid #eef0f3', paddingLeft:'10px' }}>
           {([
             ['missions',  'Missions',  <Calendar size={11}/>],
             ['chauffeurs','Chauffeurs',<Users size={11}/>],
             ['vehicules', 'Véhicules', <Car size={11}/>],
           ] as const).map(([v,l,icon]) => (
             <button key={v} onClick={() => setTab(v)}
-              style={{ display:'flex', alignItems:'center', gap:'5px', padding:'5px 12px', fontSize:'10px', fontWeight:700, letterSpacing:'1px', textTransform:'uppercase', cursor:'pointer', border:'1.5px solid #e4e6ea', background: tab===v ? '#9a7a28' : 'transparent', color: tab===v ? '#fff' : '#5a564e', transition:'all 0.14s' }}>
+              style={{ display:'flex', alignItems:'center', gap:'5px', padding:'5px 12px', fontSize:'10px', fontWeight:700, letterSpacing:'1px', textTransform:'uppercase', cursor:'pointer', border:'1px solid #e4e6ea', borderRadius:'8px', background: tab===v ? '#9a7a28' : 'transparent', color: tab===v ? '#fff' : '#5a564e', transition:'all 0.14s' }}>
               {icon} {l}
             </button>
           ))}
@@ -225,7 +225,7 @@ export default function PlanningPage() {
             value={vehCat}
             onChange={e => setVehCat(e.target.value)}
             className="hidden md:block"
-            style={{ padding:'5px 10px', fontSize:'11px', border:'1.5px solid #e4e6ea', background: vehCat ? '#fdf6e3' : '#fff', color:'#16130e', outline:'none', cursor:'pointer' }}>
+            style={{ padding:'5px 10px', fontSize:'11px', border:'1px solid #e4e6ea', borderRadius:'8px', background: vehCat ? '#faf3e2' : '#fff', color:'#16130e', outline:'none', cursor:'pointer' }}>
             <option value="">Tous les types</option>
             {vehCats.map(c => (
               <option key={c.id} value={c.nom}>{c.nom}</option>
@@ -254,9 +254,9 @@ export default function PlanningPage() {
       </div>
 
       {/* ══ Contenu ══ */}
-      <div style={{ flex:1, overflow:'auto', background:'#fff', border:'1.5px solid #e4e6ea', boxShadow:'0 2px 10px rgba(0,0,0,0.07)' }}>
+      <div style={{ flex:1, overflow:'auto', background:'#fff', border:'1px solid #e4e6ea', borderRadius:'8px', boxShadow:'0 2px 10px rgba(0,0,0,0.07)' }}>
         {loading ? (
-          <div style={{ display:'flex', alignItems:'center', justifyContent:'center', height:'200px', color:'#8a8478', fontSize:'12px' }}>
+          <div style={{ display:'flex', alignItems:'center', justifyContent:'center', height:'200px', color:'#63605a', fontSize:'12px' }}>
             Chargement…
           </div>
         ) : (
@@ -322,7 +322,7 @@ function MissionsView({ days, viewMode, data, onTooltip, onDragStart, router }: 
 
   if (dossiers.length === 0) {
     return (
-      <div style={{ padding:'80px', textAlign:'center', color:'#8a8478', fontSize:'12px' }}>
+      <div style={{ padding:'80px', textAlign:'center', color:'#63605a', fontSize:'12px' }}>
         Aucune mission sur cette période — <span style={{ color:'#9a7a28', cursor:'pointer', textDecoration:'underline' }} onClick={() => router.push('/dashboard/dossiers/nouveau')}>créer un dossier</span>
       </div>
     )
@@ -340,9 +340,9 @@ function MissionsView({ days, viewMode, data, onTooltip, onDragStart, router }: 
       <GanttHeader days={days} viewMode={viewMode} firstColLabel="Dossier / Client" />
       <tbody>
         {dossiers.map((dos, idx) => (
-          <tr key={dos.id} style={{ borderBottom:'1px solid #d8d2c8' }}>
+          <tr key={dos.id} style={{ borderBottom:'1px solid #eef0f3' }}>
             {/* Colonne dossier */}
-            <td style={{ padding:'8px 12px', background: idx%2===0 ? '#faf9f7' : '#fff', borderRight:'2px solid #e4e6ea', position:'sticky', left:0, zIndex:10, cursor:'pointer' }}
+            <td style={{ padding:'8px 12px', background: '#fff', borderRight:'2px solid #e4e6ea', position:'sticky', left:0, zIndex:10, cursor:'pointer' }}
               onClick={() => router.push(`/dashboard/dossiers/${dos.id}`)}>
               <div style={{ fontFamily:'JetBrains Mono,monospace', fontSize:'10px', color:'#9a7a28', marginBottom:'2px' }}>{dos.numero}</div>
               <div style={{ fontSize:'12px', fontWeight:600, color:'#16130e', whiteSpace:'nowrap', overflow:'hidden', textOverflow:'ellipsis' }}>{dos.client}</div>
@@ -357,7 +357,7 @@ function MissionsView({ days, viewMode, data, onTooltip, onDragStart, router }: 
               const weekend  = [0, 6].includes(day.getDay())
 
               return (
-                <td key={dateStr} style={{ padding:'3px', background: today ? '#fdf6e3' : weekend ? '#f1ece4' : idx%2===0 ? '#faf9f7' : '#fff', borderRight:'1px solid #f4f5f7', verticalAlign:'top', minHeight:'48px' }}>
+                <td key={dateStr} style={{ padding:'3px', background: today ? '#faf3e2' : weekend ? '#f8f9fb' : '#fff', borderRight:'1px solid #f4f5f7', verticalAlign:'top', minHeight:'48px' }}>
                   {[
                     ...joursDay.map(j => {
                       // Sous-traité au jour OU prestation entièrement sous-traitée
@@ -442,7 +442,7 @@ function ChauffeursView({ days, viewMode, data, onTooltip, dragJourId, dragOver,
               <div style={{ display:'flex', alignItems:'center', gap:'6px', color:'#7a5c10', fontWeight:700, fontSize:'11px' }}>
                 <AlertTriangle size={12}/> À affecter ({unassigned.length})
               </div>
-              <div style={{ fontSize:'9px', color:'#8a8478', marginTop:'2px' }}>Glisser vers un chauffeur ↓</div>
+              <div style={{ fontSize:'9px', color:'#63605a', marginTop:'2px' }}>Glisser vers un chauffeur ↓</div>
             </td>
             {days.map((day: Date) => {
               const dateStr  = format(day,'yyyy-MM-dd')
@@ -468,7 +468,7 @@ function ChauffeursView({ days, viewMode, data, onTooltip, dragJourId, dragOver,
           </tr>
         )}
         {data.chauffeurs.length === 0 ? (
-          <tr><td colSpan={days.length+1} style={{ padding:'60px', textAlign:'center', color:'#8a8478' }}>Aucun chauffeur</td></tr>
+          <tr><td colSpan={days.length+1} style={{ padding:'60px', textAlign:'center', color:'#63605a' }}>Aucun chauffeur</td></tr>
         ) : data.chauffeurs.map((c: Chauffeur, idx: number) => {
           // Statut dynamique : jours occupés sur la période (indispo/congé stocké prioritaire)
           const busyDays = days.filter((day: Date) => {
@@ -484,8 +484,8 @@ function ChauffeursView({ days, viewMode, data, onTooltip, dragJourId, dragOver,
           const isDragTarget = dragOver === c.id
 
           return (
-            <tr key={c.id} style={{ borderBottom:'1px solid #d8d2c8' }}>
-              <td style={{ padding:'8px 12px', background: idx%2===0 ? '#faf9f7' : '#fff', borderRight:'2px solid #e4e6ea', position:'sticky', left:0, zIndex:10 }}>
+            <tr key={c.id} style={{ borderBottom:'1px solid #eef0f3' }}>
+              <td style={{ padding:'8px 12px', background: '#fff', borderRight:'2px solid #e4e6ea', position:'sticky', left:0, zIndex:10 }}>
                 <div style={{ display:'flex', alignItems:'center', gap:'8px' }}>
                   <div style={{ width:'28px', height:'28px', borderRadius:'50%', flexShrink:0, background:st.bg, border:`1.5px solid ${st.color}`, display:'flex', alignItems:'center', justifyContent:'center', fontSize:'9px', fontWeight:700, color:st.color }}>
                     {initials}
@@ -510,7 +510,7 @@ function ChauffeursView({ days, viewMode, data, onTooltip, dragJourId, dragOver,
                   <td key={dateStr}
                     style={{
                       padding:'3px', verticalAlign:'top', minHeight:'48px',
-                      background: isDragTarget && dragJourId ? '#fdf6e3' : conflict ? 'rgba(158,42,42,0.06)' : isConge ? 'rgba(122,92,16,0.04)' : today ? '#fdf6e3' : weekend ? '#f1ece4' : idx%2===0 ? '#faf9f7' : '#fff',
+                      background: isDragTarget && dragJourId ? '#faf3e2' : conflict ? 'rgba(158,42,42,0.06)' : isConge ? 'rgba(122,92,16,0.04)' : today ? '#faf3e2' : weekend ? '#f8f9fb' : '#fff',
                       borderRight:'1px solid #f4f5f7',
                       outline: isDragTarget && dragJourId ? '2px dashed #9a7a28' : 'none',
                     }}
@@ -597,9 +597,9 @@ function VehiculesView({ days, viewMode, data, onTooltip, router, vehCat }: any)
       <GanttHeader days={days} viewMode={viewMode} firstColLabel="Véhicule" />
       <tbody>
         {vehicules.length === 0 ? (
-          <tr><td colSpan={days.length+1} style={{ padding:'60px', textAlign:'center', color:'#8a8478' }}>{vehCat ? 'Aucun véhicule de ce type sur la période' : 'Aucun véhicule'}</td></tr>
+          <tr><td colSpan={days.length+1} style={{ padding:'60px', textAlign:'center', color:'#63605a' }}>{vehCat ? 'Aucun véhicule de ce type sur la période' : 'Aucun véhicule'}</td></tr>
         ) : vehicules.map((v: Vehicule, idx: number) => {
-          const ST: Record<string,string> = { disponible:'#1e5e3a', en_mission:'#1e3f70', maintenance:'#7a5c10', inactif:'#8a8478' }
+          const ST: Record<string,string> = { disponible:'#1e5e3a', en_mission:'#1e3f70', maintenance:'#7a5c10', inactif:'#63605a' }
 
           // Statut dynamique : nombre de jours occupés sur la période affichée
           const busyDays = days.filter((day: Date) => {
@@ -609,14 +609,14 @@ function VehiculesView({ days, viewMode, data, onTooltip, router, vehCat }: any)
           }).length
           const immobilise = v.statut === 'maintenance' || v.statut === 'inactif'
           const effStatut  = immobilise ? v.statut : busyDays > 0 ? 'en_mission' : 'disponible'
-          const color      = ST[effStatut] ?? '#8a8478'
+          const color      = ST[effStatut] ?? '#63605a'
           const statutLabel = immobilise
             ? v.statut
             : busyDays > 0 ? `en mission · ${busyDays} j` : 'disponible'
 
           return (
-            <tr key={v.id} style={{ borderBottom:'1px solid #d8d2c8' }}>
-              <td style={{ padding:'9px 12px', background: idx%2===0 ? '#faf9f7' : '#fff', borderRight:'2px solid #e4e6ea', position:'sticky', left:0, zIndex:10 }}>
+            <tr key={v.id} style={{ borderBottom:'1px solid #eef0f3' }}>
+              <td style={{ padding:'9px 12px', background: '#fff', borderRight:'2px solid #e4e6ea', position:'sticky', left:0, zIndex:10 }}>
                 <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', gap:'6px' }}>
                   <span title={`${v.marque} ${v.modele}`} style={{ fontFamily:'Cormorant Garamond,serif', fontSize:'15px', fontWeight:600, color:'#16130e', whiteSpace:'nowrap', overflow:'hidden', textOverflow:'ellipsis' }}>{v.marque} {v.modele}</span>
                   {v.categorie && (
@@ -638,7 +638,7 @@ function VehiculesView({ days, viewMode, data, onTooltip, router, vehCat }: any)
                 const conflict = dayHasOverlap(jours, trans)
 
                 return (
-                  <td key={dateStr} style={{ padding:'3px', verticalAlign:'top', background: conflict ? 'rgba(158,42,42,0.06)' : today ? '#fdf6e3' : weekend ? '#f1ece4' : idx%2===0 ? '#faf9f7' : '#fff', borderRight:'1px solid #f4f5f7' }}>
+                  <td key={dateStr} style={{ padding:'3px', verticalAlign:'top', background: conflict ? 'rgba(158,42,42,0.06)' : today ? '#faf3e2' : weekend ? '#f8f9fb' : '#fff', borderRight:'1px solid #f4f5f7' }}>
                     {[
                       ...jours.map((j: JourMad) => ({ key: chronoKey(j), node: (
                         <MBlock key={j.id} bg="#f8ece7" border="#a6432a" text="#a6432a"
@@ -699,13 +699,13 @@ function PlanningMobile({ days, data, router }: { days: Date[]; data: any; route
   return (
     <div>
       {/* Sélecteur de jour */}
-      <div style={{ display: 'flex', gap: '6px', overflowX: 'auto', padding: '12px', borderBottom: '1.5px solid #d8d2c8', WebkitOverflowScrolling: 'touch' }}>
+      <div style={{ display: 'flex', gap: '6px', overflowX: 'auto', padding: '12px', borderBottom: '1.5px solid #eef0f3', WebkitOverflowScrolling: 'touch' }}>
         {days.map((d, i) => {
           const on = i === sel; const today = isToday(d); const n = nbFor(d)
           return (
             <button key={d.toISOString()} onClick={() => setSel(i)}
               style={{ flexShrink: 0, minWidth: '46px', padding: '6px 4px', textAlign: 'center', cursor: 'pointer',
-                background: on ? '#16130e' : today ? '#fdf6e3' : '#fff', border: `1.5px solid ${on ? '#16130e' : today ? '#9a7a28' : '#d8d2c8'}`,
+                background: on ? '#16130e' : today ? '#faf3e2' : '#fff', border: `1.5px solid ${on ? '#16130e' : today ? '#9a7a28' : '#eef0f3'}`,
                 color: on ? '#fff' : '#16130e' }}>
               <div style={{ fontSize: '8px', textTransform: 'uppercase', letterSpacing: '0.5px', opacity: 0.7 }}>{format(d, 'EEE', { locale: fr })}</div>
               <div style={{ fontFamily: 'Cormorant Garamond,serif', fontSize: '17px', lineHeight: 1.1 }}>{format(d, 'd', { locale: fr })}</div>
@@ -717,11 +717,11 @@ function PlanningMobile({ days, data, router }: { days: Date[]; data: any; route
 
       {/* Missions du jour */}
       <div style={{ padding: '12px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
-        <div style={{ fontSize: '11px', color: '#8a8478', fontWeight: 600 }}>
+        <div style={{ fontSize: '11px', color: '#63605a', fontWeight: 600 }}>
           {format(day, 'EEEE d MMMM', { locale: fr })} · {total} mission{total > 1 ? 's' : ''}
         </div>
         {total === 0 ? (
-          <div style={{ padding: '30px', textAlign: 'center', color: '#8a8478', fontSize: '12px' }}>Aucune mission ce jour</div>
+          <div style={{ padding: '30px', textAlign: 'center', color: '#63605a', fontSize: '12px' }}>Aucune mission ce jour</div>
         ) : (
           <>
             {[
@@ -777,7 +777,7 @@ function MobileMissionCard({ type, typeColor, client, numero, heure, itineraire,
         <div style={{ fontSize: '12px', color: '#5a564e', marginTop: '2px' }}>{itineraire}</div>
         <div style={{ display: 'flex', justifyContent: 'space-between', gap: '8px', marginTop: '6px', fontSize: '11px', flexWrap: 'wrap' }}>
           <span style={{ color: chauffeur ? '#5a564e' : '#9e2a2a', fontWeight: chauffeur ? 400 : 600 }}>{chauffeur ?? '⚠ À affecter'}</span>
-          <span style={{ color: '#8a8478' }}>{vehicule ?? '—'}</span>
+          <span style={{ color: '#63605a' }}>{vehicule ?? '—'}</span>
         </div>
       </div>
     </div>
@@ -788,21 +788,21 @@ function GanttHeader({ days, viewMode, firstColLabel }: { days: Date[]; viewMode
   return (
     <thead style={{ position:'sticky', top:0, zIndex:20 }}>
       <tr>
-        <th style={{ background:'#16130e', padding:'10px 14px', textAlign:'left', borderRight:'2px solid rgba(255,255,255,0.1)', fontSize:'9px', letterSpacing:'2px', textTransform:'uppercase', color:'rgba(255,255,255,0.5)', fontWeight:600, position:'sticky', left:0, top:0, zIndex:30 }}>
+        <th style={{ background:'#fff', padding:'12px 14px', textAlign:'left', borderRight:'1px solid #e4e6ea', borderBottom:'1.5px solid #e4e6ea', fontSize:'10.5px', letterSpacing:'0.4px', textTransform:'uppercase', color:'#44474e', fontWeight:700, position:'sticky', left:0, top:0, zIndex:30 }}>
           {firstColLabel}
         </th>
         {days.map(day => {
           const today = isToday(day)
           const weekend = [0, 6].includes(day.getDay())
           return (
-            <th key={day.toISOString()} style={{ background: today ? '#9a7a28' : weekend ? '#2a2419' : '#16130e', padding: viewMode==='semaine' ? '8px 6px' : '6px 3px', textAlign:'center', borderRight:'1px solid rgba(255,255,255,0.08)', color: today ? '#fff' : weekend ? 'rgba(255,255,255,0.5)' : 'rgba(255,255,255,0.65)', fontWeight: today ? 700 : 400 }}>
+            <th key={day.toISOString()} style={{ background: today ? '#faf3e2' : '#fff', padding: viewMode==='semaine' ? '7px 6px 6px' : '6px 3px', textAlign:'center', borderRight:'1px solid #eef0f3', borderBottom: today ? '2px solid #9a7a28' : '1.5px solid #e4e6ea', color: today ? '#9a7a28' : weekend ? '#9aa0aa' : '#5f636b', fontWeight: today ? 700 : 500 }}>
               {viewMode === 'semaine' ? (
                 <>
-                  <div style={{ fontSize:'8px', textTransform:'uppercase', letterSpacing:'1px', opacity:0.7 }}>{format(day,'EEE',{locale:fr})}</div>
-                  <div style={{ fontFamily:'Cormorant Garamond,serif', fontSize:'15px', marginTop:'1px' }}>{format(day,'d',{locale:fr})}</div>
+                  <div style={{ fontSize:'8.5px', textTransform:'uppercase', letterSpacing:'0.8px' }}>{format(day,'EEE',{locale:fr})}</div>
+                  <div style={{ fontFamily:'Cormorant Garamond,serif', fontSize:'17px', marginTop:'1px', color: today ? '#9a7a28' : '#1a1712' }}>{format(day,'d',{locale:fr})}</div>
                 </>
               ) : (
-                <div style={{ fontFamily:'JetBrains Mono,monospace', fontSize:'10px' }}>{format(day,'d',{locale:fr})}</div>
+                <div style={{ fontFamily:'JetBrains Mono,monospace', fontSize:'10px', color: today ? '#9a7a28' : '#5f636b' }}>{format(day,'d',{locale:fr})}</div>
               )}
             </th>
           )
@@ -819,9 +819,9 @@ function MBlock({ bg, border, text, icon, label, title, sub, compact, draggable,
 }) {
   return (
     <div draggable={draggable} onDragStart={onDragStart} onClick={onClick}
-      style={{ background:bg, border:`1.5px solid ${border}`, borderLeft:`3px solid ${border}`, padding: compact ? '2px 4px' : '5px 7px', marginBottom:'2px', cursor:'pointer', userSelect:'none', transition:'opacity 0.1s' }}
-      onMouseEnter={e => (e.currentTarget.style.opacity='0.8')}
-      onMouseLeave={e => (e.currentTarget.style.opacity='1')}>
+      style={{ background:bg, border:`1px solid ${border}33`, borderLeft:`3px solid ${border}`, borderRadius:'7px', padding: compact ? '3px 5px' : '5px 8px', marginBottom:'3px', cursor:'pointer', userSelect:'none', transition:'box-shadow 0.12s, transform 0.12s' }}
+      onMouseEnter={e => { e.currentTarget.style.boxShadow='0 3px 10px rgba(20,24,33,0.14)'; e.currentTarget.style.transform='translateY(-1px)' }}
+      onMouseLeave={e => { e.currentTarget.style.boxShadow='none'; e.currentTarget.style.transform='none' }}>
       {!compact && (
         <div style={{ fontSize:'8px', fontWeight:700, color:text, letterSpacing:'1px', textTransform:'uppercase', opacity:0.7, marginBottom:'2px' }}>
           {icon} {label}
@@ -840,7 +840,7 @@ function MBlock({ bg, border, text, icon, label, title, sub, compact, draggable,
 function NavBtn({ onClick, children, label }: { onClick: () => void; children?: React.ReactNode; label?: string }) {
   return (
     <button onClick={onClick}
-      style={{ background:'none', border:'1.5px solid #e4e6ea', width: label ? 'auto' : '28px', height:'28px', padding: label ? '0 10px' : '0', cursor:'pointer', display:'flex', alignItems:'center', justifyContent:'center', fontSize:'10px', fontWeight:700, letterSpacing:'1px', color:'#5a564e', transition:'all 0.14s', textTransform:'uppercase' }}
+      style={{ background:'none', border:'1px solid #e4e6ea', borderRadius:'8px', width: label ? 'auto' : '28px', height:'28px', padding: label ? '0 10px' : '0', cursor:'pointer', display:'flex', alignItems:'center', justifyContent:'center', fontSize:'10px', fontWeight:700, letterSpacing:'1px', color:'#5a564e', transition:'all 0.14s', textTransform:'uppercase' }}
       onMouseEnter={e => { e.currentTarget.style.borderColor='#9a7a28'; e.currentTarget.style.color='#9a7a28' }}
       onMouseLeave={e => { e.currentTarget.style.borderColor='#e4e6ea'; e.currentTarget.style.color='#5a564e' }}>
       {label ?? children}
@@ -884,13 +884,13 @@ function Tooltip({ tooltip, onClose, router }: { tooltip: any; onClose: () => vo
         left: Math.min(x + 12, (typeof window !== 'undefined' ? window.innerWidth : 1200) - 270),
         top:  Math.min(y + 12, (typeof window !== 'undefined' ? window.innerHeight : 800) - 240),
         zIndex:100, width:'260px',
-        background:'#fff', border:'1.5px solid #e4e6ea', boxShadow:'0 8px 24px rgba(0,0,0,0.15)', padding:'14px',
+        background:'#fff', border:'1px solid #e4e6ea', borderRadius:'8px', boxShadow:'0 8px 24px rgba(0,0,0,0.15)', padding:'14px',
       }}>
-        <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom:'10px', paddingBottom:'8px', borderBottom:'1px solid #d8d2c8' }}>
+        <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom:'10px', paddingBottom:'8px', borderBottom:'1px solid #eef0f3' }}>
           <span style={{ padding:'2px 8px', fontSize:'8px', fontWeight:700, letterSpacing:'1px', textTransform:'uppercase', background: content.type==='MAD' ? '#f8ece7' : '#e8eef8', color: content.type==='MAD' ? '#a6432a' : '#1e3f70' }}>
             {content.type}
           </span>
-          <button onClick={onClose} style={{ background:'none', border:'none', cursor:'pointer', color:'#9aa0aa', fontSize:'14px' }}>✕</button>
+          <button onClick={onClose} style={{ background:'none', border:'none', cursor:'pointer', color:'#63605a', fontSize:'14px' }}>✕</button>
         </div>
         <div style={{ fontFamily:'Cormorant Garamond,serif', fontSize:'16px', fontWeight:500, color:'#16130e', marginBottom:'4px' }}>{content.client}</div>
         <div style={{ fontFamily:'JetBrains Mono,monospace', fontSize:'10px', color:'#9a7a28', marginBottom:'10px' }}>{content.dossier}</div>
@@ -907,7 +907,7 @@ function Tooltip({ tooltip, onClose, router }: { tooltip: any; onClose: () => vo
             { l:'Note',      v: content.note },
           ].filter(r => r.v).map(r => (
             <div key={r.l} style={{ display:'flex', gap:'8px', fontSize:'11px' }}>
-              <span style={{ color:'#8a8478', fontWeight:600, minWidth:'60px', fontSize:'9px', letterSpacing:'1px', textTransform:'uppercase', flexShrink:0 }}>{r.l}</span>
+              <span style={{ color:'#63605a', fontWeight:600, minWidth:'60px', fontSize:'9px', letterSpacing:'1px', textTransform:'uppercase', flexShrink:0 }}>{r.l}</span>
               <span style={{ color:'#2e2b25' }}>{r.v}</span>
             </div>
           ))}

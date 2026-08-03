@@ -39,7 +39,7 @@ export default async function LoueurDetailPage({ params }: { params: { id: strin
   return (
     <div>
       <div style={{ marginBottom:'20px' }}>
-        <Link href="/dashboard/loueurs" style={{ display:'inline-flex', alignItems:'center', gap:'6px', fontSize:'12px', color:'#8a8478', textDecoration:'none' }}>
+        <Link href="/dashboard/loueurs" style={{ display:'inline-flex', alignItems:'center', gap:'6px', fontSize:'12px', color:'#63605a', textDecoration:'none' }}>
           <ArrowLeft size={13} /> Retour aux loueurs
         </Link>
       </div>
@@ -55,33 +55,33 @@ export default async function LoueurDetailPage({ params }: { params: { id: strin
               <div style={{ fontSize:'11px', color:'#5a564e', marginTop:'4px' }}>
                 {[loueur.contact_nom, loueur.telephone, loueur.email].filter(Boolean).join(' · ') || 'Aucun contact renseigné'}
               </div>
-              {loueur.notes && <div style={{ fontSize:'11px', color:'#8a8478', marginTop:'8px', fontStyle:'italic' }}>{loueur.notes}</div>}
+              {loueur.notes && <div style={{ fontSize:'11px', color:'#63605a', marginTop:'8px', fontStyle:'italic' }}>{loueur.notes}</div>}
             </div>
           </div>
 
           {/* Véhicules loués */}
           <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom:'12px' }}>
             <span className="section-title">Véhicules loués</span>
-            <span style={{ fontFamily:'JetBrains Mono,monospace', fontSize:'11px', color:'#8a8478' }}>{vehs.length} véhicule{vehs.length > 1 ? 's' : ''}</span>
+            <span style={{ fontFamily:'JetBrains Mono,monospace', fontSize:'11px', color:'#63605a' }}>{vehs.length} véhicule{vehs.length > 1 ? 's' : ''}</span>
           </div>
 
           {/* Liste mobile (cartes) */}
           <div className="only-mobile" style={{ display:'flex', flexDirection:'column', gap:'10px' }}>
             {vehs.length === 0 ? (
-              <div style={{ padding:'30px', textAlign:'center', color:'#8a8478', fontSize:'12px' }}>Aucun véhicule rattaché à ce loueur.</div>
+              <div style={{ padding:'30px', textAlign:'center', color:'#63605a', fontSize:'12px' }}>Aucun véhicule rattaché à ce loueur.</div>
             ) : vehs.map(({ v, c }) => (
               <Link key={v.id} href={`/dashboard/vehicules/${v.id}`} style={{ display:'block', background:'#fff', border:'1.5px solid #e4e6ea', boxShadow:'0 1px 4px rgba(0,0,0,0.06)', padding:'12px', textDecoration:'none', color:'inherit' }}>
                 <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', gap:'8px' }}>
                   <div style={{ minWidth:0 }}>
                     <div style={{ fontFamily:'Cormorant Garamond,serif', fontSize:'15px', fontWeight:500, color:'#16130e' }}>{v.marque} {v.modele}</div>
-                    <div className="mono" style={{ fontSize:'9px', color:'#8a8478' }}>{v.immatriculation}</div>
+                    <div className="mono" style={{ fontSize:'9px', color:'#63605a' }}>{v.immatriculation}</div>
                   </div>
-                  <span style={{ flexShrink:0, fontSize:'9px', fontWeight:700, textTransform:'uppercase', color: c.actif ? '#1e5e3a' : '#8a8478' }}>{c.actif ? '● En cours' : 'Terminé'}</span>
+                  <span style={{ flexShrink:0, fontSize:'9px', fontWeight:700, textTransform:'uppercase', color: c.actif ? '#1e5e3a' : '#63605a' }}>{c.actif ? '● En cours' : 'Terminé'}</span>
                 </div>
                 <div style={{ display:'flex', justifyContent:'space-between', gap:'8px', marginTop:'8px', paddingTop:'8px', borderTop:'1px solid #f4f5f7' }}>
-                  <div><div style={{ fontSize:'8px', textTransform:'uppercase', letterSpacing:'1px', color:'#8a8478' }}>Loyer</div><div className="mono" style={{ fontSize:'11px', color:'#9a7a28' }}>{v.loyer_ht ? `${fmt(v.loyer_ht)}${PERIODE_SUFFIX[v.loyer_periode] ?? '/mois'}` : '—'}</div></div>
-                  <div><div style={{ fontSize:'8px', textTransform:'uppercase', letterSpacing:'1px', color:'#8a8478' }}>Depuis</div><div style={{ fontSize:'11px', color:'#5a564e' }}>{c.debut ? format(parseISO(c.debut),'dd/MM/yy',{locale:fr}) : '—'} · {c.joursCourus || 0}j</div></div>
-                  <div style={{ textAlign:'right' }}><div style={{ fontSize:'8px', textTransform:'uppercase', letterSpacing:'1px', color:'#8a8478' }}>Coût couru</div><div className="mono" style={{ fontSize:'12px', fontWeight:700, color:'#9a7a28' }}>{fmt(c.coutCouru)}</div></div>
+                  <div><div style={{ fontSize:'8px', textTransform:'uppercase', letterSpacing:'1px', color:'#63605a' }}>Loyer</div><div className="mono" style={{ fontSize:'11px', color:'#9a7a28' }}>{v.loyer_ht ? `${fmt(v.loyer_ht)}${PERIODE_SUFFIX[v.loyer_periode] ?? '/mois'}` : '—'}</div></div>
+                  <div><div style={{ fontSize:'8px', textTransform:'uppercase', letterSpacing:'1px', color:'#63605a' }}>Depuis</div><div style={{ fontSize:'11px', color:'#5a564e' }}>{c.debut ? format(parseISO(c.debut),'dd/MM/yy',{locale:fr}) : '—'} · {c.joursCourus || 0}j</div></div>
+                  <div style={{ textAlign:'right' }}><div style={{ fontSize:'8px', textTransform:'uppercase', letterSpacing:'1px', color:'#63605a' }}>Coût couru</div><div className="mono" style={{ fontSize:'12px', fontWeight:700, color:'#9a7a28' }}>{fmt(c.coutCouru)}</div></div>
                 </div>
               </Link>
             ))}
@@ -99,7 +99,7 @@ export default async function LoueurDetailPage({ params }: { params: { id: strin
               </thead>
               <tbody>
                 {vehs.length === 0 ? (
-                  <tr><td colSpan={7} style={{ padding:'50px', textAlign:'center', color:'#8a8478', fontSize:'12px' }}>
+                  <tr><td colSpan={7} style={{ padding:'50px', textAlign:'center', color:'#63605a', fontSize:'12px' }}>
                     Aucun véhicule rattaché à ce loueur. Rattachez-les depuis la fiche véhicule (champ « Loueur »).
                   </td></tr>
                 ) : vehs.map(({ v, c }) => (
@@ -107,7 +107,7 @@ export default async function LoueurDetailPage({ params }: { params: { id: strin
                     <td className="td" style={{ background:'rgba(154,122,40,0.04)' }}>
                       <Link href={`/dashboard/vehicules/${v.id}`} style={{ textDecoration:'none' }}>
                         <div style={{ fontFamily:'Cormorant Garamond,serif', fontSize:'14px', fontWeight:500, color:'#16130e' }}>{v.marque} {v.modele}</div>
-                        <div style={{ fontFamily:'JetBrains Mono,monospace', fontSize:'9px', color:'#8a8478' }}>{v.immatriculation}</div>
+                        <div style={{ fontFamily:'JetBrains Mono,monospace', fontSize:'9px', color:'#63605a' }}>{v.immatriculation}</div>
                       </Link>
                     </td>
                     <td className="td">
@@ -122,7 +122,7 @@ export default async function LoueurDetailPage({ params }: { params: { id: strin
                     <td className="td"><span style={{ fontFamily:'JetBrains Mono,monospace', fontSize:'12px', color:'#9a7a28' }}>{fmt(c.coutCouru)}</span></td>
                     <td className="td"><span style={{ fontFamily:'JetBrains Mono,monospace', fontSize:'11px', color:'#5a564e' }}>{c.coutTotalContrat != null ? fmt(c.coutTotalContrat) : '—'}</span></td>
                     <td className="td">
-                      <span style={{ fontSize:'9px', fontWeight:700, textTransform:'uppercase', letterSpacing:'0.5px', color: c.actif ? '#1e5e3a' : '#8a8478' }}>
+                      <span style={{ fontSize:'9px', fontWeight:700, textTransform:'uppercase', letterSpacing:'0.5px', color: c.actif ? '#1e5e3a' : '#63605a' }}>
                         {c.actif ? '● En cours' : 'Terminé'}
                       </span>
                     </td>
@@ -156,7 +156,7 @@ export default async function LoueurDetailPage({ params }: { params: { id: strin
                   <span style={{ fontFamily:'JetBrains Mono,monospace', fontSize:'12px', fontWeight:(s as any).strong ? 700 : 500, color:s.color }}>{s.value}</span>
                 </div>
               ))}
-              <div style={{ fontSize:'9px', color:'#8a8478', marginTop:'10px', lineHeight:1.5 }}>
+              <div style={{ fontSize:'9px', color:'#63605a', marginTop:'10px', lineHeight:1.5 }}>
                 Coût couru = loyers cumulés depuis le début de chaque location jusqu'à aujourd'hui (ou fin de contrat / sortie du parc).
               </div>
             </div>

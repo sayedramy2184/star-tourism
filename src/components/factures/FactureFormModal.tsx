@@ -101,7 +101,7 @@ export default function FactureFormModal({ onDone, editId }: { onDone?: () => vo
             </div>
 
             {loading ? (
-              <div style={{ padding: '60px', textAlign: 'center', color: '#8a8478' }}>Chargement…</div>
+              <div style={{ padding: '60px', textAlign: 'center', color: '#63605a' }}>Chargement…</div>
             ) : (
             <div style={{ padding: '20px 24px' }}>
               <div className="form-grid-3" style={{ marginBottom: '16px' }}>
@@ -117,7 +117,7 @@ export default function FactureFormModal({ onDone, editId }: { onDone?: () => vo
               </div>
 
               <div style={{ fontSize: '9px', fontWeight: 700, letterSpacing: '2.5px', textTransform: 'uppercase', color: '#9a7a28', marginBottom: '8px' }}>Lignes de facturation</div>
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 80px 110px 110px 32px', gap: '6px', padding: '0 4px 4px', fontSize: '8px', fontWeight: 700, letterSpacing: '1px', textTransform: 'uppercase', color: '#8a8478' }}>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 80px 110px 110px 32px', gap: '6px', padding: '0 4px 4px', fontSize: '8px', fontWeight: 700, letterSpacing: '1px', textTransform: 'uppercase', color: '#63605a' }}>
                 <span>Désignation</span><span style={{ textAlign: 'right' }}>Qté</span><span style={{ textAlign: 'right' }}>P.U. HT</span><span style={{ textAlign: 'right' }}>Total</span><span />
               </div>
               {lignes.map((l, i) => (

@@ -290,7 +290,7 @@ export default function ParametresPage() {
               </thead>
               <tbody>
                 {forfaits.length === 0 ? (
-                  <tr><td colSpan={7} style={{ padding:'40px', textAlign:'center', color:'#8a8478', fontSize:'12px' }}>
+                  <tr><td colSpan={7} style={{ padding:'40px', textAlign:'center', color:'#63605a', fontSize:'12px' }}>
                     Aucun forfait — créez le premier !
                   </td></tr>
                 ) : forfaits.map(f => (
@@ -312,7 +312,7 @@ export default function ParametresPage() {
                         ? <span style={{ fontFamily:'JetBrains Mono,monospace', fontSize:'12px' }}>{fmt(f.tarif_heure_sup)}/h</span>
                         : <span style={{ color:'#c2bdb4', fontSize:'11px' }}>—</span>}
                     </td>
-                    <td className="td" style={{ color:'#8a8478', fontStyle:'italic', fontSize:'11px' }}>{f.notes ?? '—'}</td>
+                    <td className="td" style={{ color:'#63605a', fontStyle:'italic', fontSize:'11px' }}>{f.notes ?? '—'}</td>
                     <td className="td" onClick={e => e.stopPropagation()}>
                       <div style={{ display:'flex', gap:'6px' }}>
                         <button className="btn-ghost" style={{ padding:'4px 10px', fontSize:'10px' }}

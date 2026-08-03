@@ -44,7 +44,7 @@ function PassagersLine({ passagers }: { passagers?: any[] }) {
   if (!noms.length) return null
   return (
     <div style={{ display:'flex', alignItems:'flex-start', gap:'4px', marginTop:'5px', fontSize:'11px', color:'#5a564e', lineHeight:1.35 }}>
-      <Users size={11} style={{ color:'#8a8478', flexShrink:0, marginTop:'2px' }} />
+      <Users size={11} style={{ color:'#63605a', flexShrink:0, marginTop:'2px' }} />
       <span>{noms.join(', ')}</span>
     </div>
   )
@@ -134,9 +134,9 @@ export default function DossiersPage() {
       {/* Liste mobile (cartes) */}
       <div className="only-mobile" style={{ display:'flex', flexDirection:'column', gap:'10px' }}>
         {loadingData ? (
-          <div style={{ padding:'40px', textAlign:'center', color:'#8a8478', fontSize:'12px' }}>Chargement…</div>
+          <div style={{ padding:'40px', textAlign:'center', color:'#63605a', fontSize:'12px' }}>Chargement…</div>
         ) : sp.total === 0 ? (
-          <div style={{ padding:'40px', textAlign:'center', color:'#8a8478', fontSize:'12px' }}>
+          <div style={{ padding:'40px', textAlign:'center', color:'#63605a', fontSize:'12px' }}>
             {dossiers.length === 0 ? 'Aucun dossier — créez le premier !' : 'Aucun résultat.'}
           </div>
         ) : sp.pageItems.map((d: any) => {
@@ -182,7 +182,7 @@ export default function DossiersPage() {
           </thead>
           <tbody>
             {loadingData ? (
-              <tr><td colSpan={8} style={{ padding:'60px', textAlign:'center', color:'#8a8478', fontSize:'12px' }}>Chargement…</td></tr>
+              <tr><td colSpan={8} style={{ padding:'60px', textAlign:'center', color:'#63605a', fontSize:'12px' }}>Chargement…</td></tr>
             ) : sp.total > 0 ? sp.pageItems.map((d: any) => {
               const types = d.prestations?.filter((p: any) => p.statut !== 'annule').reduce((acc: any, p: any) => {
                 acc[p.type] = (acc[p.type] ?? 0) + 1; return acc
@@ -230,7 +230,7 @@ export default function DossiersPage() {
               )
             }) : (
               <tr>
-                <td colSpan={8} style={{ padding:'60px', textAlign:'center', color:'#8a8478', fontSize:'12px' }}>
+                <td colSpan={8} style={{ padding:'60px', textAlign:'center', color:'#63605a', fontSize:'12px' }}>
                   {dossiers.length === 0 ? 'Aucun dossier — créez le premier !' : 'Aucun résultat.'}
                 </td>
               </tr>

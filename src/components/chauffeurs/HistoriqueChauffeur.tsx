@@ -23,7 +23,7 @@ const STATUTS: Record<string, { label: string; color: string }> = {
   en_attente: { label: 'En attente', color: '#7a5c10' },
   confirme:   { label: 'Confirmé',   color: '#1e5e3a' },
   en_cours:   { label: 'En cours',   color: '#1e3f70' },
-  termine:    { label: 'Terminé',    color: '#8a8478' },
+  termine:    { label: 'Terminé',    color: '#63605a' },
   annule:     { label: 'Annulé',     color: '#9e2a2a' },
 }
 
@@ -60,7 +60,7 @@ export default function HistoriqueChauffeur({ items }: { items: HistoItem[] }) {
       {/* En-tête */}
       <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom:'12px', flexWrap:'wrap', gap:'8px' }}>
         <span className="section-title">Historique des prestations</span>
-        <span style={{ fontFamily:'JetBrains Mono,monospace', fontSize:'11px', color:'#8a8478' }}>
+        <span style={{ fontFamily:'JetBrains Mono,monospace', fontSize:'11px', color:'#63605a' }}>
           {filtered.length} prestation{filtered.length > 1 ? 's' : ''} · CA filtré {fmt(caFiltre)}
         </span>
       </div>
@@ -113,9 +113,9 @@ export default function HistoriqueChauffeur({ items }: { items: HistoItem[] }) {
       {/* Liste mobile (cartes) */}
       <div className="only-mobile" style={{ display:'flex', flexDirection:'column', gap:'10px' }}>
         {filtered.length === 0 ? (
-          <div style={{ padding:'30px', textAlign:'center', color:'#8a8478', fontSize:'12px' }}>{items.length === 0 ? 'Aucune prestation pour ce chauffeur' : 'Aucune prestation ne correspond aux filtres'}</div>
+          <div style={{ padding:'30px', textAlign:'center', color:'#63605a', fontSize:'12px' }}>{items.length === 0 ? 'Aucune prestation pour ce chauffeur' : 'Aucune prestation ne correspond aux filtres'}</div>
         ) : filtered.map(i => {
-          const s = STATUTS[i.statut] ?? { label: i.statut, color: '#8a8478' }
+          const s = STATUTS[i.statut] ?? { label: i.statut, color: '#63605a' }
           const card = (
             <>
               <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', gap:'8px' }}>
@@ -150,17 +150,17 @@ export default function HistoriqueChauffeur({ items }: { items: HistoItem[] }) {
           </thead>
           <tbody>
             {filtered.length === 0 ? (
-              <tr><td colSpan={6} style={{ padding:'50px', textAlign:'center', color:'#8a8478', fontSize:'12px' }}>
+              <tr><td colSpan={6} style={{ padding:'50px', textAlign:'center', color:'#63605a', fontSize:'12px' }}>
                 {items.length === 0 ? 'Aucune prestation pour ce chauffeur' : 'Aucune prestation ne correspond aux filtres'}
               </td></tr>
             ) : filtered.map(i => {
-              const s = STATUTS[i.statut] ?? { label: i.statut, color: '#8a8478' }
+              const s = STATUTS[i.statut] ?? { label: i.statut, color: '#63605a' }
               return (
                 <tr key={i.id} className="tr-body">
                   <td className="td" style={{ background:'rgba(154,122,40,0.04)' }}>
                     <div style={{ fontFamily:'JetBrains Mono,monospace', fontSize:'11px' }}>
                       {i.jourSemaine ? `${i.jourSemaine} ` : ''}{format(parseISO(i.date),'dd/MM/yyyy',{locale:fr})}
-                      {i.heure && <div style={{ fontSize:'10px', color:'#8a8478' }}>{i.heure}</div>}
+                      {i.heure && <div style={{ fontSize:'10px', color:'#63605a' }}>{i.heure}</div>}
                     </div>
                   </td>
                   <td className="td"><span className={i.kind === 'mad' ? 'pill-mad' : 'pill-transfer'}>{i.kind === 'mad' ? 'MAD' : 'Transfert'}</span></td>

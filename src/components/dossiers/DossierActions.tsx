@@ -323,7 +323,7 @@ export function BoutonAjoutPrestation({ dossierId, dateDebutDossier, dateFinDoss
                   <div><label className="form-label">Horaires journaliers</label>
                     <div style={{ display:'flex', gap:'6px', alignItems:'center' }}>
                       <input type="time" className="input" value={heureDebJ} onChange={e => setHeureDebJ(e.target.value)} />
-                      <span style={{ color:'#8a8478', flexShrink:0 }}>→</span>
+                      <span style={{ color:'#63605a', flexShrink:0 }}>→</span>
                       <input type="time" className="input" value={heureFinJ} onChange={e => setHeureFinJ(e.target.value)} />
                     </div>
                   </div>
@@ -332,7 +332,7 @@ export function BoutonAjoutPrestation({ dossierId, dateDebutDossier, dateFinDoss
                   <>
                     <FormSep label="Chauffeurs par jour" />
                     <div style={{ display:'grid', gridTemplateColumns:'90px 1fr 60px', gap:'4px', padding:'4px 8px', background:'#faf9f7', marginBottom:'2px' }}>
-                      {['Date','Chauffeur','Tarif'].map(h => <div key={h} style={{ fontSize:'8px', fontWeight:700, letterSpacing:'1.5px', textTransform:'uppercase', color:'#8a8478' }}>{h}</div>)}
+                      {['Date','Chauffeur','Tarif'].map(h => <div key={h} style={{ fontSize:'8px', fontWeight:700, letterSpacing:'1.5px', textTransform:'uppercase', color:'#63605a' }}>{h}</div>)}
                     </div>
                     {jours.map((j, ji) => (
                       <div key={j.date} style={{ display:'grid', gridTemplateColumns:'90px 1fr 60px', gap:'4px', alignItems:'center', padding:'5px 8px', marginBottom:'2px', background: !j.chauffeur_id ? '#fff8e8' : '#f5f2ed', border:`1px solid ${!j.chauffeur_id ? 'rgba(154,122,40,0.3)' : '#d8d2c8'}` }}>
@@ -453,7 +453,7 @@ export function BoutonAffecterVehicule({ prestationId, dateDebut, dateFin, vehic
         <Modal title="Affecter un véhicule" onClose={() => setOpen(false)}>
           {vehiculeActuel && (
             <div style={{ padding:'10px 14px', background:'#f5f2ed', border:'1.5px solid #e4e6ea', marginBottom:'16px' }}>
-              <div style={{ fontSize:'9px', color:'#8a8478', marginBottom:'3px', fontWeight:600, letterSpacing:'1px', textTransform:'uppercase' }}>Véhicule actuel</div>
+              <div style={{ fontSize:'9px', color:'#63605a', marginBottom:'3px', fontWeight:600, letterSpacing:'1px', textTransform:'uppercase' }}>Véhicule actuel</div>
               <div style={{ fontSize:'13px', fontWeight:600 }}>{vehiculeActuel.marque} {vehiculeActuel.modele}</div>
               <div style={{ fontFamily:'JetBrains Mono,monospace', fontSize:'10px', color:'#5a564e' }}>{vehiculeActuel.immatriculation}</div>
             </div>
@@ -461,7 +461,7 @@ export function BoutonAffecterVehicule({ prestationId, dateDebut, dateFin, vehic
           <FormSep label="Véhicules disponibles sur la période" />
           <div style={{ display:'flex', flexDirection:'column', gap:'6px', marginBottom:'16px' }}>
             {vehicules.length === 0 ? (
-              <div style={{ padding:'20px', textAlign:'center', color:'#8a8478' }}>Aucun véhicule</div>
+              <div style={{ padding:'20px', textAlign:'center', color:'#63605a' }}>Aucun véhicule</div>
             ) : vehicules.map(v => {
               const dispo = v.disponible_periode !== false
               return (

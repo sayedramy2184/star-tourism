@@ -139,9 +139,9 @@ export default function SousTraitantsPage() {
       {/* Liste mobile (cartes) */}
       <div className="only-mobile" style={{ display:'flex', flexDirection:'column', gap:'10px' }}>
         {loading ? (
-          <div style={{ padding:'40px', textAlign:'center', color:'#8a8478', fontSize:'12px' }}>Chargement…</div>
+          <div style={{ padding:'40px', textAlign:'center', color:'#63605a', fontSize:'12px' }}>Chargement…</div>
         ) : sp.total === 0 ? (
-          <div style={{ padding:'40px', textAlign:'center', color:'#8a8478', fontSize:'12px' }}>{list.length === 0 ? 'Aucun sous-traitant — ajoutez le premier !' : 'Aucun résultat'}</div>
+          <div style={{ padding:'40px', textAlign:'center', color:'#63605a', fontSize:'12px' }}>{list.length === 0 ? 'Aucun sous-traitant — ajoutez le premier !' : 'Aucun résultat'}</div>
         ) : sp.pageItems.map((st: any) => (
           <div key={st.id} style={{ background:'#fff', border:'1.5px solid #e4e6ea', boxShadow:'0 1px 4px rgba(0,0,0,0.06)' }}>
             <Link href={`/dashboard/sous-traitants/${st.id}`} style={{ display:'block', padding:'12px', textDecoration:'none', color:'inherit' }}>
@@ -150,7 +150,7 @@ export default function SousTraitantsPage() {
               <div className="mono" style={{ fontSize:'11px', color:'#5a564e', marginTop:'8px', display:'flex', flexDirection:'column', gap:'2px' }}>
                 {st.telephone && <span>{st.telephone}</span>}
                 {st.email && <span>{st.email}</span>}
-                {st.siret && <span style={{ color:'#8a8478' }}>SIRET {st.siret}</span>}
+                {st.siret && <span style={{ color:'#63605a' }}>SIRET {st.siret}</span>}
               </div>
             </Link>
             <div onClick={e => e.stopPropagation()} style={{ display:'flex', gap:'6px', padding:'0 12px 12px' }}>
@@ -173,9 +173,9 @@ export default function SousTraitantsPage() {
           </thead>
           <tbody>
             {loading ? (
-              <tr><td colSpan={7} style={{ padding:'40px', textAlign:'center', color:'#8a8478' }}>Chargement…</td></tr>
+              <tr><td colSpan={7} style={{ padding:'40px', textAlign:'center', color:'#63605a' }}>Chargement…</td></tr>
             ) : sp.total === 0 ? (
-              <tr><td colSpan={7} style={{ padding:'60px', textAlign:'center', color:'#8a8478' }}>
+              <tr><td colSpan={7} style={{ padding:'60px', textAlign:'center', color:'#63605a' }}>
                 {list.length === 0 ? 'Aucun sous-traitant — ajoutez le premier !' : 'Aucun résultat'}
               </td></tr>
             ) : sp.pageItems.map(st => (
@@ -187,23 +187,23 @@ export default function SousTraitantsPage() {
                 <td className="td">
                   {st.telephone ? (
                     <div style={{ display:'flex', alignItems:'center', gap:'5px', fontSize:'11px', fontFamily:'JetBrains Mono,monospace' }}>
-                      <Phone size={10} style={{ color:'#8a8478' }}/> {st.telephone}
+                      <Phone size={10} style={{ color:'#63605a' }}/> {st.telephone}
                     </div>
                   ) : '—'}
                 </td>
                 <td className="td">
                   {st.email ? (
                     <div style={{ display:'flex', alignItems:'center', gap:'5px', fontSize:'11px' }}>
-                      <Mail size={10} style={{ color:'#8a8478' }}/> {st.email}
+                      <Mail size={10} style={{ color:'#63605a' }}/> {st.email}
                     </div>
                   ) : '—'}
                 </td>
                 <td className="td">
-                  <span style={{ fontFamily:'JetBrains Mono,monospace', fontSize:'10px', color:'#8a8478' }}>
+                  <span style={{ fontFamily:'JetBrains Mono,monospace', fontSize:'10px', color:'#63605a' }}>
                     {st.siret ?? '—'}
                   </span>
                 </td>
-                <td className="td" style={{ fontSize:'11px', color:'#8a8478', fontStyle:'italic', maxWidth:'200px', overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap' }}>
+                <td className="td" style={{ fontSize:'11px', color:'#63605a', fontStyle:'italic', maxWidth:'200px', overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap' }}>
                   {st.notes ?? '—'}
                 </td>
                 <td className="td" onClick={e => e.stopPropagation()}>

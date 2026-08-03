@@ -19,11 +19,11 @@ interface Props {
 }
 
 const STATUTS = [
-  { val:'brouillon',  label:'Brouillon',  color:'#8a8478' },
+  { val:'brouillon',  label:'Brouillon',  color:'#63605a' },
   { val:'en_attente', label:'En attente', color:'#7a5c10' },
   { val:'confirme',   label:'Confirmé',   color:'#1e5e3a' },
   { val:'en_cours',   label:'En cours',   color:'#1e3f70' },
-  { val:'termine',    label:'Terminé',    color:'#8a8478' },
+  { val:'termine',    label:'Terminé',    color:'#63605a' },
   { val:'annule',     label:'Annulé',     color:'#9e2a2a' },
 ]
 

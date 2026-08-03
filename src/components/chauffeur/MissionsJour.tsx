@@ -18,7 +18,7 @@ type AppMode = 'chauffeur' | 'sous_traitant'
 const AppModeContext = createContext<AppMode>('chauffeur')
 
 // ── Design tokens ─────────────────────────────
-const GOLD = '#9a7a28', DARK = '#16130e', INK = '#16130e', MUTE = '#8a8478', SUB = '#6f6a60'
+const GOLD = '#9a7a28', DARK = '#16130e', INK = '#16130e', MUTE = '#63605a', SUB = '#6f6a60'
 const CREAM = '#f4f5f7', LINE = 'rgba(22,19,14,0.08)'
 const MAD = '#a6432a', MAD_SOFT = '#f8ece7', TRANS = '#1e3f70', TRANS_SOFT = '#e8eef8', GREEN = '#1e5e3a'
 const R = 16, RS = 11
@@ -53,7 +53,7 @@ const STATUTS: Record<string, { label: string; color: string; bg: string }> = {
   en_attente: { label: 'À venir',   color: '#7a5c10', bg: '#fdf3dc' },
   confirme:   { label: 'Confirmée', color: '#1e5e3a', bg: '#eaf4ee' },
   en_cours:   { label: 'En cours',  color: '#1e3f70', bg: '#e8eef8' },
-  termine:    { label: 'Terminée',  color: '#8a8478', bg: '#f0eeeb' },
+  termine:    { label: 'Terminée',  color: '#63605a', bg: '#f0eeeb' },
   annule:     { label: 'Annulée',   color: '#9e2a2a', bg: '#faeaea' },
 }
 

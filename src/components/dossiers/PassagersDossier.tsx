@@ -75,9 +75,9 @@ export default function PassagersDossier({ dossierId }: { dossierId: string }) {
         )}
 
         {loading ? (
-          <div style={{ padding: '16px', textAlign: 'center', color: '#8a8478', fontSize: '12px' }}>Chargement…</div>
+          <div style={{ padding: '16px', textAlign: 'center', color: '#63605a', fontSize: '12px' }}>Chargement…</div>
         ) : list.length === 0 ? (
-          <div style={{ padding: '14px', textAlign: 'center', color: '#8a8478', fontSize: '12px' }}>Aucun passager renseigné</div>
+          <div style={{ padding: '14px', textAlign: 'center', color: '#63605a', fontSize: '12px' }}>Aucun passager renseigné</div>
         ) : (
           <>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '5px' }}>
@@ -86,14 +86,14 @@ export default function PassagersDossier({ dossierId }: { dossierId: string }) {
                   <span style={{ fontSize: '15px' }}>{flag(p.nationalite) || '👤'}</span>
                   <div style={{ flex: 1, minWidth: 0 }}>
                     <span style={{ fontSize: '13px', fontWeight: 500, color: '#16130e' }}>{p.nom}</span>
-                    {p.telephone && <span style={{ fontSize: '10px', color: '#8a8478', marginLeft: '8px' }}>{p.telephone}</span>}
+                    {p.telephone && <span style={{ fontSize: '10px', color: '#63605a', marginLeft: '8px' }}>{p.telephone}</span>}
                   </div>
                   {p.nb_bagages > 0 && <span style={{ display: 'inline-flex', alignItems: 'center', gap: '3px', fontSize: '11px', color: '#5a564e' }}><Briefcase size={11} /> {p.nb_bagages}</span>}
                   <button onClick={() => remove(p.id)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#9e2a2a' }}><Trash2 size={12} /></button>
                 </div>
               ))}
             </div>
-            <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '14px', marginTop: '8px', fontSize: '11px', color: '#8a8478' }}>
+            <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '14px', marginTop: '8px', fontSize: '11px', color: '#63605a' }}>
               <span>{list.length} passager{list.length > 1 ? 's' : ''}</span>
               <span><Briefcase size={11} style={{ display: 'inline', verticalAlign: '-1px' }} /> {totalBagages} bagage{totalBagages > 1 ? 's' : ''}</span>
             </div>
