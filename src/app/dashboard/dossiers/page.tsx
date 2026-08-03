@@ -204,7 +204,7 @@ export default function DossiersPage() {
                     </span>
                   </td>
                   <td className="td">
-                    <span style={{ background:'#f5f2ed', border:'1px solid #e4e6ea', borderRadius:'12px', padding:'2px 8px', fontFamily:'monospace', fontSize:'10px', color:'#5a564e' }}>
+                    <span style={{ display:'inline-block', whiteSpace:'nowrap', background:'#f5f2ed', border:'1px solid #e4e6ea', borderRadius:'12px', padding:'2px 8px', fontFamily:'monospace', fontSize:'10px', color:'#5a564e' }}>
                       {d.nb_jours} j
                     </span>
                   </td>

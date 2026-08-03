@@ -72,12 +72,12 @@ export default function StatutDossierSelector({ dossierId, statut, onStatutChang
     <div ref={anchorRef} style={{ position:'relative', display:'inline-block' }} onClick={e => e.stopPropagation()}>
       <div
         onMouseDown={() => setOpen(o => !o)}
-        style={{ display:'inline-flex', alignItems:'center', gap:'6px', padding:'4px 10px 4px 8px', background:info.bg, border:`1.5px solid ${info.color}44`, cursor:'pointer', userSelect:'none' }}
+        style={{ display:'inline-flex', alignItems:'center', gap:'6px', padding:'4px 10px 4px 8px', background:info.bg, border:`1.5px solid ${info.color}44`, borderRadius:'999px', cursor:'pointer', userSelect:'none', whiteSpace:'nowrap' }}
         onMouseEnter={e => (e.currentTarget.style.opacity = '0.8')}
         onMouseLeave={e => (e.currentTarget.style.opacity = '1')}
       >
         <span style={{ width:'7px', height:'7px', borderRadius:'50%', background:info.dot, flexShrink:0, animation: current==='en_cours' ? 'blink 1.6s infinite' : 'none' }} />
-        <span style={{ fontSize:'10px', fontWeight:700, color:info.color }}>{info.label}</span>
+        <span style={{ fontSize:'10px', fontWeight:700, color:info.color, whiteSpace:'nowrap' }}>{info.label}</span>
         <span style={{ fontSize:'9px', color:info.color, opacity:0.5 }}>ℹ</span>
       </div>
 
