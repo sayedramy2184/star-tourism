@@ -121,10 +121,10 @@ export default function DispatchPage() {
 
       {/* Tableau missions (desktop) */}
       <div className="table-container only-desktop">
-        <table style={{ width: '100%', borderCollapse: 'collapse', minWidth: '900px' }}>
+        <table style={{ width: '100%', borderCollapse: 'collapse', minWidth: '680px' }}>
           <thead className="table-head">
             <tr>{['Mission', 'Type', 'Date · Heure', 'Client', 'Itinéraire', 'Véhicule', 'Chauffeur / Partenaire', 'Statut'].map((h, i) => (
-              <th key={i} className="th" style={i % 2 === 1 ? { background: 'rgba(0,0,0,0.1)' } : {}}>{h}</th>
+              <th key={i} className="th">{h}</th>
             ))}</tr>
           </thead>
           <tbody>

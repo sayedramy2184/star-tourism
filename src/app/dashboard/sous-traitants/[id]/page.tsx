@@ -300,7 +300,7 @@ export default function SousTraitantDetailPage() {
           <thead className="table-head">
             <tr>
               {['Dossier','Client','Date','Type','Chauffeur ST','Véhicule ST','Prix client','Coût ST','Marge','Paiement'].map((h,i) => (
-                <th key={h} className="th" style={i%2===1?{background:'rgba(0,0,0,0.1)'}:{}}>{h}</th>
+                <th key={h} className="th">{h}</th>
               ))}
             </tr>
           </thead>

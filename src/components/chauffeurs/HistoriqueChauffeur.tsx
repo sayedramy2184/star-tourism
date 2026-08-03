@@ -144,7 +144,7 @@ export default function HistoriqueChauffeur({ items }: { items: HistoItem[] }) {
           <thead className="table-head">
             <tr>
               {['Date','Type','Client / Dossier','Détails','Tarif HT','Statut'].map((h, i) => (
-                <th key={h} className="th" style={i%2===1?{background:'rgba(0,0,0,0.1)'}:{}}>{h}</th>
+                <th key={h} className="th">{h}</th>
               ))}
             </tr>
           </thead>

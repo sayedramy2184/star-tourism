@@ -167,7 +167,7 @@ export default function SousTraitantsPage() {
           <thead className="table-head">
             <tr>
               {['Société','Contact','Téléphone','Email','SIRET','Notes','Actions'].map((h,i) => (
-                <th key={h} className="th" style={i%2===1?{background:'rgba(0,0,0,0.1)'}:{}}>{h}</th>
+                <th key={h} className="th">{h}</th>
               ))}
             </tr>
           </thead>

@@ -237,7 +237,7 @@ export default function FacturationPage() {
           <thead className="table-head">
             <tr>
               {['N° Facture', 'Client', 'Dossier', 'Émission', 'Échéance', 'Montant TTC', 'Statut', ''].map((h, i) => (
-                <th key={i} className="th" style={i % 2 === 1 ? { background: 'rgba(0,0,0,0.1)' } : {}}>{h}</th>
+                <th key={i} className="th">{h}</th>
               ))}
             </tr>
           </thead>

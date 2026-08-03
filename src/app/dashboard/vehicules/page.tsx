@@ -294,7 +294,7 @@ export default function VehiculesPage() {
           <thead className="table-head">
             <tr>
               {['Véhicule','Plaque','Catégorie','Statut','Contrôle tech.','Assurance','Parc / Location','Actions'].map((h,i) => (
-                <th key={h} className="th" style={i%2===1?{background:'rgba(0,0,0,0.1)'}:{}}>{h}</th>
+                <th key={h} className="th">{h}</th>
               ))}
             </tr>
           </thead>

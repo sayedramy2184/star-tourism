@@ -82,7 +82,7 @@ export default async function LoueursPage() {
           <thead className="table-head">
             <tr>
               {['Loueur','Véhicules','Coût couru HT','Payé','Solde dû','Statut',''].map((h,i) => (
-                <th key={h} className="th" style={i%2===1?{background:'rgba(0,0,0,0.1)'}:{}}>{h}</th>
+                <th key={h} className="th">{h}</th>
               ))}
             </tr>
           </thead>

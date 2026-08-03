@@ -174,7 +174,7 @@ export default function DossiersPage() {
             <tr>
               {['N° Dossier','Client','Période','Durée','Prestations','Montant HT','Statut',''].map((h,i) => (
                 <th key={i} className="th"
-                  style={i%2===1 ? { background:'rgba(0,0,0,0.1)' } : {}}>
+>
                   {h}
                 </th>
               ))}

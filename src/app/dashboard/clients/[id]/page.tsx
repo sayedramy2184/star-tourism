@@ -123,7 +123,7 @@ export default async function ClientDetailPage({ params }: { params: { id: strin
             <table style={{ width: '100%', borderCollapse: 'collapse' }}>
               <thead className="table-head">
                 <tr>{['N°', 'Période', 'Prestations', 'Montant HT', 'Statut', ''].map((h, i) => (
-                  <th key={i} className="th" style={i % 2 === 1 ? { background: 'rgba(0,0,0,0.1)' } : {}}>{h}</th>
+                  <th key={i} className="th">{h}</th>
                 ))}</tr>
               </thead>
               <tbody>
