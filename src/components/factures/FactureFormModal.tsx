@@ -94,7 +94,7 @@ export default function FactureFormModal({ onDone, editId }: { onDone?: () => vo
       {open && (
         <div style={{ position: 'fixed', inset: 0, background: 'rgba(22,19,14,0.55)', zIndex: 200, display: 'flex', alignItems: 'center', justifyContent: 'center', backdropFilter: 'blur(3px)', padding: '16px' }}
           onClick={e => e.target === e.currentTarget && setOpen(false)}>
-          <div style={{ background: '#fff', border: '1.5px solid #b8b0a4', width: '720px', maxWidth: '97vw', maxHeight: '92vh', overflowY: 'auto', boxShadow: '0 24px 60px rgba(0,0,0,0.2)' }}>
+          <div style={{ background: '#fff', border: '1.5px solid #e4e6ea', width: '720px', maxWidth: '97vw', maxHeight: '92vh', overflowY: 'auto', boxShadow: '0 24px 60px rgba(0,0,0,0.2)' }}>
             <div style={{ background: '#16130e', padding: '16px 24px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', position: 'sticky', top: 0, zIndex: 5 }}>
               <span style={{ fontFamily: 'Cormorant Garamond,serif', fontSize: '19px', fontWeight: 500, color: '#fff', letterSpacing: '1px' }}>{isEdit ? 'Éditer la facture' : 'Nouvelle facture manuelle'}</span>
               <button onClick={() => setOpen(false)} style={{ background: 'none', border: 'none', color: 'rgba(255,255,255,0.4)', cursor: 'pointer' }}><X size={18} /></button>
@@ -156,7 +156,7 @@ export default function FactureFormModal({ onDone, editId }: { onDone?: () => vo
                 </div>
               </div>
 
-              <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '8px', marginTop: '16px', paddingTop: '16px', borderTop: '1.5px solid #b8b0a4' }}>
+              <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '8px', marginTop: '16px', paddingTop: '16px', borderTop: '1.5px solid #e4e6ea' }}>
                 <button className="btn-ghost" onClick={() => setOpen(false)}>Annuler</button>
                 <button className="btn-primary" onClick={submit} disabled={saving}>{saving ? 'Enregistrement…' : isEdit ? 'Enregistrer' : 'Créer la facture'}</button>
               </div>

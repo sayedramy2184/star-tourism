@@ -103,7 +103,7 @@ export default function VehiculeEditModal({ vehicule }: { vehicule: Vehicule }) 
       {open && (
         <div style={{ position: 'fixed', inset: 0, background: 'rgba(22,19,14,0.55)', zIndex: 200, display: 'flex', alignItems: 'center', justifyContent: 'center', backdropFilter: 'blur(3px)', padding: '16px' }}
           onClick={e => e.target === e.currentTarget && setOpen(false)}>
-          <div style={{ background: '#fff', border: '1.5px solid #b8b0a4', width: '560px', maxWidth: '96vw', maxHeight: '92vh', overflowY: 'auto', boxShadow: '0 24px 60px rgba(0,0,0,0.2)' }}>
+          <div style={{ background: '#fff', border: '1.5px solid #e4e6ea', width: '560px', maxWidth: '96vw', maxHeight: '92vh', overflowY: 'auto', boxShadow: '0 24px 60px rgba(0,0,0,0.2)' }}>
             <div style={{ background: '#16130e', padding: '16px 24px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', position: 'sticky', top: 0 }}>
               <span style={{ fontFamily: 'Cormorant Garamond,serif', fontSize: '19px', fontWeight: 500, color: '#fff', letterSpacing: '1px' }}>Modifier le véhicule</span>
               <button onClick={() => setOpen(false)} style={{ background: 'none', border: 'none', color: 'rgba(255,255,255,0.4)', cursor: 'pointer' }}><X size={18} /></button>
@@ -145,13 +145,13 @@ export default function VehiculeEditModal({ vehicule }: { vehicule: Vehicule }) 
                 <div><label className="form-label">Kilométrage</label><input type="number" className="input" min={0} value={form.kilometrage} onChange={e => setForm({ ...form, kilometrage: Number(e.target.value) })} /></div>
               </div>
               {/* ── Parc & location ── */}
-              <div style={{ fontSize:'9px', fontWeight:700, letterSpacing:'2.5px', textTransform:'uppercase', color:'#9a7a28', marginBottom:'12px', paddingBottom:'6px', borderBottom:'1px solid #b8b0a4' }}>Parc & location</div>
+              <div style={{ fontSize:'9px', fontWeight:700, letterSpacing:'2.5px', textTransform:'uppercase', color:'#9a7a28', marginBottom:'12px', paddingBottom:'6px', borderBottom:'1px solid #e4e6ea' }}>Parc & location</div>
               <div style={{ display:'grid', gridTemplateColumns:'repeat(4,1fr)', gap:'6px', marginBottom:'12px' }}>
                 {Object.entries(MODES).map(([val, m]) => (
                   <button key={val} type="button" onClick={() => setForm({ ...form, mode_acquisition: val })}
                     style={{ padding:'8px 6px', fontSize:'10px', fontWeight:700, textTransform:'uppercase', letterSpacing:'0.5px', cursor:'pointer',
                       background: form.mode_acquisition === val ? m.bg : '#fff',
-                      border: `1.5px solid ${form.mode_acquisition === val ? m.color : '#b8b0a4'}`,
+                      border: `1.5px solid ${form.mode_acquisition === val ? m.color : '#e4e6ea'}`,
                       color: form.mode_acquisition === val ? m.color : '#5a564e' }}>
                     {m.short}
                   </button>
@@ -192,7 +192,7 @@ export default function VehiculeEditModal({ vehicule }: { vehicule: Vehicule }) 
                 <label className="form-label">Notes</label>
                 <textarea className="textarea" value={form.notes} onChange={e => setForm({ ...form, notes: e.target.value })} />
               </div>
-              <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '8px', paddingTop: '16px', borderTop: '1.5px solid #b8b0a4' }}>
+              <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '8px', paddingTop: '16px', borderTop: '1.5px solid #e4e6ea' }}>
                 <button type="button" className="btn-ghost" onClick={() => setOpen(false)}>Annuler</button>
                 <button type="submit" className="btn-primary" disabled={saving}>{saving ? 'Sauvegarde…' : 'Sauvegarder'}</button>
               </div>

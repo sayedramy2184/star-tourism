@@ -19,7 +19,7 @@ const AppModeContext = createContext<AppMode>('chauffeur')
 
 // ── Design tokens ─────────────────────────────
 const GOLD = '#9a7a28', DARK = '#16130e', INK = '#16130e', MUTE = '#8a8478', SUB = '#6f6a60'
-const CREAM = '#ede9e2', LINE = 'rgba(22,19,14,0.08)'
+const CREAM = '#f4f5f7', LINE = 'rgba(22,19,14,0.08)'
 const MAD = '#a6432a', MAD_SOFT = '#f8ece7', TRANS = '#1e3f70', TRANS_SOFT = '#e8eef8', GREEN = '#1e5e3a'
 const R = 16, RS = 11
 const CARD: React.CSSProperties = {

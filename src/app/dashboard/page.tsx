@@ -54,7 +54,7 @@ export default function DashboardHome() {
             >
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                 <Icon size={16} style={{ color: '#9a7a28' }} />
-                <ArrowUpRight size={14} style={{ color: '#b8b0a4' }} />
+                <ArrowUpRight size={14} style={{ color: '#9aa0aa' }} />
               </div>
               <div>
                 <div style={{ fontFamily: 'Cormorant Garamond,serif', fontSize: '30px', fontWeight: 500, color: '#16130e', lineHeight: 1 }}>

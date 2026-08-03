@@ -106,7 +106,7 @@ export default function DossierPaieCard({ chauffeurId, dossier, dossierHref }: {
   return (
     <div className="card" style={{ marginBottom: '12px' }}>
       {/* En-tête dossier */}
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '10px', padding: '11px 16px', borderBottom: '1px solid #ede9e2', flexWrap: 'wrap' }}>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '10px', padding: '11px 16px', borderBottom: '1px solid #f4f5f7', flexWrap: 'wrap' }}>
         <div style={{ minWidth: 0 }}>
           <Link href={dossierHref} style={{ fontFamily: 'JetBrains Mono,monospace', fontSize: '12px', color: '#1e3f70', fontWeight: 600, textDecoration: 'none' }}>{dossier.numero}</Link>
           <span style={{ fontSize: '12px', color: '#5a564e', marginLeft: '10px' }}>{dossier.clientNom}</span>
@@ -130,7 +130,7 @@ export default function DossierPaieCard({ chauffeurId, dossier, dossierHref }: {
             {dossier.unites.some(u => !u.isDefault) && <span style={{ fontSize: '9px', color: '#9a7a28', marginLeft: '8px', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Tarif ajusté</span>}
           </div>
         ) : (
-          <div style={{ background: '#faf9f7', border: '1px solid #ede9e2', padding: '10px 12px', marginBottom: '12px' }}>
+          <div style={{ background: '#faf9f7', border: '1px solid #f4f5f7', padding: '10px 12px', marginBottom: '12px' }}>
             {/* Appliquer à tous */}
             <div style={{ display: 'flex', gap: '6px', alignItems: 'center', marginBottom: '10px', flexWrap: 'wrap' }}>
               <span style={{ fontSize: '10px', color: '#8a8478' }}>Appliquer à tous&nbsp;:</span>
@@ -153,7 +153,7 @@ export default function DossierPaieCard({ chauffeurId, dossier, dossierHref }: {
                 </div>
               ))}
             </div>
-            <div style={{ display: 'flex', gap: '6px', alignItems: 'center', marginTop: '10px', paddingTop: '10px', borderTop: '1px solid #ede9e2' }}>
+            <div style={{ display: 'flex', gap: '6px', alignItems: 'center', marginTop: '10px', paddingTop: '10px', borderTop: '1px solid #f4f5f7' }}>
               <button onClick={saveTarifs} className="btn-primary" style={{ padding: '5px 12px', fontSize: '11px' }} disabled={savingTarif}>
                 <Check size={11} /> {savingTarif ? '…' : 'Enregistrer les tarifs'}
               </button>
@@ -187,7 +187,7 @@ export default function DossierPaieCard({ chauffeurId, dossier, dossierHref }: {
         {list.length > 0 && (
           <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', marginBottom: '10px' }}>
             {list.map(p => (
-              <div key={p.id} style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '6px 9px', background: '#faf9f7', border: '1px solid #ede9e2' }}>
+              <div key={p.id} style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '6px 9px', background: '#faf9f7', border: '1px solid #f4f5f7' }}>
                 <div style={{ flex: 1, minWidth: 0 }}>
                   <span style={{ fontFamily: 'JetBrains Mono,monospace', fontSize: '12px', fontWeight: 600, color: '#1e5e3a' }}>{fmtEur(Number(p.montant))}</span>
                   <span style={{ fontSize: '10px', color: '#8a8478', marginLeft: '8px' }}>{format(parseISO(p.date_paiement), 'dd/MM/yyyy', { locale: fr })}</span>
@@ -215,7 +215,7 @@ export default function DossierPaieCard({ chauffeurId, dossier, dossierHref }: {
       {open && (
         <div style={{ position: 'fixed', inset: 0, background: 'rgba(22,19,14,0.55)', zIndex: 200, display: 'flex', alignItems: 'center', justifyContent: 'center', backdropFilter: 'blur(3px)', padding: '16px' }}
           onClick={e => e.target === e.currentTarget && setOpen(false)}>
-          <div style={{ background: '#fff', border: '1.5px solid #b8b0a4', width: '440px', maxWidth: '96vw', boxShadow: '0 24px 60px rgba(0,0,0,0.2)' }}>
+          <div style={{ background: '#fff', border: '1.5px solid #e4e6ea', width: '440px', maxWidth: '96vw', boxShadow: '0 24px 60px rgba(0,0,0,0.2)' }}>
             <div style={{ background: '#16130e', padding: '16px 24px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
               <span style={{ fontFamily: 'Cormorant Garamond,serif', fontSize: '18px', fontWeight: 500, color: '#fff', letterSpacing: '1px' }}>Versement · {dossier.numero}</span>
               <button onClick={() => setOpen(false)} style={{ background: 'none', border: 'none', color: 'rgba(255,255,255,0.4)', cursor: 'pointer' }}><X size={18} /></button>
@@ -237,7 +237,7 @@ export default function DossierPaieCard({ chauffeurId, dossier, dossierHref }: {
                 <label className="form-label">Note</label>
                 <input className="input" value={form.note} onChange={e => setForm({ ...form, note: e.target.value })} placeholder="Acompte, régularisation…" />
               </div>
-              <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '8px', paddingTop: '16px', borderTop: '1.5px solid #b8b0a4' }}>
+              <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '8px', paddingTop: '16px', borderTop: '1.5px solid #e4e6ea' }}>
                 <button type="button" className="btn-ghost" onClick={() => setOpen(false)}>Annuler</button>
                 <button type="submit" className="btn-primary" disabled={saving}>{saving ? 'Enregistrement…' : 'Enregistrer'}</button>
               </div>

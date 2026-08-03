@@ -37,7 +37,7 @@ function DropdownStatut({ anchorRef, current, onSelect }: {
   if (!pos) return null
 
   return (
-    <div style={{ position:'absolute', top:pos.top, left:pos.left, zIndex:9999, minWidth:'200px', background:'#fff', border:'1.5px solid #b8b0a4', boxShadow:'0 8px 28px rgba(0,0,0,0.18)' }}>
+    <div style={{ position:'absolute', top:pos.top, left:pos.left, zIndex:9999, minWidth:'200px', background:'#fff', border:'1.5px solid #e4e6ea', boxShadow:'0 8px 28px rgba(0,0,0,0.18)' }}>
       <div style={{ padding:'6px 14px 4px', fontSize:'8px', fontWeight:700, letterSpacing:'2px', textTransform:'uppercase', color:'#8a8478', borderBottom:'1px solid #f5f2ed' }}>
         Changer le statut
       </div>
@@ -65,7 +65,7 @@ function DropdownStatut({ anchorRef, current, onSelect }: {
             <div key={s} style={{ display:'flex', alignItems:'center', gap:'6px', padding:'3px 0', fontSize:'10px', color:si.color, opacity:0.55 }}>
               <span style={{ width:'6px', height:'6px', borderRadius:'50%', background:si.dot, flexShrink:0 }} />
               {si.label}
-              <span style={{ fontSize:'9px', color:'#b8b0a4', marginLeft:'auto' }}>calculé selon l'heure</span>
+              <span style={{ fontSize:'9px', color:'#9aa0aa', marginLeft:'auto' }}>calculé selon l'heure</span>
             </div>
           )
         })}
@@ -145,9 +145,9 @@ function StatutSelector({ prestation }: { prestation: any }) {
       <button
         onMouseDown={() => !saving && setOpen(o => !o)}
         disabled={saving}
-        style={{ background:'none', border:'1.5px solid #b8b0a4', padding:'3px 8px', fontSize:'11px', fontWeight:700, cursor:'pointer', color:'#5a564e', lineHeight:1 }}
+        style={{ background:'none', border:'1.5px solid #e4e6ea', padding:'3px 8px', fontSize:'11px', fontWeight:700, cursor:'pointer', color:'#5a564e', lineHeight:1 }}
         onMouseEnter={e => { e.currentTarget.style.borderColor='#9a7a28'; e.currentTarget.style.color='#9a7a28' }}
-        onMouseLeave={e => { e.currentTarget.style.borderColor='#b8b0a4'; e.currentTarget.style.color='#5a564e' }}
+        onMouseLeave={e => { e.currentTarget.style.borderColor='#e4e6ea'; e.currentTarget.style.color='#5a564e' }}
       >
         ▾
       </button>
@@ -413,7 +413,7 @@ export default function PrestationCard({ p, dossierId, passagers = [] }: { p: an
       )}
 
       {/* Header */}
-      <div style={{ display:'flex', alignItems:'stretch', borderBottom:'1.5px solid #b8b0a4' }}>
+      <div style={{ display:'flex', alignItems:'stretch', borderBottom:'1.5px solid #e4e6ea' }}>
         <div style={{ width:'5px', background:typeColor, flexShrink:0 }} />
         <div style={{ flex:1, padding:'10px 16px', display:'flex', alignItems:'center', gap:'14px', flexWrap:'wrap' }}>
           <span style={{ fontFamily:'JetBrains Mono,monospace', fontSize:'10px', color:'#8a8478', background:'#f5f2ed', border:'1px solid #d8d2c8', padding:'2px 8px' }}>
@@ -428,7 +428,7 @@ export default function PrestationCard({ p, dossierId, passagers = [] }: { p: an
               : format(new Date(p.date_debut),'dd/MM/yyyy',{locale:fr})}
           </span>
           {p.nb_jours > 1 && (
-            <span style={{ background:'#f5f2ed', border:'1px solid #b8b0a4', padding:'2px 9px', fontFamily:'JetBrains Mono,monospace', fontSize:'10px', color:'#5a564e' }}>
+            <span style={{ background:'#f5f2ed', border:'1px solid #e4e6ea', padding:'2px 9px', fontFamily:'JetBrains Mono,monospace', fontSize:'10px', color:'#5a564e' }}>
               {p.nb_jours} jours
             </span>
           )}
@@ -471,7 +471,7 @@ export default function PrestationCard({ p, dossierId, passagers = [] }: { p: an
               <select
                 value={chauffeurTransfert}
                 onChange={e => affecterChauffeurTransfert(e.target.value)}
-                style={{ background: !chauffeurTransfert ? '#fff8e8' : '#fff', border:`1px solid ${!chauffeurTransfert ? '#9a7a28' : '#b8b0a4'}`, padding:'5px 8px', fontSize:'11px', color:'#16130e', outline:'none', width:'100%', cursor:'pointer' }}>
+                style={{ background: !chauffeurTransfert ? '#fff8e8' : '#fff', border:`1px solid ${!chauffeurTransfert ? '#9a7a28' : '#e4e6ea'}`, padding:'5px 8px', fontSize:'11px', color:'#16130e', outline:'none', width:'100%', cursor:'pointer' }}>
                 <option value="">— Non affecté —</option>
                 {chauffeurs.map((c: any) => {
                   const slots = (dispo.chauffeurs[p.date_debut] ?? []).filter((iv: any) => iv.id === c.id)
@@ -514,7 +514,7 @@ export default function PrestationCard({ p, dossierId, passagers = [] }: { p: an
 
         {/* Passagers affectés à ce véhicule */}
         {passagers.length > 0 && (
-          <div style={{ marginBottom:'10px', padding:'8px 12px', background:'#faf9f7', border:'1px solid #ede9e2' }}>
+          <div style={{ marginBottom:'10px', padding:'8px 12px', background:'#faf9f7', border:'1px solid #f4f5f7' }}>
             <div style={{ fontSize:'8px', fontWeight:600, letterSpacing:'2px', textTransform:'uppercase', color:'#8a8478', marginBottom:'6px' }}>Passagers dans ce véhicule</div>
             <div style={{ display:'flex', flexWrap:'wrap', gap:'6px' }}>
               {passagers.map((pax: any) => {
@@ -532,7 +532,7 @@ export default function PrestationCard({ p, dossierId, passagers = [] }: { p: an
 
         {/* Véhicule */}
         <div style={{
-          background:'#f5f2ed', border:'1px solid #b8b0a4', padding:'10px 14px',
+          background:'#f5f2ed', border:'1px solid #e4e6ea', padding:'10px 14px',
           display:'flex', alignItems:'center', gap:'12px', marginBottom:'10px', flexWrap:'wrap',
           borderLeft: p.vehicule_ext ? '3px solid #4a2a6e' : stLocal.sous_traitant_id ? '3px solid #7a2a8a' : p.affectation_differee ? '3px solid #7a5c10' : '3px solid #1e5e3a',
         }}>
@@ -687,7 +687,7 @@ export default function PrestationCard({ p, dossierId, passagers = [] }: { p: an
                       title={stJour ? 'Jour sous-traité' : ''}
                       style={{
                         background: stJour ? '#f0ebfa' : missing ? '#fff8e8' : '#fff',
-                        border: `1px solid ${stJour ? '#7a2a8a' : missing ? '#9a7a28' : '#b8b0a4'}`,
+                        border: `1px solid ${stJour ? '#7a2a8a' : missing ? '#9a7a28' : '#e4e6ea'}`,
                         padding:'4px 8px', fontSize:'11px', color:'#16130e',
                         outline:'none', width:'100%', cursor:'pointer',
                       }}>
@@ -715,7 +715,7 @@ export default function PrestationCard({ p, dossierId, passagers = [] }: { p: an
                       title={overridden ? 'Véhicule spécifique à ce jour' : 'Utilise le véhicule de la prestation'}
                       style={{
                         background: overridden ? '#eef4fb' : '#fff',
-                        border: `1px solid ${overridden ? '#1e3f70' : '#b8b0a4'}`,
+                        border: `1px solid ${overridden ? '#1e3f70' : '#e4e6ea'}`,
                         padding:'4px 8px', fontSize:'11px', color:'#16130e',
                         outline:'none', width:'100%', cursor:'pointer',
                       }}>
@@ -736,7 +736,7 @@ export default function PrestationCard({ p, dossierId, passagers = [] }: { p: an
               )
             })}
             </>)}
-            <div style={{ display:'flex', justifyContent:'space-between', padding:'8px 8px 0', borderTop:'1.5px solid #b8b0a4', marginTop:'4px' }}>
+            <div style={{ display:'flex', justifyContent:'space-between', padding:'8px 8px 0', borderTop:'1.5px solid #e4e6ea', marginTop:'4px' }}>
               <span style={{ fontSize:'9px', fontWeight:600, letterSpacing:'1.5px', textTransform:'uppercase', color:'#8a8478' }}>
                 Sous-total · {jours.length} j
               </span>

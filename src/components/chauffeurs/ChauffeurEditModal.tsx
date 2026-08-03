@@ -15,7 +15,7 @@ const STATUTS: Record<string, { label: string; color: string; bg: string }> = {
 const d = (s: string | null | undefined) => s?.slice(0, 10) ?? ''
 
 function Sep({ label }: { label: string }) {
-  return <div style={{ fontSize: '9px', fontWeight: 700, letterSpacing: '2.5px', textTransform: 'uppercase', color: '#9a7a28', margin: '18px 0 10px', paddingBottom: '6px', borderBottom: '1px solid #b8b0a4' }}>{label}</div>
+  return <div style={{ fontSize: '9px', fontWeight: 700, letterSpacing: '2.5px', textTransform: 'uppercase', color: '#9a7a28', margin: '18px 0 10px', paddingBottom: '6px', borderBottom: '1px solid #e4e6ea' }}>{label}</div>
 }
 
 export default function ChauffeurEditModal({ chauffeur }: { chauffeur: any }) {
@@ -77,7 +77,7 @@ export default function ChauffeurEditModal({ chauffeur }: { chauffeur: any }) {
       {open && (
         <div style={{ position: 'fixed', inset: 0, background: 'rgba(22,19,14,0.55)', zIndex: 200, display: 'flex', alignItems: 'center', justifyContent: 'center', backdropFilter: 'blur(3px)', padding: '16px' }}
           onClick={e => e.target === e.currentTarget && setOpen(false)}>
-          <div style={{ background: '#fff', border: '1.5px solid #b8b0a4', width: '640px', maxWidth: '96vw', maxHeight: '92vh', overflowY: 'auto', boxShadow: '0 24px 60px rgba(0,0,0,0.2)' }}>
+          <div style={{ background: '#fff', border: '1.5px solid #e4e6ea', width: '640px', maxWidth: '96vw', maxHeight: '92vh', overflowY: 'auto', boxShadow: '0 24px 60px rgba(0,0,0,0.2)' }}>
             <div style={{ background: '#16130e', padding: '16px 24px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', position: 'sticky', top: 0, zIndex: 5 }}>
               <span style={{ fontFamily: 'Cormorant Garamond,serif', fontSize: '19px', fontWeight: 500, color: '#fff', letterSpacing: '1px' }}>Fiche chauffeur</span>
               <button onClick={() => setOpen(false)} style={{ background: 'none', border: 'none', color: 'rgba(255,255,255,0.4)', cursor: 'pointer' }}><X size={18} /></button>
@@ -114,7 +114,7 @@ export default function ChauffeurEditModal({ chauffeur }: { chauffeur: any }) {
                   <div style={{ display: 'flex', gap: '6px' }}>
                     {[[true, 'Interne'], [false, 'Partenaire']].map(([v, l]) => (
                       <button type="button" key={String(v)} onClick={() => setF({ ...f, interne: v as boolean })}
-                        style={{ flex: 1, padding: '8px', fontSize: '11px', fontWeight: 600, cursor: 'pointer', background: f.interne === v ? '#16130e' : '#fff', border: `1.5px solid ${f.interne === v ? '#16130e' : '#b8b0a4'}`, color: f.interne === v ? '#fff' : '#5a564e' }}>{l as string}</button>
+                        style={{ flex: 1, padding: '8px', fontSize: '11px', fontWeight: 600, cursor: 'pointer', background: f.interne === v ? '#16130e' : '#fff', border: `1.5px solid ${f.interne === v ? '#16130e' : '#e4e6ea'}`, color: f.interne === v ? '#fff' : '#5a564e' }}>{l as string}</button>
                     ))}
                   </div>
                 </div>
@@ -139,7 +139,7 @@ export default function ChauffeurEditModal({ chauffeur }: { chauffeur: any }) {
                 {LANGUES.map(l => {
                   const on = f.langues.includes(l.key)
                   return <button type="button" key={l.key} onClick={() => setF({ ...f, langues: toggle(f.langues, l.key) })}
-                    style={{ padding: '6px 12px', fontSize: '11px', fontWeight: 600, cursor: 'pointer', background: on ? '#fdf6e3' : '#fff', border: `1.5px solid ${on ? '#9a7a28' : '#b8b0a4'}`, color: on ? '#9a7a28' : '#5a564e' }}>{l.label}</button>
+                    style={{ padding: '6px 12px', fontSize: '11px', fontWeight: 600, cursor: 'pointer', background: on ? '#fdf6e3' : '#fff', border: `1.5px solid ${on ? '#9a7a28' : '#e4e6ea'}`, color: on ? '#9a7a28' : '#5a564e' }}>{l.label}</button>
                 })}
               </div>
 
@@ -148,7 +148,7 @@ export default function ChauffeurEditModal({ chauffeur }: { chauffeur: any }) {
                 {COMPETENCES.map(c => {
                   const on = f.competences.includes(c.key)
                   return <button type="button" key={c.key} onClick={() => setF({ ...f, competences: toggle(f.competences, c.key) })}
-                    style={{ padding: '6px 12px', fontSize: '11px', fontWeight: 600, cursor: 'pointer', background: on ? '#e8eef8' : '#fff', border: `1.5px solid ${on ? '#1e3f70' : '#b8b0a4'}`, color: on ? '#1e3f70' : '#5a564e' }}>{c.label}</button>
+                    style={{ padding: '6px 12px', fontSize: '11px', fontWeight: 600, cursor: 'pointer', background: on ? '#e8eef8' : '#fff', border: `1.5px solid ${on ? '#1e3f70' : '#e4e6ea'}`, color: on ? '#1e3f70' : '#5a564e' }}>{c.label}</button>
                 })}
               </div>
 
@@ -157,7 +157,7 @@ export default function ChauffeurEditModal({ chauffeur }: { chauffeur: any }) {
                 <textarea className="textarea" value={f.notes} onChange={e => setF({ ...f, notes: e.target.value })} />
               </div>
 
-              <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '8px', paddingTop: '16px', marginTop: '8px', borderTop: '1.5px solid #b8b0a4' }}>
+              <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '8px', paddingTop: '16px', marginTop: '8px', borderTop: '1.5px solid #e4e6ea' }}>
                 <button type="button" className="btn-ghost" onClick={() => setOpen(false)}>Annuler</button>
                 <button type="submit" className="btn-primary" disabled={saving}>{saving ? 'Sauvegarde…' : 'Sauvegarder'}</button>
               </div>

@@ -175,7 +175,7 @@ export default function ChauffeursPage() {
           const vtc = docStatus(c.vtc_card_expiry); const permis = docStatus(c.permis_expiry)
           const st = STATUTS[c.statut]; const initials = `${c.prenom[0]}${c.nom[0]}`.toUpperCase()
           return (
-            <div key={c.id} style={{ background:'#fff', border:'1.5px solid #b8b0a4', boxShadow:'0 1px 4px rgba(0,0,0,0.06)' }}>
+            <div key={c.id} style={{ background:'#fff', border:'1.5px solid #e4e6ea', boxShadow:'0 1px 4px rgba(0,0,0,0.06)' }}>
               <Link href={`/dashboard/chauffeurs/${c.id}`} style={{ display:'block', padding:'12px', textDecoration:'none', color:'inherit' }}>
                 <div style={{ display:'flex', alignItems:'center', gap:'10px' }}>
                   <div style={{ width:'36px', height:'36px', borderRadius:'50%', flexShrink:0, background:st.bg, border:`1.5px solid ${st.color}`, display:'flex', alignItems:'center', justifyContent:'center', fontSize:'12px', fontWeight:700, color:st.color }}>{initials}</div>
@@ -351,7 +351,7 @@ export default function ChauffeursPage() {
                         style={{
                           padding:'6px 14px', fontSize:'10px', fontWeight:700, letterSpacing:'0.5px',
                           background: form.statut === s ? STATUTS[s].bg : '#ffffff',
-                          border: `1.5px solid ${form.statut === s ? STATUTS[s].color : '#b8b0a4'}`,
+                          border: `1.5px solid ${form.statut === s ? STATUTS[s].color : '#e4e6ea'}`,
                           color: form.statut === s ? STATUTS[s].color : '#5a564e',
                           cursor:'pointer', transition:'all 0.14s',
                         }}>
@@ -391,7 +391,7 @@ export default function ChauffeursPage() {
                   placeholder="Langues parlées, spécialités, informations particulières…" />
               </div>
 
-              <div style={{ display:'flex', justifyContent:'flex-end', gap:'8px', marginTop:'16px', paddingTop:'16px', borderTop:'1.5px solid #b8b0a4' }}>
+              <div style={{ display:'flex', justifyContent:'flex-end', gap:'8px', marginTop:'16px', paddingTop:'16px', borderTop:'1.5px solid #e4e6ea' }}>
                 <button type="button" className="btn-ghost" onClick={() => setShowForm(false)}>Annuler</button>
                 <button type="submit" className="btn-primary" disabled={saving}>
                   {saving ? 'Création…' : 'Créer le chauffeur'}
@@ -422,7 +422,7 @@ function DocBadge({ status }: { status: ReturnType<typeof docStatus> }) {
 function FormSection({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <div style={{ marginBottom:'16px' }}>
-      <div style={{ fontSize:'9px', fontWeight:700, letterSpacing:'2.5px', textTransform:'uppercase', color:'#9a7a28', marginBottom:'12px', paddingBottom:'6px', borderBottom:'1px solid #b8b0a4' }}>
+      <div style={{ fontSize:'9px', fontWeight:700, letterSpacing:'2.5px', textTransform:'uppercase', color:'#9a7a28', marginBottom:'12px', paddingBottom:'6px', borderBottom:'1px solid #e4e6ea' }}>
         {label}
       </div>
       {children}
@@ -454,7 +454,7 @@ function StatutToggle({ chauffeur, onChange }: { chauffeur: Chauffeur; onChange:
         className="btn-ghost"
         style={{
           padding:'4px 10px', fontSize:'10px',
-          borderColor: isManuel ? STATUTS[chauffeur.statut].color : '#b8b0a4',
+          borderColor: isManuel ? STATUTS[chauffeur.statut].color : '#e4e6ea',
           color: isManuel ? STATUTS[chauffeur.statut].color : '#5a564e',
         }}
         onMouseDown={() => setOpen(o => !o)}
@@ -469,11 +469,11 @@ function StatutToggle({ chauffeur, onChange }: { chauffeur: Chauffeur; onChange:
 
           <div style={{
             position:'absolute', right:0, top:'100%', zIndex:50, marginTop:'4px',
-            background:'#fff', border:'1.5px solid #b8b0a4',
+            background:'#fff', border:'1.5px solid #e4e6ea',
             boxShadow:'0 6px 20px rgba(0,0,0,0.15)', minWidth:'200px',
           }}>
             {/* Statuts automatiques — info seulement */}
-            <div style={{ padding:'8px 14px 6px', borderBottom:'1px solid #ede9e2' }}>
+            <div style={{ padding:'8px 14px 6px', borderBottom:'1px solid #f4f5f7' }}>
               <div style={{ fontSize:'8px', fontWeight:700, letterSpacing:'1.5px', textTransform:'uppercase', color:'#8a8478', marginBottom:'6px' }}>
                 Automatiques
               </div>
@@ -481,7 +481,7 @@ function StatutToggle({ chauffeur, onChange }: { chauffeur: Chauffeur; onChange:
                 <div key={s} style={{ padding:'4px 8px', fontSize:'11px', fontWeight:600, color:STATUTS[s].color, opacity:0.5, display:'flex', alignItems:'center', gap:'6px' }}>
                   <span style={{ width:'6px', height:'6px', borderRadius:'50%', background:STATUTS[s].color, flexShrink:0 }} />
                   {STATUTS[s].label}
-                  <span style={{ fontSize:'9px', color:'#b8b0a4', fontWeight:400, marginLeft:'auto' }}>auto</span>
+                  <span style={{ fontSize:'9px', color:'#9aa0aa', fontWeight:400, marginLeft:'auto' }}>auto</span>
                 </div>
               ))}
             </div>
@@ -515,7 +515,7 @@ function StatutToggle({ chauffeur, onChange }: { chauffeur: Chauffeur; onChange:
                   onMouseDown={() => changeStatut('disponible')}
                   style={{
                     padding:'7px 8px', marginTop:'4px', fontSize:'11px', fontWeight:600,
-                    color:'#1e5e3a', cursor:'pointer', borderTop:'1px solid #ede9e2',
+                    color:'#1e5e3a', cursor:'pointer', borderTop:'1px solid #f4f5f7',
                     display:'flex', alignItems:'center', gap:'6px', transition:'background 0.1s',
                   }}
                   onMouseEnter={e => (e.currentTarget.style.background = '#eaf4ee')}

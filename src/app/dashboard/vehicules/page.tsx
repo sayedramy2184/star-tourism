@@ -266,7 +266,7 @@ export default function VehiculesPage() {
           const stt = statutAffiche(v); const m = MODES[v.mode_acquisition] ?? MODES.propriete
           const ct = docAlert(v.ct_date); const ass = docAlert(v.assurance_date); const ca = contratAlert(v.contrat_fin)
           return (
-            <Link key={v.id} href={`/dashboard/vehicules/${v.id}`} style={{ display:'block', background:'#fff', border:'1.5px solid #b8b0a4', boxShadow:'0 1px 4px rgba(0,0,0,0.06)', padding:'12px', textDecoration:'none', color:'inherit' }}>
+            <Link key={v.id} href={`/dashboard/vehicules/${v.id}`} style={{ display:'block', background:'#fff', border:'1.5px solid #e4e6ea', boxShadow:'0 1px 4px rgba(0,0,0,0.06)', padding:'12px', textDecoration:'none', color:'inherit' }}>
               <div style={{ display:'flex', alignItems:'flex-start', justifyContent:'space-between', gap:'8px' }}>
                 <div style={{ minWidth:0 }}>
                   <div style={{ fontFamily:'Cormorant Garamond,serif', fontSize:'16px', fontWeight:500, color:'#16130e' }}>{v.marque} {v.modele}</div>
@@ -323,7 +323,7 @@ export default function VehiculesPage() {
                     )}
                   </td>
                   <td className="td">
-                    <span style={{ fontFamily:'JetBrains Mono,monospace', fontSize:'12px', letterSpacing:'1.5px', background:'#f5f2ed', border:'1px solid #b8b0a4', padding:'3px 8px' }}>
+                    <span style={{ fontFamily:'JetBrains Mono,monospace', fontSize:'12px', letterSpacing:'1.5px', background:'#f5f2ed', border:'1px solid #e4e6ea', padding:'3px 8px' }}>
                       {v.immatriculation}
                     </span>
                   </td>
@@ -459,7 +459,7 @@ export default function VehiculesPage() {
                       <button key={val} type="button" onClick={() => setForm({ ...form, mode_acquisition: val })}
                         style={{ padding:'8px 6px', fontSize:'10px', fontWeight:700, textTransform:'uppercase', letterSpacing:'0.5px', cursor:'pointer',
                           background: form.mode_acquisition === val ? m.bg : '#fff',
-                          border: `1.5px solid ${form.mode_acquisition === val ? m.color : '#b8b0a4'}`,
+                          border: `1.5px solid ${form.mode_acquisition === val ? m.color : '#e4e6ea'}`,
                           color: form.mode_acquisition === val ? m.color : '#5a564e' }}>
                         {m.short}
                       </button>
@@ -507,7 +507,7 @@ export default function VehiculesPage() {
                 </div>
               </VFormSection>
 
-              <div style={{ display:'flex', justifyContent:'flex-end', gap:'8px', paddingTop:'16px', borderTop:'1.5px solid #b8b0a4' }}>
+              <div style={{ display:'flex', justifyContent:'flex-end', gap:'8px', paddingTop:'16px', borderTop:'1.5px solid #e4e6ea' }}>
                 <button type="button" className="btn-ghost" onClick={() => setShowForm(false)}>Annuler</button>
                 <button type="submit" className="btn-primary" disabled={saving}>
                   {saving ? 'Ajout…' : 'Ajouter le véhicule'}
@@ -534,7 +534,7 @@ function AlertCell({ status, date }: { status: ReturnType<typeof docAlert>; date
 function VFormSection({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <div style={{ marginBottom:'16px' }}>
-      <div style={{ fontSize:'9px', fontWeight:700, letterSpacing:'2.5px', textTransform:'uppercase', color:'#9a7a28', marginBottom:'12px', paddingBottom:'6px', borderBottom:'1px solid #b8b0a4' }}>
+      <div style={{ fontSize:'9px', fontWeight:700, letterSpacing:'2.5px', textTransform:'uppercase', color:'#9a7a28', marginBottom:'12px', paddingBottom:'6px', borderBottom:'1px solid #e4e6ea' }}>
         {label}
       </div>
       {children}

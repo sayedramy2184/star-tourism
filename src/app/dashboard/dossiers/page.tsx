@@ -142,8 +142,8 @@ export default function DossiersPage() {
         ) : sp.pageItems.map((d: any) => {
           const types = d.prestations?.filter((p: any) => p.statut !== 'annule').reduce((acc: any, p: any) => { acc[p.type] = (acc[p.type] ?? 0) + 1; return acc }, {}) ?? {}
           return (
-            <div key={d.id} style={{ background:'#fff', border:'1.5px solid #b8b0a4', boxShadow:'0 1px 4px rgba(0,0,0,0.06)' }}>
-              <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', padding:'10px 12px', borderBottom:'1px solid #ede9e2' }}>
+            <div key={d.id} style={{ background:'#fff', border:'1.5px solid #e4e6ea', boxShadow:'0 1px 4px rgba(0,0,0,0.06)' }}>
+              <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', padding:'10px 12px', borderBottom:'1px solid #f4f5f7' }}>
                 <span style={{ display:'inline-flex', alignItems:'center', gap:'6px', flexWrap:'wrap' }}><span className="mono" style={{ fontSize:'11px', color:'#9a7a28' }}>{d.numero}</span><AgenceBadge d={d} /></span>
                 <StatutDossierSelector key={d.id + d.statut} dossierId={d.id} statut={d.statut} onStatutChange={(ns) => setDossiers(prev => prev.map(x => x.id === d.id ? {...x, statut: ns} : x))} />
               </div>
@@ -204,7 +204,7 @@ export default function DossiersPage() {
                     </span>
                   </td>
                   <td className="td">
-                    <span style={{ background:'#f5f2ed', border:'1.5px solid #b8b0a4', padding:'2px 8px', fontFamily:'monospace', fontSize:'10px', color:'#5a564e' }}>
+                    <span style={{ background:'#f5f2ed', border:'1.5px solid #e4e6ea', padding:'2px 8px', fontFamily:'monospace', fontSize:'10px', color:'#5a564e' }}>
                       {d.nb_jours} j
                     </span>
                   </td>

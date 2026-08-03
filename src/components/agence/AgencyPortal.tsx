@@ -59,7 +59,7 @@ export default function AgencyPortal({ agencyName }: { agencyName: string }) {
   }
 
   return (
-    <div style={{ minHeight: '100dvh', background: '#ede9e2' }}>
+    <div style={{ minHeight: '100dvh', background: '#f4f5f7' }}>
       {/* Header */}
       <header style={{ background: 'linear-gradient(155deg,#221b11,#16130e)', padding: 'max(env(safe-area-inset-top),14px) 20px 15px', position: 'sticky', top: 0, zIndex: 20 }}>
         <div style={{ maxWidth: '860px', margin: '0 auto', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
@@ -175,7 +175,7 @@ function DossierCard({ d, onEdit, onAdd, onEditService, onReload }: { d: any; on
         </div>
       </button>
       {open && (
-        <div style={{ borderTop: '1px solid #ede9e2', padding: '8px 12px 12px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
+        <div style={{ borderTop: '1px solid #f4f5f7', padding: '8px 12px 12px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
           {prestations.map((p: any) => <ServiceLine key={p.id} p={p} onEdit={() => onEditService(d, p)} onCancel={() => requestCancel(p.id)} />)}
 
           {/* Total du dossier (prestations validées uniquement) */}
@@ -194,7 +194,7 @@ function DossierCard({ d, onEdit, onAdd, onEditService, onReload }: { d: any; on
                 <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '12px', color: '#5a564e', padding: '3px 0' }}>
                   <span>VAT 10%</span><span style={{ fontFamily: 'JetBrains Mono,monospace' }}>{eur(tva)}</span>
                 </div>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingTop: '7px', marginTop: '4px', borderTop: '1.5px solid #ede9e2' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingTop: '7px', marginTop: '4px', borderTop: '1.5px solid #f4f5f7' }}>
                   <span style={{ fontSize: '11px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.5px', color: '#16130e' }}>Total (incl. VAT)</span>
                   <span style={{ fontFamily: 'Cormorant Garamond,serif', fontSize: '20px', color: '#9a7a28' }}>{eur(ttc)}</span>
                 </div>
@@ -293,7 +293,7 @@ function ServiceLine({ p, onEdit, onCancel }: { p: any; onEdit?: () => void; onC
   const vehLbl = p.modele_souhaite
 
   return (
-    <div style={{ background: '#faf9f7', border: '1px solid #ede9e2', borderLeft: `3px solid ${color}`, borderRadius: '8px', padding: '11px 13px' }}>
+    <div style={{ background: '#faf9f7', border: '1px solid #f4f5f7', borderLeft: `3px solid ${color}`, borderRadius: '8px', padding: '11px 13px' }}>
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '8px', marginBottom: '9px' }}>
         <span style={{ fontSize: '10px', fontWeight: 800, letterSpacing: '0.5px', textTransform: 'uppercase', color }}>
           {isLibre ? (p.libelle || 'Service') : isMad ? 'Chauffeur service' : 'Transfer'}

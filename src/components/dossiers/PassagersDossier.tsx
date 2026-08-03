@@ -82,7 +82,7 @@ export default function PassagersDossier({ dossierId }: { dossierId: string }) {
           <>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '5px' }}>
               {list.map(p => (
-                <div key={p.id} style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '7px 10px', background: '#faf9f7', border: '1px solid #ede9e2' }}>
+                <div key={p.id} style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '7px 10px', background: '#faf9f7', border: '1px solid #f4f5f7' }}>
                   <span style={{ fontSize: '15px' }}>{flag(p.nationalite) || '👤'}</span>
                   <div style={{ flex: 1, minWidth: 0 }}>
                     <span style={{ fontSize: '13px', fontWeight: 500, color: '#16130e' }}>{p.nom}</span>

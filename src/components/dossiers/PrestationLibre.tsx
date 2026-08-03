@@ -44,7 +44,7 @@ function LibreModal({ dossierId, dateDefaut, prestation, onClose }: {
   return (
     <div style={{ position: 'fixed', inset: 0, background: 'rgba(22,19,14,0.55)', zIndex: 200, display: 'flex', alignItems: 'center', justifyContent: 'center', backdropFilter: 'blur(3px)', padding: '16px' }}
       onClick={e => e.target === e.currentTarget && onClose()}>
-      <div style={{ background: '#fff', border: '1.5px solid #b8b0a4', width: '460px', maxWidth: '96vw', boxShadow: '0 24px 60px rgba(0,0,0,0.2)' }}>
+      <div style={{ background: '#fff', border: '1.5px solid #e4e6ea', width: '460px', maxWidth: '96vw', boxShadow: '0 24px 60px rgba(0,0,0,0.2)' }}>
         <div style={{ background: '#16130e', padding: '16px 24px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
           <span style={{ fontFamily: 'Cormorant Garamond,serif', fontSize: '19px', fontWeight: 500, color: '#fff', letterSpacing: '1px' }}>{isEdit ? 'Modifier la prestation' : 'Prestation libre'}</span>
           <button onClick={onClose} style={{ background: 'none', border: 'none', color: 'rgba(255,255,255,0.4)', cursor: 'pointer' }}><X size={18} /></button>
@@ -64,7 +64,7 @@ function LibreModal({ dossierId, dateDefaut, prestation, onClose }: {
             <label className="form-label">Notes</label>
             <input className="input" value={notes} onChange={e => setNotes(e.target.value)} placeholder="Précisions…" />
           </div>
-          <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '8px', paddingTop: '16px', borderTop: '1.5px solid #b8b0a4' }}>
+          <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '8px', paddingTop: '16px', borderTop: '1.5px solid #e4e6ea' }}>
             <button type="button" className="btn-ghost" onClick={onClose}>Annuler</button>
             <button type="submit" className="btn-primary" disabled={saving}>{saving ? 'Enregistrement…' : isEdit ? 'Enregistrer' : 'Ajouter'}</button>
           </div>
@@ -107,7 +107,7 @@ export function PrestationLibreCard({ p, dossierId }: { p: any; dossierId: strin
     <div className="card" style={{ overflow: 'hidden' }}>
 
       {/* Header — même structure que les autres prestations */}
-      <div style={{ display: 'flex', alignItems: 'stretch', borderBottom: '1.5px solid #b8b0a4' }}>
+      <div style={{ display: 'flex', alignItems: 'stretch', borderBottom: '1.5px solid #e4e6ea' }}>
         <div style={{ width: '5px', background: '#9a7a28', flexShrink: 0 }} />
         <div style={{ flex: 1, padding: '10px 16px', display: 'flex', alignItems: 'center', gap: '14px', flexWrap: 'wrap' }}>
           <span style={{ fontFamily: 'JetBrains Mono,monospace', fontSize: '10px', color: '#8a8478', background: '#f5f2ed', border: '1px solid #d8d2c8', padding: '2px 8px' }}>

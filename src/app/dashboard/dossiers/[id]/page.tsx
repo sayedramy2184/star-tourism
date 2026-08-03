@@ -251,7 +251,7 @@ export default async function DossierDetailPage({ params }: { params: { id: stri
                 </div>
               )}
 
-              <div style={{ display:'flex', justifyContent:'space-between', padding:'6px 0', borderBottom:'1px solid #d8d2c8', marginTop:'4px', borderTop:'1.5px solid #b8b0a4' }}>
+              <div style={{ display:'flex', justifyContent:'space-between', padding:'6px 0', borderBottom:'1px solid #d8d2c8', marginTop:'4px', borderTop:'1.5px solid #e4e6ea' }}>
                 <span style={{ fontSize:'10px', color:'#5a564e' }}>Sous-total HT</span>
                 <span style={{ fontFamily:'JetBrains Mono,monospace', fontSize:'11px' }}>{fmt(data.montant_ht)}</span>
               </div>

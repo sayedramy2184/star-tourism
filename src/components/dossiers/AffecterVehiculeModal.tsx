@@ -63,7 +63,7 @@ export default function AffecterVehiculeModal({ prestationId, dateDebut, dateFin
 
       {open && (
         <div style={{ position:'fixed', inset:0, background:'rgba(22,19,14,0.55)', zIndex:200, display:'flex', alignItems:'center', justifyContent:'center', backdropFilter:'blur(3px)' }}>
-          <div style={{ background:'#fff', border:'1.5px solid #b8b0a4', width:'520px', maxWidth:'96vw', maxHeight:'80vh', overflowY:'auto', boxShadow:'0 24px 60px rgba(0,0,0,0.2)' }}>
+          <div style={{ background:'#fff', border:'1.5px solid #e4e6ea', width:'520px', maxWidth:'96vw', maxHeight:'80vh', overflowY:'auto', boxShadow:'0 24px 60px rgba(0,0,0,0.2)' }}>
 
             <div style={{ background:'#16130e', padding:'16px 24px', display:'flex', alignItems:'center', justifyContent:'space-between' }}>
               <span style={{ fontFamily:'Cormorant Garamond,serif', fontSize:'19px', fontWeight:500, color:'#fff', letterSpacing:'1px' }}>
@@ -74,7 +74,7 @@ export default function AffecterVehiculeModal({ prestationId, dateDebut, dateFin
 
             <div style={{ padding:'20px 24px' }}>
               {vehiculeActuel && (
-                <div style={{ padding:'10px 14px', background:'#f5f2ed', border:'1.5px solid #b8b0a4', marginBottom:'16px', display:'flex', alignItems:'center', gap:'10px' }}>
+                <div style={{ padding:'10px 14px', background:'#f5f2ed', border:'1.5px solid #e4e6ea', marginBottom:'16px', display:'flex', alignItems:'center', gap:'10px' }}>
                   <Car size={14} style={{ color:'#8a8478' }} />
                   <div>
                     <div style={{ fontSize:'11px', color:'#8a8478', marginBottom:'2px' }}>Véhicule actuel</div>
@@ -84,7 +84,7 @@ export default function AffecterVehiculeModal({ prestationId, dateDebut, dateFin
                 </div>
               )}
 
-              <div style={{ fontSize:'9px', fontWeight:700, letterSpacing:'2.5px', textTransform:'uppercase', color:'#9a7a28', marginBottom:'12px', paddingBottom:'6px', borderBottom:'1px solid #b8b0a4' }}>
+              <div style={{ fontSize:'9px', fontWeight:700, letterSpacing:'2.5px', textTransform:'uppercase', color:'#9a7a28', marginBottom:'12px', paddingBottom:'6px', borderBottom:'1px solid #e4e6ea' }}>
                 Véhicules disponibles sur la période
               </div>
 
@@ -102,11 +102,11 @@ export default function AffecterVehiculeModal({ prestationId, dateDebut, dateFin
                           display:'flex', alignItems:'center', gap:'12px',
                           padding:'12px 14px', cursor: dispo ? 'pointer' : 'not-allowed',
                           background: isSelected ? '#fdf6e3' : dispo ? '#fff' : '#f5f2ed',
-                          border:`1.5px solid ${isSelected ? '#9a7a28' : dispo ? '#d8d2c8' : '#b8b0a4'}`,
+                          border:`1.5px solid ${isSelected ? '#9a7a28' : dispo ? '#d8d2c8' : '#e4e6ea'}`,
                           opacity: dispo ? 1 : 0.5,
                           transition:'all 0.14s',
                         }}>
-                        <div style={{ width:'36px', height:'36px', background: isSelected ? '#fdf6e3' : '#f5f2ed', border:`1.5px solid ${isSelected ? '#9a7a28' : '#b8b0a4'}`, display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0 }}>
+                        <div style={{ width:'36px', height:'36px', background: isSelected ? '#fdf6e3' : '#f5f2ed', border:`1.5px solid ${isSelected ? '#9a7a28' : '#e4e6ea'}`, display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0 }}>
                           <Car size={16} style={{ color: isSelected ? '#9a7a28' : '#8a8478' }} />
                         </div>
                         <div style={{ flex:1 }}>
@@ -125,7 +125,7 @@ export default function AffecterVehiculeModal({ prestationId, dateDebut, dateFin
                 </div>
               )}
 
-              <div style={{ display:'flex', justifyContent:'flex-end', gap:'8px', marginTop:'20px', paddingTop:'16px', borderTop:'1.5px solid #b8b0a4' }}>
+              <div style={{ display:'flex', justifyContent:'flex-end', gap:'8px', marginTop:'20px', paddingTop:'16px', borderTop:'1.5px solid #e4e6ea' }}>
                 <button className="btn-ghost" onClick={() => setOpen(false)}>Annuler</button>
                 <button className="btn-primary" onClick={handleSave} disabled={saving || !selected}>
                   {saving ? 'Affectation…' : 'Affecter ce véhicule'}

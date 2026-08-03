@@ -77,7 +77,7 @@ export default function ClientsPage() {
               <button onClick={() => setShowForm(false)} style={{ background:'none', border:'none', color:'rgba(255,255,255,0.4)', cursor:'pointer', fontSize:'18px' }}>✕</button>
             </div>
             <form onSubmit={handleCreate} style={{ padding:'22px 24px' }}>
-              <div style={{ fontSize:'9px', fontWeight:700, letterSpacing:'2.5px', textTransform:'uppercase', color:'#9a7a28', marginBottom:'14px', paddingBottom:'6px', borderBottom:'1px solid #b8b0a4' }}>
+              <div style={{ fontSize:'9px', fontWeight:700, letterSpacing:'2.5px', textTransform:'uppercase', color:'#9a7a28', marginBottom:'14px', paddingBottom:'6px', borderBottom:'1px solid #e4e6ea' }}>
                 Type & Identité
               </div>
               <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:'12px', marginBottom:'12px' }}>
@@ -130,7 +130,7 @@ export default function ClientsPage() {
                 <label className="form-label">Notes</label>
                 <textarea className="textarea" value={form.notes} onChange={e => setForm({...form, notes:e.target.value})} placeholder="Informations particulières, conditions tarifaires…" />
               </div>
-              <div style={{ display:'flex', justifyContent:'flex-end', gap:'8px', marginTop:'16px', paddingTop:'16px', borderTop:'1.5px solid #b8b0a4' }}>
+              <div style={{ display:'flex', justifyContent:'flex-end', gap:'8px', marginTop:'16px', paddingTop:'16px', borderTop:'1.5px solid #e4e6ea' }}>
                 <button type="button" className="btn-ghost" onClick={() => setShowForm(false)}>Annuler</button>
                 <button type="submit" className="btn-primary">Créer le client</button>
               </div>
@@ -148,7 +148,7 @@ export default function ClientsPage() {
         ) : sp.pageItems.map((c: any) => {
           const typeStyle = c.type === 'agence' ? { background:'#fdf6e3', color:'#9a7a28' } : c.type === 'entreprise' ? { background:'#e8eef8', color:'#1e3f70' } : { background:'#eaf4ee', color:'#1e5e3a' }
           return (
-            <Link key={c.id} href={`/dashboard/clients/${c.id}`} style={{ display:'block', background:'#fff', border:'1.5px solid #b8b0a4', boxShadow:'0 1px 4px rgba(0,0,0,0.06)', padding:'12px', textDecoration:'none', color:'inherit' }}>
+            <Link key={c.id} href={`/dashboard/clients/${c.id}`} style={{ display:'block', background:'#fff', border:'1.5px solid #e4e6ea', boxShadow:'0 1px 4px rgba(0,0,0,0.06)', padding:'12px', textDecoration:'none', color:'inherit' }}>
               <div style={{ display:'flex', alignItems:'flex-start', justifyContent:'space-between', gap:'8px' }}>
                 <div style={{ minWidth:0 }}>
                   <div style={{ fontWeight:600, color:'#16130e', fontSize:'14px' }}>{c.nom}</div>

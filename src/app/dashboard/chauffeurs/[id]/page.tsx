@@ -316,7 +316,7 @@ export default async function ChauffeurDetailPage({ params }: { params: { id: st
 
 function PaieStat({ label, val, color }: { label: string; val: string; color: string }) {
   return (
-    <div style={{ background: '#faf9f7', border: '1px solid #ede9e2', padding: '10px 8px', textAlign: 'center' }}>
+    <div style={{ background: '#faf9f7', border: '1px solid #f4f5f7', padding: '10px 8px', textAlign: 'center' }}>
       <div style={{ fontSize: '8px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '1px', color: '#8a8478', marginBottom: '4px' }}>{label}</div>
       <div style={{ fontFamily: 'JetBrains Mono,monospace', fontSize: '13px', fontWeight: 700, color }}>{val}</div>
     </div>
@@ -328,7 +328,7 @@ function DocCard({ label, numero, status }: { label: string; numero: string | nu
     <div style={{
       padding:'12px 14px',
       background: status.level === 'danger' ? '#faeaea' : status.level === 'warn' ? '#fdf3dc' : '#f5f2ed',
-      border: `1.5px solid ${status.level === 'danger' ? '#9e2a2a33' : status.level === 'warn' ? '#7a5c1033' : '#b8b0a4'}`,
+      border: `1.5px solid ${status.level === 'danger' ? '#9e2a2a33' : status.level === 'warn' ? '#7a5c1033' : '#e4e6ea'}`,
     }}>
       <div style={{ fontSize:'9px', fontWeight:600, letterSpacing:'2px', textTransform:'uppercase', color:'#8a8478', marginBottom:'5px' }}>
         {label}

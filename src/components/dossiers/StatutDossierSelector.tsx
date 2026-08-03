@@ -36,7 +36,7 @@ function InfoDropdown({ anchorRef, statut, onClose }: {
   if (!pos) return null
 
   return (
-    <div style={{ position:'absolute', top:pos.top, left:pos.left, zIndex:9999, width:'220px', background:'#fff', border:'1.5px solid #b8b0a4', boxShadow:'0 8px 28px rgba(0,0,0,0.15)', padding:'12px 14px' }}>
+    <div style={{ position:'absolute', top:pos.top, left:pos.left, zIndex:9999, width:'220px', background:'#fff', border:'1.5px solid #e4e6ea', boxShadow:'0 8px 28px rgba(0,0,0,0.15)', padding:'12px 14px' }}>
       <div style={{ fontSize:'9px', fontWeight:700, letterSpacing:'2px', textTransform:'uppercase', color:'#8a8478', marginBottom:'10px' }}>
         Statuts du dossier
       </div>
@@ -50,7 +50,7 @@ function InfoDropdown({ anchorRef, statut, onClose }: {
           {statut === key && <span style={{ marginLeft:'auto', fontSize:'10px', color:s.color }}>✓</span>}
         </div>
       ))}
-      <div style={{ fontSize:'9px', color:'#b8b0a4', marginTop:'8px', fontStyle:'italic' }}>
+      <div style={{ fontSize:'9px', color:'#9aa0aa', marginTop:'8px', fontStyle:'italic' }}>
         Le statut est géré automatiquement
       </div>
     </div>

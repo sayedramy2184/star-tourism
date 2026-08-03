@@ -69,7 +69,7 @@ export default async function PaieChauffeurPage({ params }: { params: { id: stri
           <div className="card-header"><span className="card-header-title">Versements non rattachés à un dossier</span></div>
           <div style={{ padding: '12px 16px', display: 'flex', flexDirection: 'column', gap: '5px' }}>
             {paie.versementsHorsDossier.map(p => (
-              <div key={p.id} style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '7px 10px', background: '#faf9f7', border: '1px solid #ede9e2' }}>
+              <div key={p.id} style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '7px 10px', background: '#faf9f7', border: '1px solid #f4f5f7' }}>
                 <span style={{ fontFamily: 'JetBrains Mono,monospace', fontSize: '12px', fontWeight: 600, color: '#1e5e3a' }}>{fmtEur(Number(p.montant))}</span>
                 <span style={{ fontSize: '10px', color: '#8a8478' }}>{format(parseISO(p.date_paiement), 'dd/MM/yyyy', { locale: fr })}</span>
                 {p.moyen && <span style={{ fontSize: '9px', color: '#5a564e', textTransform: 'uppercase' }}>{p.moyen}</span>}

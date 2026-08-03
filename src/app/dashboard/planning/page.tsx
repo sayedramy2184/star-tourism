@@ -171,7 +171,7 @@ export default function PlanningPage() {
     <div style={{ display:'flex', flexDirection:'column', height:'calc(100dvh - 56px - 40px)', minHeight:'420px', overflow:'hidden' }}>
 
       {/* ══ Toolbar ══ */}
-      <div style={{ background:'#fff', border:'1.5px solid #b8b0a4', padding:'10px 16px', display:'flex', alignItems:'center', gap:'10px', marginBottom:'10px', flexShrink:0, boxShadow:'0 1px 4px rgba(0,0,0,0.06)', flexWrap:'wrap' }}>
+      <div style={{ background:'#fff', border:'1.5px solid #e4e6ea', padding:'10px 16px', display:'flex', alignItems:'center', gap:'10px', marginBottom:'10px', flexShrink:0, boxShadow:'0 1px 4px rgba(0,0,0,0.06)', flexWrap:'wrap' }}>
 
         {/* Navigation */}
         <div style={{ display:'flex', alignItems:'center', gap:'5px' }}>
@@ -199,7 +199,7 @@ export default function PlanningPage() {
         <div style={{ display:'flex', gap:'3px' }}>
           {([['semaine','Semaine'],['mois','Mois']] as const).map(([v,l]) => (
             <button key={v} onClick={() => setViewMode(v)}
-              style={{ padding:'5px 12px', fontSize:'10px', fontWeight:700, letterSpacing:'1px', textTransform:'uppercase', cursor:'pointer', border:'1.5px solid #b8b0a4', background: viewMode===v ? '#16130e' : 'transparent', color: viewMode===v ? '#fff' : '#5a564e', transition:'all 0.14s' }}>
+              style={{ padding:'5px 12px', fontSize:'10px', fontWeight:700, letterSpacing:'1px', textTransform:'uppercase', cursor:'pointer', border:'1.5px solid #e4e6ea', background: viewMode===v ? '#16130e' : 'transparent', color: viewMode===v ? '#fff' : '#5a564e', transition:'all 0.14s' }}>
               {l}
             </button>
           ))}
@@ -213,7 +213,7 @@ export default function PlanningPage() {
             ['vehicules', 'Véhicules', <Car size={11}/>],
           ] as const).map(([v,l,icon]) => (
             <button key={v} onClick={() => setTab(v)}
-              style={{ display:'flex', alignItems:'center', gap:'5px', padding:'5px 12px', fontSize:'10px', fontWeight:700, letterSpacing:'1px', textTransform:'uppercase', cursor:'pointer', border:'1.5px solid #b8b0a4', background: tab===v ? '#9a7a28' : 'transparent', color: tab===v ? '#fff' : '#5a564e', transition:'all 0.14s' }}>
+              style={{ display:'flex', alignItems:'center', gap:'5px', padding:'5px 12px', fontSize:'10px', fontWeight:700, letterSpacing:'1px', textTransform:'uppercase', cursor:'pointer', border:'1.5px solid #e4e6ea', background: tab===v ? '#9a7a28' : 'transparent', color: tab===v ? '#fff' : '#5a564e', transition:'all 0.14s' }}>
               {icon} {l}
             </button>
           ))}
@@ -225,7 +225,7 @@ export default function PlanningPage() {
             value={vehCat}
             onChange={e => setVehCat(e.target.value)}
             className="hidden md:block"
-            style={{ padding:'5px 10px', fontSize:'11px', border:'1.5px solid #b8b0a4', background: vehCat ? '#fdf6e3' : '#fff', color:'#16130e', outline:'none', cursor:'pointer' }}>
+            style={{ padding:'5px 10px', fontSize:'11px', border:'1.5px solid #e4e6ea', background: vehCat ? '#fdf6e3' : '#fff', color:'#16130e', outline:'none', cursor:'pointer' }}>
             <option value="">Tous les types</option>
             {vehCats.map(c => (
               <option key={c.id} value={c.nom}>{c.nom}</option>
@@ -254,7 +254,7 @@ export default function PlanningPage() {
       </div>
 
       {/* ══ Contenu ══ */}
-      <div style={{ flex:1, overflow:'auto', background:'#fff', border:'1.5px solid #b8b0a4', boxShadow:'0 2px 10px rgba(0,0,0,0.07)' }}>
+      <div style={{ flex:1, overflow:'auto', background:'#fff', border:'1.5px solid #e4e6ea', boxShadow:'0 2px 10px rgba(0,0,0,0.07)' }}>
         {loading ? (
           <div style={{ display:'flex', alignItems:'center', justifyContent:'center', height:'200px', color:'#8a8478', fontSize:'12px' }}>
             Chargement…
@@ -342,7 +342,7 @@ function MissionsView({ days, viewMode, data, onTooltip, onDragStart, router }: 
         {dossiers.map((dos, idx) => (
           <tr key={dos.id} style={{ borderBottom:'1px solid #d8d2c8' }}>
             {/* Colonne dossier */}
-            <td style={{ padding:'8px 12px', background: idx%2===0 ? '#faf9f7' : '#fff', borderRight:'2px solid #b8b0a4', position:'sticky', left:0, zIndex:10, cursor:'pointer' }}
+            <td style={{ padding:'8px 12px', background: idx%2===0 ? '#faf9f7' : '#fff', borderRight:'2px solid #e4e6ea', position:'sticky', left:0, zIndex:10, cursor:'pointer' }}
               onClick={() => router.push(`/dashboard/dossiers/${dos.id}`)}>
               <div style={{ fontFamily:'JetBrains Mono,monospace', fontSize:'10px', color:'#9a7a28', marginBottom:'2px' }}>{dos.numero}</div>
               <div style={{ fontSize:'12px', fontWeight:600, color:'#16130e', whiteSpace:'nowrap', overflow:'hidden', textOverflow:'ellipsis' }}>{dos.client}</div>
@@ -357,7 +357,7 @@ function MissionsView({ days, viewMode, data, onTooltip, onDragStart, router }: 
               const weekend  = [0, 6].includes(day.getDay())
 
               return (
-                <td key={dateStr} style={{ padding:'3px', background: today ? '#fdf6e3' : weekend ? '#f1ece4' : idx%2===0 ? '#faf9f7' : '#fff', borderRight:'1px solid #ede9e2', verticalAlign:'top', minHeight:'48px' }}>
+                <td key={dateStr} style={{ padding:'3px', background: today ? '#fdf6e3' : weekend ? '#f1ece4' : idx%2===0 ? '#faf9f7' : '#fff', borderRight:'1px solid #f4f5f7', verticalAlign:'top', minHeight:'48px' }}>
                   {[
                     ...joursDay.map(j => {
                       // Sous-traité au jour OU prestation entièrement sous-traitée
@@ -449,7 +449,7 @@ function ChauffeursView({ days, viewMode, data, onTooltip, dragJourId, dragOver,
               const dayJours = unassigned.filter(j => j.date === dateStr)
               const weekend  = [0, 6].includes(day.getDay())
               return (
-                <td key={dateStr} style={{ padding:'3px', verticalAlign:'top', background: weekend ? '#f5efe0' : '#fffdf6', borderRight:'1px solid #ede9e2' }}>
+                <td key={dateStr} style={{ padding:'3px', verticalAlign:'top', background: weekend ? '#f5efe0' : '#fffdf6', borderRight:'1px solid #f4f5f7' }}>
                   {dayJours.map(j => (
                     <MBlock key={j.id}
                       bg="#fff8e8" border="#9a7a28" text="#9a7a28"
@@ -485,7 +485,7 @@ function ChauffeursView({ days, viewMode, data, onTooltip, dragJourId, dragOver,
 
           return (
             <tr key={c.id} style={{ borderBottom:'1px solid #d8d2c8' }}>
-              <td style={{ padding:'8px 12px', background: idx%2===0 ? '#faf9f7' : '#fff', borderRight:'2px solid #b8b0a4', position:'sticky', left:0, zIndex:10 }}>
+              <td style={{ padding:'8px 12px', background: idx%2===0 ? '#faf9f7' : '#fff', borderRight:'2px solid #e4e6ea', position:'sticky', left:0, zIndex:10 }}>
                 <div style={{ display:'flex', alignItems:'center', gap:'8px' }}>
                   <div style={{ width:'28px', height:'28px', borderRadius:'50%', flexShrink:0, background:st.bg, border:`1.5px solid ${st.color}`, display:'flex', alignItems:'center', justifyContent:'center', fontSize:'9px', fontWeight:700, color:st.color }}>
                     {initials}
@@ -511,7 +511,7 @@ function ChauffeursView({ days, viewMode, data, onTooltip, dragJourId, dragOver,
                     style={{
                       padding:'3px', verticalAlign:'top', minHeight:'48px',
                       background: isDragTarget && dragJourId ? '#fdf6e3' : conflict ? 'rgba(158,42,42,0.06)' : isConge ? 'rgba(122,92,16,0.04)' : today ? '#fdf6e3' : weekend ? '#f1ece4' : idx%2===0 ? '#faf9f7' : '#fff',
-                      borderRight:'1px solid #ede9e2',
+                      borderRight:'1px solid #f4f5f7',
                       outline: isDragTarget && dragJourId ? '2px dashed #9a7a28' : 'none',
                     }}
                     onDragOver={e => { e.preventDefault(); onDragOver(c.id) }}
@@ -616,7 +616,7 @@ function VehiculesView({ days, viewMode, data, onTooltip, router, vehCat }: any)
 
           return (
             <tr key={v.id} style={{ borderBottom:'1px solid #d8d2c8' }}>
-              <td style={{ padding:'9px 12px', background: idx%2===0 ? '#faf9f7' : '#fff', borderRight:'2px solid #b8b0a4', position:'sticky', left:0, zIndex:10 }}>
+              <td style={{ padding:'9px 12px', background: idx%2===0 ? '#faf9f7' : '#fff', borderRight:'2px solid #e4e6ea', position:'sticky', left:0, zIndex:10 }}>
                 <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', gap:'6px' }}>
                   <span title={`${v.marque} ${v.modele}`} style={{ fontFamily:'Cormorant Garamond,serif', fontSize:'15px', fontWeight:600, color:'#16130e', whiteSpace:'nowrap', overflow:'hidden', textOverflow:'ellipsis' }}>{v.marque} {v.modele}</span>
                   {v.categorie && (
@@ -638,7 +638,7 @@ function VehiculesView({ days, viewMode, data, onTooltip, router, vehCat }: any)
                 const conflict = dayHasOverlap(jours, trans)
 
                 return (
-                  <td key={dateStr} style={{ padding:'3px', verticalAlign:'top', background: conflict ? 'rgba(158,42,42,0.06)' : today ? '#fdf6e3' : weekend ? '#f1ece4' : idx%2===0 ? '#faf9f7' : '#fff', borderRight:'1px solid #ede9e2' }}>
+                  <td key={dateStr} style={{ padding:'3px', verticalAlign:'top', background: conflict ? 'rgba(158,42,42,0.06)' : today ? '#fdf6e3' : weekend ? '#f1ece4' : idx%2===0 ? '#faf9f7' : '#fff', borderRight:'1px solid #f4f5f7' }}>
                     {[
                       ...jours.map((j: JourMad) => ({ key: chronoKey(j), node: (
                         <MBlock key={j.id} bg="#f8ece7" border="#a6432a" text="#a6432a"
@@ -763,8 +763,8 @@ function PlanningMobile({ days, data, router }: { days: Date[]; data: any; route
 
 function MobileMissionCard({ type, typeColor, client, numero, heure, itineraire, chauffeur, vehicule, siLabel, siColor, siBg, siBorder, onOpen }: any) {
   return (
-    <div onClick={onOpen} style={{ background: '#fff', border: '1.5px solid #b8b0a4', borderLeft: `3px solid ${typeColor}`, boxShadow: '0 1px 4px rgba(0,0,0,0.06)', cursor: 'pointer' }}>
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '8px', padding: '9px 12px', borderBottom: '1px solid #ede9e2' }}>
+    <div onClick={onOpen} style={{ background: '#fff', border: '1.5px solid #e4e6ea', borderLeft: `3px solid ${typeColor}`, boxShadow: '0 1px 4px rgba(0,0,0,0.06)', cursor: 'pointer' }}>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '8px', padding: '9px 12px', borderBottom: '1px solid #f4f5f7' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px', minWidth: 0 }}>
           <span style={{ fontSize: '9px', fontWeight: 700, color: typeColor }}>{type}</span>
           <span style={{ fontFamily: 'JetBrains Mono,monospace', fontSize: '11px', color: '#9a7a28' }}>{numero}</span>
@@ -840,9 +840,9 @@ function MBlock({ bg, border, text, icon, label, title, sub, compact, draggable,
 function NavBtn({ onClick, children, label }: { onClick: () => void; children?: React.ReactNode; label?: string }) {
   return (
     <button onClick={onClick}
-      style={{ background:'none', border:'1.5px solid #b8b0a4', width: label ? 'auto' : '28px', height:'28px', padding: label ? '0 10px' : '0', cursor:'pointer', display:'flex', alignItems:'center', justifyContent:'center', fontSize:'10px', fontWeight:700, letterSpacing:'1px', color:'#5a564e', transition:'all 0.14s', textTransform:'uppercase' }}
+      style={{ background:'none', border:'1.5px solid #e4e6ea', width: label ? 'auto' : '28px', height:'28px', padding: label ? '0 10px' : '0', cursor:'pointer', display:'flex', alignItems:'center', justifyContent:'center', fontSize:'10px', fontWeight:700, letterSpacing:'1px', color:'#5a564e', transition:'all 0.14s', textTransform:'uppercase' }}
       onMouseEnter={e => { e.currentTarget.style.borderColor='#9a7a28'; e.currentTarget.style.color='#9a7a28' }}
-      onMouseLeave={e => { e.currentTarget.style.borderColor='#b8b0a4'; e.currentTarget.style.color='#5a564e' }}>
+      onMouseLeave={e => { e.currentTarget.style.borderColor='#e4e6ea'; e.currentTarget.style.color='#5a564e' }}>
       {label ?? children}
     </button>
   )
@@ -884,13 +884,13 @@ function Tooltip({ tooltip, onClose, router }: { tooltip: any; onClose: () => vo
         left: Math.min(x + 12, (typeof window !== 'undefined' ? window.innerWidth : 1200) - 270),
         top:  Math.min(y + 12, (typeof window !== 'undefined' ? window.innerHeight : 800) - 240),
         zIndex:100, width:'260px',
-        background:'#fff', border:'1.5px solid #b8b0a4', boxShadow:'0 8px 24px rgba(0,0,0,0.15)', padding:'14px',
+        background:'#fff', border:'1.5px solid #e4e6ea', boxShadow:'0 8px 24px rgba(0,0,0,0.15)', padding:'14px',
       }}>
         <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom:'10px', paddingBottom:'8px', borderBottom:'1px solid #d8d2c8' }}>
           <span style={{ padding:'2px 8px', fontSize:'8px', fontWeight:700, letterSpacing:'1px', textTransform:'uppercase', background: content.type==='MAD' ? '#f8ece7' : '#e8eef8', color: content.type==='MAD' ? '#a6432a' : '#1e3f70' }}>
             {content.type}
           </span>
-          <button onClick={onClose} style={{ background:'none', border:'none', cursor:'pointer', color:'#b8b0a4', fontSize:'14px' }}>✕</button>
+          <button onClick={onClose} style={{ background:'none', border:'none', cursor:'pointer', color:'#9aa0aa', fontSize:'14px' }}>✕</button>
         </div>
         <div style={{ fontFamily:'Cormorant Garamond,serif', fontSize:'16px', fontWeight:500, color:'#16130e', marginBottom:'4px' }}>{content.client}</div>
         <div style={{ fontFamily:'JetBrains Mono,monospace', fontSize:'10px', color:'#9a7a28', marginBottom:'10px' }}>{content.dossier}</div>

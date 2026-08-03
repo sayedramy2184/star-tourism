@@ -45,7 +45,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="fr" className={`${dmSans.variable} ${cormorant.variable} ${jetbrains.variable}`}>
-      <body className="font-sans bg-[#ede9e2] text-[#16130e] antialiased">
+      <body className="font-sans bg-[#f4f5f7] text-[#16130e] antialiased">
         <NoZoom />
         {children}
       </body>

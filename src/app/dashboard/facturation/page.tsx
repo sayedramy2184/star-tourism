@@ -189,7 +189,7 @@ export default function FacturationPage() {
         ) : sp.pageItems.map((f: any) => {
           const overdue = isOverdue(f); const st = STATUTS[overdue ? 'en_retard' : f.statut] ?? STATUTS.brouillon
           return (
-            <div key={f.id} style={{ background: '#fff', border: '1.5px solid #b8b0a4', boxShadow: '0 1px 4px rgba(0,0,0,0.06)', padding: '12px' }}>
+            <div key={f.id} style={{ background: '#fff', border: '1.5px solid #e4e6ea', boxShadow: '0 1px 4px rgba(0,0,0,0.06)', padding: '12px' }}>
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '8px' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '6px', minWidth: 0 }}>
                   <span style={{ fontFamily: 'JetBrains Mono,monospace', fontSize: '13px', color: '#9a7a28', fontWeight: 600 }}>{f.numero}</span>
@@ -216,7 +216,7 @@ export default function FacturationPage() {
                   )}
                 </div>
               </div>
-              <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap', marginTop: '10px', paddingTop: '10px', borderTop: '1px solid #ede9e2' }}>
+              <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap', marginTop: '10px', paddingTop: '10px', borderTop: '1px solid #f4f5f7' }}>
                 <a href={`/api/factures/${f.id}/pdf`} target="_blank" rel="noreferrer" className="btn-ghost" style={{ padding: '4px 10px', fontSize: '10px', textDecoration: 'none' }}><ExternalLink size={11} /> PDF FR</a>
                 <a href={`/api/factures/${f.id}/pdf?lang=en`} target="_blank" rel="noreferrer" className="btn-ghost" style={{ padding: '4px 10px', fontSize: '10px', textDecoration: 'none' }}><ExternalLink size={11} /> PDF EN</a>
                 {f.type !== 'avoir' && f.statut === 'brouillon' && <FactureFormModal editId={f.id} onDone={load} />}

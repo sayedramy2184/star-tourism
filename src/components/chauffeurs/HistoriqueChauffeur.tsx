@@ -66,7 +66,7 @@ export default function HistoriqueChauffeur({ items }: { items: HistoItem[] }) {
       </div>
 
       {/* Barre de filtres */}
-      <div style={{ background:'#fff', border:'1.5px solid #b8b0a4', padding:'10px 12px', marginBottom:'12px', display:'flex', flexWrap:'wrap', gap:'10px', alignItems:'flex-end' }}>
+      <div style={{ background:'#fff', border:'1.5px solid #e4e6ea', padding:'10px 12px', marginBottom:'12px', display:'flex', flexWrap:'wrap', gap:'10px', alignItems:'flex-end' }}>
         {/* Type */}
         <div style={{ display:'flex', gap:'4px' }}>
           {([['tous','Tous'],['mad','MAD'],['transfert','Transfert']] as const).map(([v, l]) => (
@@ -131,7 +131,7 @@ export default function HistoriqueChauffeur({ items }: { items: HistoItem[] }) {
               <div className="mono" style={{ fontSize:'12px', color:'#9a7a28', marginTop:'6px', textAlign:'right' }}>{i.tarif ? fmt(i.tarif) : '—'}</div>
             </>
           )
-          const boxStyle = { display:'block', background:'#fff', border:'1.5px solid #b8b0a4', boxShadow:'0 1px 4px rgba(0,0,0,0.06)', padding:'12px', textDecoration:'none', color:'inherit' as const }
+          const boxStyle = { display:'block', background:'#fff', border:'1.5px solid #e4e6ea', boxShadow:'0 1px 4px rgba(0,0,0,0.06)', padding:'12px', textDecoration:'none', color:'inherit' as const }
           return i.dossierId
             ? <Link key={i.id} href={`/dashboard/dossiers/${i.dossierId}`} style={boxStyle}>{card}</Link>
             : <div key={i.id} style={boxStyle}>{card}</div>

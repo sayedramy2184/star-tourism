@@ -86,7 +86,7 @@ export default function PaiementsPanel({ kind = 'loueur', entityId, initial, onC
         ) : (
           <div style={{ display:'flex', flexDirection:'column', gap:'5px' }}>
             {list.map(p => (
-              <div key={p.id} style={{ display:'flex', alignItems:'center', gap:'10px', padding:'8px 10px', background:'#faf9f7', border:'1px solid #ede9e2' }}>
+              <div key={p.id} style={{ display:'flex', alignItems:'center', gap:'10px', padding:'8px 10px', background:'#faf9f7', border:'1px solid #f4f5f7' }}>
                 <div style={{ flex:1, minWidth:0 }}>
                   <span style={{ fontFamily:'JetBrains Mono,monospace', fontSize:'13px', fontWeight:600, color:'#1e5e3a' }}>{fmt(Number(p.montant))}</span>
                   <span style={{ fontSize:'10px', color:'#8a8478', marginLeft:'10px' }}>{format(parseISO(p.date_paiement),'dd/MM/yyyy',{locale:fr})}</span>
@@ -107,7 +107,7 @@ export default function PaiementsPanel({ kind = 'loueur', entityId, initial, onC
       {open && (
         <div style={{ position:'fixed', inset:0, background:'rgba(22,19,14,0.55)', zIndex:200, display:'flex', alignItems:'center', justifyContent:'center', backdropFilter:'blur(3px)', padding:'16px' }}
           onClick={e => e.target === e.currentTarget && setOpen(false)}>
-          <div style={{ background:'#fff', border:'1.5px solid #b8b0a4', width:'440px', maxWidth:'96vw', boxShadow:'0 24px 60px rgba(0,0,0,0.2)' }}>
+          <div style={{ background:'#fff', border:'1.5px solid #e4e6ea', width:'440px', maxWidth:'96vw', boxShadow:'0 24px 60px rgba(0,0,0,0.2)' }}>
             <div style={{ background:'#16130e', padding:'16px 24px', display:'flex', alignItems:'center', justifyContent:'space-between' }}>
               <span style={{ fontFamily:'Cormorant Garamond,serif', fontSize:'19px', fontWeight:500, color:'#fff', letterSpacing:'1px' }}>Enregistrer un paiement</span>
               <button onClick={() => setOpen(false)} style={{ background:'none', border:'none', color:'rgba(255,255,255,0.4)', cursor:'pointer' }}><X size={18} /></button>
@@ -129,7 +129,7 @@ export default function PaiementsPanel({ kind = 'loueur', entityId, initial, onC
                 <label className="form-label">Note</label>
                 <input className="input" value={form.note} onChange={e => setForm({ ...form, note: e.target.value })} placeholder="Acompte, régularisation…" />
               </div>
-              <div style={{ display:'flex', justifyContent:'flex-end', gap:'8px', paddingTop:'16px', borderTop:'1.5px solid #b8b0a4' }}>
+              <div style={{ display:'flex', justifyContent:'flex-end', gap:'8px', paddingTop:'16px', borderTop:'1.5px solid #e4e6ea' }}>
                 <button type="button" className="btn-ghost" onClick={() => setOpen(false)}>Annuler</button>
                 <button type="submit" className="btn-primary" disabled={saving}>{saving ? 'Enregistrement…' : 'Enregistrer'}</button>
               </div>

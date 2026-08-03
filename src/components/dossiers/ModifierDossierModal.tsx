@@ -77,7 +77,7 @@ export default function ModifierDossierModal({ dossier }: Props) {
 
       {open && (
         <div style={{ position:'fixed', inset:0, background:'rgba(22,19,14,0.55)', zIndex:200, display:'flex', alignItems:'center', justifyContent:'center', backdropFilter:'blur(3px)' }}>
-          <div style={{ background:'#fff', border:'1.5px solid #b8b0a4', width:'500px', maxWidth:'96vw', boxShadow:'0 24px 60px rgba(0,0,0,0.2)' }}>
+          <div style={{ background:'#fff', border:'1.5px solid #e4e6ea', width:'500px', maxWidth:'96vw', boxShadow:'0 24px 60px rgba(0,0,0,0.2)' }}>
 
             <div style={{ background:'#16130e', padding:'16px 24px', display:'flex', alignItems:'center', justifyContent:'space-between' }}>
               <span style={{ fontFamily:'Cormorant Garamond,serif', fontSize:'19px', fontWeight:500, color:'#fff', letterSpacing:'1px' }}>
@@ -113,7 +113,7 @@ export default function ModifierDossierModal({ dossier }: Props) {
                       style={{
                         padding:'6px 12px', fontSize:'10px', fontWeight:700, cursor:'pointer',
                         background: statut===s.val ? s.color+'15' : 'transparent',
-                        border:`1.5px solid ${statut===s.val ? s.color : '#b8b0a4'}`,
+                        border:`1.5px solid ${statut===s.val ? s.color : '#e4e6ea'}`,
                         color: statut===s.val ? s.color : '#5a564e',
                         transition:'all 0.14s',
                       }}>
@@ -129,7 +129,7 @@ export default function ModifierDossierModal({ dossier }: Props) {
                   placeholder="Instructions, préférences client…" style={{ minHeight:'80px' }} />
               </div>
 
-              <div style={{ display:'flex', justifyContent:'flex-end', gap:'8px', marginTop:'20px', paddingTop:'16px', borderTop:'1.5px solid #b8b0a4' }}>
+              <div style={{ display:'flex', justifyContent:'flex-end', gap:'8px', marginTop:'20px', paddingTop:'16px', borderTop:'1.5px solid #e4e6ea' }}>
                 <button type="button" className="btn-ghost" onClick={() => setOpen(false)}>Annuler</button>
                 <button type="submit" className="btn-primary" disabled={saving}>{saving ? 'Sauvegarde…' : 'Sauvegarder'}</button>
               </div>

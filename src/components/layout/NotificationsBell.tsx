@@ -42,7 +42,7 @@ export default function NotificationsBell() {
       </button>
 
       {open && (
-        <div style={{ position: 'absolute', top: '100%', right: 0, marginTop: '8px', width: '340px', maxWidth: '92vw', maxHeight: '70vh', overflowY: 'auto', background: '#fff', border: '1.5px solid #b8b0a4', boxShadow: '0 12px 40px rgba(0,0,0,0.18)', zIndex: 60 }}>
+        <div style={{ position: 'absolute', top: '100%', right: 0, marginTop: '8px', width: '340px', maxWidth: '92vw', maxHeight: '70vh', overflowY: 'auto', background: '#fff', border: '1.5px solid #e4e6ea', boxShadow: '0 12px 40px rgba(0,0,0,0.18)', zIndex: 60 }}>
           <div style={{ padding: '12px 16px', borderBottom: '1.5px solid #d8d2c8', display: 'flex', alignItems: 'center', justifyContent: 'space-between', position: 'sticky', top: 0, background: '#fff' }}>
             <span style={{ fontFamily: 'Cormorant Garamond,serif', fontSize: '16px', color: '#16130e' }}>Alertes</span>
             <span style={{ fontSize: '11px', color: '#8a8478' }}>{total} au total</span>
@@ -74,7 +74,7 @@ function Section({ icon, title, items, onNav }: { icon: React.ReactNode; title: 
       </div>
       {items.map((a, i) => (
         <Link key={i} href={a.href} onClick={onNav}
-          style={{ display: 'flex', alignItems: 'flex-start', gap: '9px', padding: '9px 16px', borderBottom: '1px solid #ede9e2', textDecoration: 'none' }}>
+          style={{ display: 'flex', alignItems: 'flex-start', gap: '9px', padding: '9px 16px', borderBottom: '1px solid #f4f5f7', textDecoration: 'none' }}>
           <span style={{ width: '7px', height: '7px', borderRadius: '50%', flexShrink: 0, marginTop: '4px', background: a.severity === 'danger' ? '#9e2a2a' : '#7a5c10' }} />
           <div style={{ flex: 1, minWidth: 0 }}>
             <div style={{ fontSize: '12px', color: '#16130e', fontWeight: 500 }}>{a.title}</div>

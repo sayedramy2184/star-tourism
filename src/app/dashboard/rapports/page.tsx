@@ -115,7 +115,7 @@ export default function RapportsPage() {
                   {data.topClients.length === 0 ? (
                     <div style={{ padding: '30px', textAlign: 'center', color: '#8a8478', fontSize: '12px' }}>Aucun dossier sur la période</div>
                   ) : data.topClients.map((c: any, i: number) => (
-                    <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '9px 16px', borderBottom: '1px solid #ede9e2' }}>
+                    <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '9px 16px', borderBottom: '1px solid #f4f5f7' }}>
                       <span style={{ fontFamily: 'JetBrains Mono,monospace', fontSize: '11px', color: '#c2bdb4', width: '18px' }}>{i + 1}</span>
                       <div style={{ flex: 1, minWidth: 0 }}>
                         <div style={{ fontSize: '13px', fontWeight: 600, color: '#16130e', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{c.nom}</div>
@@ -145,7 +145,7 @@ export default function RapportsPage() {
                   {data.activiteChauffeurs.length === 0 ? (
                     <div style={{ padding: '30px', textAlign: 'center', color: '#8a8478', fontSize: '12px' }}>Aucune mission affectée</div>
                   ) : data.activiteChauffeurs.slice(0, 10).map((c: any, i: number) => (
-                    <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '8px 16px', borderBottom: '1px solid #ede9e2' }}>
+                    <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '8px 16px', borderBottom: '1px solid #f4f5f7' }}>
                       <span style={{ fontSize: '13px', color: '#16130e', flex: 1 }}>{c.nom}</span>
                       <span style={{ fontFamily: 'JetBrains Mono,monospace', fontSize: '12px', color: '#1e3f70', fontWeight: 600 }}>{c.missions}</span>
                       <span style={{ fontSize: '10px', color: '#8a8478' }}>mission{c.missions > 1 ? 's' : ''}</span>

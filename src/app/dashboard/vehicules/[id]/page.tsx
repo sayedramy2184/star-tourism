@@ -223,7 +223,7 @@ export default async function VehiculeDetailPage({ params }: { params: { id: str
             ) : (
               <>
                 {prestations?.map((p: any) => (
-                  <div key={`mp-${p.id}`} style={{ background:'#fff', border:'1.5px solid #b8b0a4', boxShadow:'0 1px 4px rgba(0,0,0,0.06)', padding:'12px' }}>
+                  <div key={`mp-${p.id}`} style={{ background:'#fff', border:'1.5px solid #e4e6ea', boxShadow:'0 1px 4px rgba(0,0,0,0.06)', padding:'12px' }}>
                     <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', gap:'8px' }}>
                       <div style={{ display:'flex', alignItems:'center', gap:'8px', minWidth:0 }}>
                         <span className={p.type === 'mad' ? 'pill-mad' : 'pill-transfer'}>{p.type === 'mad' ? 'MAD' : 'Transfert'}</span>
@@ -243,7 +243,7 @@ export default async function VehiculeDetailPage({ params }: { params: { id: str
                   </div>
                 ))}
                 {jours?.map((j: any) => (
-                  <div key={`mj-${j.id}`} style={{ background:'#fff', border:'1.5px solid #b8b0a4', boxShadow:'0 1px 4px rgba(0,0,0,0.06)', padding:'12px' }}>
+                  <div key={`mj-${j.id}`} style={{ background:'#fff', border:'1.5px solid #e4e6ea', boxShadow:'0 1px 4px rgba(0,0,0,0.06)', padding:'12px' }}>
                     <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', gap:'8px' }}>
                       <div style={{ display:'flex', alignItems:'center', gap:'8px', minWidth:0 }}>
                         <span className="pill-mad">MAD</span>

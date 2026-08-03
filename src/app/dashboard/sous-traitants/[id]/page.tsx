@@ -50,7 +50,7 @@ function PaiementModal({ prestation, onClose, onSave }: {
 
   return (
     <div style={{ position:'fixed', inset:0, background:'rgba(0,0,0,0.5)', zIndex:300, display:'flex', alignItems:'center', justifyContent:'center' }}>
-      <div style={{ background:'#fff', width:'420px', boxShadow:'0 32px 80px rgba(0,0,0,0.3)', border:'1.5px solid #b8b0a4' }}>
+      <div style={{ background:'#fff', width:'420px', boxShadow:'0 32px 80px rgba(0,0,0,0.3)', border:'1.5px solid #e4e6ea' }}>
         <div style={{ background:'#16130e', padding:'16px 24px', display:'flex', alignItems:'center', justifyContent:'space-between' }}>
           <span style={{ fontFamily:'Cormorant Garamond,serif', fontSize:'18px', fontWeight:500, color:'#fff' }}>
             Statut du paiement
@@ -60,7 +60,7 @@ function PaiementModal({ prestation, onClose, onSave }: {
           </button>
         </div>
         <div style={{ padding:'20px 24px' }}>
-          <div style={{ marginBottom:'16px', padding:'10px 14px', background:'#f5f2ed', border:'1.5px solid #b8b0a4' }}>
+          <div style={{ marginBottom:'16px', padding:'10px 14px', background:'#f5f2ed', border:'1.5px solid #e4e6ea' }}>
             <div style={{ fontSize:'10px', color:'#8a8478', marginBottom:'4px' }}>Prestation</div>
             <div style={{ fontSize:'13px', fontWeight:600 }}>
               {prestation.dossier.numero} · {prestation.dossier.client.nom}
@@ -74,7 +74,7 @@ function PaiementModal({ prestation, onClose, onSave }: {
           <div style={{ display:'flex', gap:'8px', marginBottom:'14px' }}>
             {([['a_payer', '⏳ À payer', '#7a5c10', '#fdf3dc'], ['paye', '✓ Payé', '#1e5e3a', '#eaf4ee']] as const).map(([val, label, color, bg]) => (
               <button key={val} type="button" onClick={() => setStatut(val)}
-                style={{ flex:1, padding:'10px', fontSize:'12px', fontWeight:700, cursor:'pointer', background: statut===val ? bg : '#fff', border:`1.5px solid ${statut===val ? color : '#b8b0a4'}`, color: statut===val ? color : '#5a564e', transition:'all 0.14s' }}>
+                style={{ flex:1, padding:'10px', fontSize:'12px', fontWeight:700, cursor:'pointer', background: statut===val ? bg : '#fff', border:`1.5px solid ${statut===val ? color : '#e4e6ea'}`, color: statut===val ? color : '#5a564e', transition:'all 0.14s' }}>
                 {label}
               </button>
             ))}
@@ -93,7 +93,7 @@ function PaiementModal({ prestation, onClose, onSave }: {
             </>
           )}
 
-          <div style={{ display:'flex', justifyContent:'flex-end', gap:'8px', paddingTop:'14px', borderTop:'1.5px solid #b8b0a4' }}>
+          <div style={{ display:'flex', justifyContent:'flex-end', gap:'8px', paddingTop:'14px', borderTop:'1.5px solid #e4e6ea' }}>
             <button className="btn-ghost" onClick={onClose}>Annuler</button>
             <button className="btn-primary" disabled={saving}
               onClick={async () => {
@@ -207,7 +207,7 @@ export default function SousTraitantDetailPage() {
             </div>
           )}
           {st.notes && (
-            <div style={{ fontSize:'11px', color:'#8a8478', fontStyle:'italic', borderLeft:'2px solid #b8b0a4', paddingLeft:'12px' }}>
+            <div style={{ fontSize:'11px', color:'#8a8478', fontStyle:'italic', borderLeft:'2px solid #e4e6ea', paddingLeft:'12px' }}>
               {st.notes}
             </div>
           )}
@@ -250,10 +250,10 @@ export default function SousTraitantDetailPage() {
       <div style={{ display:'flex', gap:'6px', marginBottom:'14px' }}>
         {([['tous','Toutes','#5a564e'],['a_payer','À payer','#7a5c10'],['paye','Payées','#1e5e3a']] as const).map(([val, label, color]) => (
           <button key={val} onClick={() => setFiltre(val)}
-            style={{ padding:'6px 14px', fontSize:'10px', fontWeight:700, letterSpacing:'1px', textTransform:'uppercase', cursor:'pointer', background: filtre===val ? color+'18' : 'transparent', border:`1.5px solid ${filtre===val ? color : '#b8b0a4'}`, color: filtre===val ? color : '#5a564e', transition:'all 0.14s' }}>
+            style={{ padding:'6px 14px', fontSize:'10px', fontWeight:700, letterSpacing:'1px', textTransform:'uppercase', cursor:'pointer', background: filtre===val ? color+'18' : 'transparent', border:`1.5px solid ${filtre===val ? color : '#e4e6ea'}`, color: filtre===val ? color : '#5a564e', transition:'all 0.14s' }}>
             {label}
             {val !== 'tous' && (
-              <span style={{ marginLeft:'6px', background: filtre===val ? color : '#b8b0a4', color:'#fff', fontSize:'9px', padding:'1px 6px', borderRadius:'10px' }}>
+              <span style={{ marginLeft:'6px', background: filtre===val ? color : '#e4e6ea', color:'#fff', fontSize:'9px', padding:'1px 6px', borderRadius:'10px' }}>
                 {prestations.filter(p => p.st_paiement_statut === val).length}
               </span>
             )}
@@ -269,7 +269,7 @@ export default function SousTraitantDetailPage() {
         ) : filtered.map(p => {
           const isPaye = p.st_paiement_statut === 'paye'; const marge = p.st_marge_ht ?? 0
           return (
-            <div key={p.id} style={{ background:'#fff', border:'1.5px solid #b8b0a4', boxShadow:'0 1px 4px rgba(0,0,0,0.06)', padding:'12px' }}>
+            <div key={p.id} style={{ background:'#fff', border:'1.5px solid #e4e6ea', boxShadow:'0 1px 4px rgba(0,0,0,0.06)', padding:'12px' }}>
               <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', gap:'8px' }}>
                 <div style={{ display:'flex', alignItems:'center', gap:'8px', minWidth:0 }}>
                   <span style={{ fontSize:'9px', fontWeight:700, padding:'2px 8px', background: p.type==='mad' ? '#f8ece7' : '#e8eef8', color: p.type==='mad' ? '#a6432a' : '#1e3f70' }}>{p.type === 'mad' ? 'MAD' : 'Transfert'}</span>
@@ -284,7 +284,7 @@ export default function SousTraitantDetailPage() {
               <div style={{ fontSize:'11px', color:'#5a564e', marginTop:'2px' }}>
                 {p.st_chauffeur_nom ?? '—'}{p.st_vehicule_marque ? ` · ${p.st_vehicule_marque} ${p.st_vehicule_modele}` : ''}
               </div>
-              <div style={{ display:'flex', justifyContent:'space-between', gap:'8px', marginTop:'8px', paddingTop:'8px', borderTop:'1px solid #ede9e2' }}>
+              <div style={{ display:'flex', justifyContent:'space-between', gap:'8px', marginTop:'8px', paddingTop:'8px', borderTop:'1px solid #f4f5f7' }}>
                 <div><div style={{ fontSize:'8px', textTransform:'uppercase', letterSpacing:'1px', color:'#8a8478' }}>Prix client</div><div className="mono" style={{ fontSize:'11px', color:'#9a7a28' }}>{fmt(p.montant_ht)}</div></div>
                 <div><div style={{ fontSize:'8px', textTransform:'uppercase', letterSpacing:'1px', color:'#8a8478' }}>Coût ST</div><div className="mono" style={{ fontSize:'11px', fontWeight:600 }}>{fmt(p.st_cout_ht)}</div></div>
                 <div style={{ textAlign:'right' }}><div style={{ fontSize:'8px', textTransform:'uppercase', letterSpacing:'1px', color:'#8a8478' }}>Marge</div><div className="mono" style={{ fontSize:'12px', fontWeight:700, color: marge > 0 ? '#1e5e3a' : '#9e2a2a' }}>{fmt(marge)}</div></div>
@@ -379,7 +379,7 @@ export default function SousTraitantDetailPage() {
           </tbody>
           {filtered.length > 0 && (
             <tfoot>
-              <tr style={{ background:'#f5f2ed', borderTop:'2px solid #b8b0a4' }}>
+              <tr style={{ background:'#f5f2ed', borderTop:'2px solid #e4e6ea' }}>
                 <td colSpan={6} className="td" style={{ fontWeight:700, fontSize:'11px', letterSpacing:'1px', textTransform:'uppercase' }}>
                   Total ({filtered.length} prestations)
                 </td>
