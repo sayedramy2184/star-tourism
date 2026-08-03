@@ -40,7 +40,7 @@ interface JourMad {
     sous_traitant_id: string | null
     sous_traitant: { id: string; societe: string } | null
     vehicule: { id: string; marque: string; modele: string; immatriculation: string } | null
-    dossier: { id: string; numero: string; client: { nom: string } }
+    dossier: { id: string; numero: string; client: { nom: string; type?: string }; passagers?: { nom: string }[] }
   }
 }
 
@@ -85,7 +85,7 @@ interface Transfert {
   chauffeur: { nom: string; prenom: string } | null
   vehicule:  { marque: string; modele: string; immatriculation: string } | null
   sous_traitant: { id: string; societe: string } | null
-  dossier: { id: string; numero: string; client: { nom: string } }
+  dossier: { id: string; numero: string; client: { nom: string; type?: string }; passagers?: { nom: string }[] }
 }
 
 type ViewMode    = 'semaine' | 'mois'
@@ -299,23 +299,28 @@ function MissionsView({ days, viewMode, data, onTooltip, onDragStart, router }: 
   // Regrouper les jours et transferts par dossier
   const dossiersMap = new Map<string, {
     id: string; numero: string; client: string
+    isAgence: boolean; passagers: string[]
     jours: JourMad[]; transferts: Transfert[]
   }>()
 
+  // Noms des passagers d'un dossier (uniquement pertinent quand le client est une agence)
+  const passagersDe = (d: { passagers?: { nom: string }[] }) =>
+    (d.passagers ?? []).map(p => p.nom).filter(Boolean)
+
   data.jours.forEach((j: JourMad) => {
-    const key = j.prestation.dossier.id
-    if (!dossiersMap.has(key)) {
-      dossiersMap.set(key, { id: key, numero: j.prestation.dossier.numero, client: j.prestation.dossier.client.nom, jours: [], transferts: [] })
+    const d = j.prestation.dossier
+    if (!dossiersMap.has(d.id)) {
+      dossiersMap.set(d.id, { id: d.id, numero: d.numero, client: d.client.nom, isAgence: d.client.type === 'agence', passagers: passagersDe(d), jours: [], transferts: [] })
     }
-    dossiersMap.get(key)!.jours.push(j)
+    dossiersMap.get(d.id)!.jours.push(j)
   })
 
   data.transferts.forEach((t: Transfert) => {
-    const key = t.dossier.id
-    if (!dossiersMap.has(key)) {
-      dossiersMap.set(key, { id: key, numero: t.dossier.numero, client: t.dossier.client.nom, jours: [], transferts: [] })
+    const d = t.dossier
+    if (!dossiersMap.has(d.id)) {
+      dossiersMap.set(d.id, { id: d.id, numero: d.numero, client: d.client.nom, isAgence: d.client.type === 'agence', passagers: passagersDe(d), jours: [], transferts: [] })
     }
-    dossiersMap.get(key)!.transferts.push(t)
+    dossiersMap.get(d.id)!.transferts.push(t)
   })
 
   const dossiers = Array.from(dossiersMap.values())
@@ -346,6 +351,14 @@ function MissionsView({ days, viewMode, data, onTooltip, onDragStart, router }: 
               onClick={() => router.push(`/dashboard/dossiers/${dos.id}`)}>
               <div style={{ fontFamily:'JetBrains Mono,monospace', fontSize:'10px', color:'#9a7a28', marginBottom:'2px' }}>{dos.numero}</div>
               <div style={{ fontSize:'12px', fontWeight:600, color:'#16130e', whiteSpace:'nowrap', overflow:'hidden', textOverflow:'ellipsis' }}>{dos.client}</div>
+              {dos.isAgence && dos.passagers.length > 0 && (
+                <div style={{ display:'flex', alignItems:'flex-start', gap:'4px', marginTop:'3px' }}>
+                  <Users size={10} style={{ color:'#63605a', flexShrink:0, marginTop:'2px' }} />
+                  <div style={{ fontSize:'10.5px', color:'#44474e', lineHeight:1.3 }}>
+                    {dos.passagers.join(', ')}
+                  </div>
+                </div>
+              )}
             </td>
 
             {/* Cellules jours */}
