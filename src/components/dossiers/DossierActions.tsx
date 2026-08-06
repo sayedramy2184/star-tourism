@@ -95,7 +95,7 @@ export function BoutonModifierDossier({ dossier }: {
     <>
       <button
         className="btn-ghost"
-        style={{ padding:'5px 12px', fontSize:'11px', color:'rgba(255,255,255,0.5)', borderColor:'rgba(255,255,255,0.15)' }}
+        style={{ padding:'5px 12px', fontSize:'11px', background:'transparent', color:'rgba(255,255,255,0.85)', borderColor:'rgba(255,255,255,0.3)' }}
         onClick={handleOpen}>
         <Edit size={11} /> Modifier
       </button>
@@ -590,7 +590,7 @@ export function BoutonSupprimerDossier({ dossierId, statut, numero }: {
     <>
       <button
         className="btn-ghost"
-        style={{ padding:'5px 12px', fontSize:'11px', color:'rgba(255,255,255,0.35)', borderColor:'rgba(255,255,255,0.1)' }}
+        style={{ padding:'5px 12px', fontSize:'11px', background:'transparent', color:'rgba(255,255,255,0.75)', borderColor:'rgba(255,255,255,0.25)' }}
         onClick={() => setConfirm(true)}
       >
         🗑 Supprimer

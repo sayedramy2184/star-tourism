@@ -70,7 +70,7 @@ export default function ChauffeurEditModal({ chauffeur }: { chauffeur: any }) {
   return (
     <>
       <button className="btn-ghost" onClick={() => setOpen(true)}
-        style={{ padding: '5px 12px', fontSize: '11px', color: 'rgba(255,255,255,0.5)', borderColor: 'rgba(255,255,255,0.15)' }}>
+        style={{ padding: '5px 12px', fontSize: '11px', background: 'transparent', color: 'rgba(255,255,255,0.85)', borderColor: 'rgba(255,255,255,0.3)' }}>
         <Edit size={11} /> Modifier
       </button>
 

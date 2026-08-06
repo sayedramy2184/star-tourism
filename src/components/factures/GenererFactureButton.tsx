@@ -48,7 +48,7 @@ export default function GenererFactureButton({ dossierId, variant = 'header' }: 
 
   return (
     <button className="btn-ghost" onClick={handleGenerer} disabled={loading}
-      style={{ padding: '5px 12px', fontSize: '11px', color: 'rgba(255,255,255,0.5)', borderColor: 'rgba(255,255,255,0.15)' }}>
+      style={{ padding: '5px 12px', fontSize: '11px', background: 'transparent', color: 'rgba(255,255,255,0.85)', borderColor: 'rgba(255,255,255,0.3)' }}>
       <FileText size={11} /> {loading ? 'Génération…' : 'Facturer'}
     </button>
   )
