@@ -15,6 +15,7 @@ for (const nom of ['logo-facture.png', 'logo.png']) {
 }
 
 const OR = '#9a7a28', NOIR = '#16130e', GRIS = '#5a564e', LIGNE = '#d8d2c8', CREME = '#f5f2ed'
+const VERT = '#1e5e3a', ROUGE = '#9e2a2a'
 
 export interface LoueurPDFVehicule {
   vehicule: string
@@ -144,10 +145,11 @@ function LoueurDocument({ loueur, vehicules, paiements, totals, societe, dateEdi
         {/* Totaux */}
         <View style={styles.totalsWrap}>
           <View style={styles.totalsBox}>
-            <View style={styles.totalRow}><Text style={styles.totalLabel}>Cout couru HT</Text><Text style={styles.totalVal}>{eur(totals.coutCouru)}</Text></View>
-            <View style={styles.totalRow}><Text style={styles.totalLabel}>Total verse</Text><Text style={styles.totalVal}>{eur(totals.paye)}</Text></View>
-            <View style={styles.soldeRow}>
-              <Text style={styles.soldeLabel}>{totals.solde > 0 ? 'Reste a payer' : 'Solde'}</Text>
+            <View style={styles.totalRow}><Text style={styles.totalLabel}>Cout couru HT</Text><Text style={[styles.totalVal, { color: OR }]}>{eur(totals.coutCouru)}</Text></View>
+            <View style={styles.totalRow}><Text style={styles.totalLabel}>Total verse</Text><Text style={[styles.totalVal, { color: VERT }]}>{eur(totals.paye)}</Text></View>
+            <View style={styles.totalRow}><Text style={styles.totalLabel}>Solde</Text><Text style={[styles.totalVal, { color: totals.solde > 0 ? ROUGE : VERT }]}>{eur(totals.solde)}</Text></View>
+            <View style={[styles.soldeRow, { backgroundColor: totals.solde > 0 ? ROUGE : VERT }]}>
+              <Text style={styles.soldeLabel}>{totals.solde > 0 ? 'Reste a payer' : 'Compte solde'}</Text>
               <Text style={styles.soldeVal}>{eur(Math.max(0, totals.solde))}</Text>
             </View>
           </View>
