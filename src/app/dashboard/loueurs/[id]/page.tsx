@@ -3,7 +3,7 @@ import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import { format, parseISO } from 'date-fns'
 import { fr } from 'date-fns/locale'
-import { ArrowLeft } from 'lucide-react'
+import { ArrowLeft, FileText } from 'lucide-react'
 import { coutLocation } from '@/lib/coutLocation'
 import PaiementsPanel from '@/components/loueurs/PaiementsPanel'
 
@@ -49,7 +49,12 @@ export default async function LoueurDetailPage({ params }: { params: { id: strin
         <div>
           {/* En-tête loueur */}
           <div className="card" style={{ marginBottom:'16px' }}>
-            <div className="card-header"><span className="card-header-title">Loueur</span></div>
+            <div className="card-header">
+              <span className="card-header-title">Loueur</span>
+              <a href={`/api/loueurs/${loueur.id}/pdf`} target="_blank" rel="noreferrer" className="btn-or" style={{ padding:'5px 12px', fontSize:'11px', textDecoration:'none' }}>
+                <FileText size={12} /> PDF du détail
+              </a>
+            </div>
             <div style={{ padding:'18px 22px' }}>
               <div style={{ fontFamily:'Cormorant Garamond,serif', fontSize:'26px', fontWeight:500, color:'#16130e' }}>{loueur.nom}</div>
               <div style={{ fontSize:'11px', color:'#5a564e', marginTop:'4px' }}>
