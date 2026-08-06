@@ -32,7 +32,7 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
   const body = await req.json()
 
   const { data: facture } = await supabase
-    .from('factures').select('statut, taux_tva').eq('id', params.id).single()
+    .from('factures').select('statut, taux_tva, montant_ht').eq('id', params.id).single()
   if (!facture) return NextResponse.json({ error: 'Facture introuvable' }, { status: 404 })
 
   // ── Édition complète avec lignes — brouillon uniquement ──
@@ -67,6 +67,22 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
     if (body.notes !== undefined) upd.notes = body.notes || null
 
     const { data, error } = await supabase.from('factures').update(upd).eq('id', params.id).select().single()
+    if (error) return NextResponse.json({ error: error.message }, { status: 500 })
+    return NextResponse.json({ data })
+  }
+
+  // ── Changement du seul taux de TVA — recalcule TVA/TTC depuis le HT existant ──
+  if (body.taux_tva != null && !Array.isArray(body.lignes)) {
+    const taux = Number(body.taux_tva)
+    if (isNaN(taux) || taux < 0 || taux > 100) {
+      return NextResponse.json({ error: 'Taux de TVA invalide' }, { status: 400 })
+    }
+    const montantHt = Number(facture.montant_ht ?? 0)
+    const montantTva = round2(montantHt * taux / 100)
+    const montantTtc = round2(montantHt + montantTva)
+    const { data, error } = await supabase.from('factures')
+      .update({ taux_tva: taux, montant_tva: montantTva, montant_ttc: montantTtc, updated_at: new Date().toISOString() })
+      .eq('id', params.id).select().single()
     if (error) return NextResponse.json({ error: error.message }, { status: 500 })
     return NextResponse.json({ data })
   }

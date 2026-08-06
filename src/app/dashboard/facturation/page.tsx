@@ -21,6 +21,7 @@ interface Facture {
   montant_ht: number
   montant_tva?: number
   montant_ttc: number
+  taux_tva?: number
   client: { id: string; nom: string; type?: string } | null
   dossier: { id: string; numero: string; passagers?: { nom: string }[] } | null
   paiements?: { montant: number }[]
@@ -97,6 +98,20 @@ export default function FacturationPage() {
       setFactures(prev => prev.map(f => f.id === id ? { ...f, statut } : f))
       toast.success('Statut mis à jour')
     } catch { toast.error('Erreur') }
+  }
+
+  async function changeTva(id: string, taux: number) {
+    try {
+      const res = await fetch(`/api/factures/${id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ taux_tva: taux }),
+      })
+      const json = await res.json()
+      if (!res.ok) throw new Error(json.error ?? 'Erreur')
+      setFactures(prev => prev.map(f => f.id === id ? { ...f, taux_tva: json.data.taux_tva, montant_tva: json.data.montant_tva, montant_ttc: json.data.montant_ttc } : f))
+      toast.success(`TVA mise à jour (${taux} %)`)
+    } catch (err: any) { toast.error(err.message) }
   }
 
   async function supprimer(id: string, numero: string) {
@@ -214,6 +229,9 @@ export default function FacturationPage() {
                   {paye(f) > 0 && f.statut !== 'annulee' && (
                     <div style={{ fontFamily: 'JetBrains Mono,monospace', fontSize: '9px', color: (f.montant_ttc - paye(f)) <= 0 ? '#1e5e3a' : '#7a5c10' }}>{(f.montant_ttc - paye(f)) <= 0 ? '✓ Réglée' : `Reste ${fmt(f.montant_ttc - paye(f))}`}</div>
                   )}
+                  {f.type !== 'avoir' && f.statut !== 'annulee' && (
+                    <div style={{ marginTop: '4px' }}><TvaCell taux={f.taux_tva ?? 10} onSave={t => changeTva(f.id, t)} /></div>
+                  )}
                 </div>
               </div>
               <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap', marginTop: '10px', paddingTop: '10px', borderTop: '1px solid #f4f5f7' }}>
@@ -287,6 +305,9 @@ export default function FacturationPage() {
                         {(f.montant_ttc - paye(f)) <= 0 ? '✓ Réglée' : `Reste ${fmt(f.montant_ttc - paye(f))}`}
                       </div>
                     )}
+                    {f.type !== 'avoir' && f.statut !== 'annulee' && (
+                      <div style={{ marginTop: '3px' }}><TvaCell taux={f.taux_tva ?? 10} onSave={t => changeTva(f.id, t)} /></div>
+                    )}
                   </td>
                   <td className="td">
                     <select value={f.statut} onChange={e => changeStatut(f.id, e.target.value)}
@@ -334,5 +355,28 @@ export default function FacturationPage() {
       </div>
       <Pager page={sp.page} pageCount={sp.pageCount} total={sp.total} onPage={sp.setPage} />
     </div>
+  )
+}
+
+// Éditeur inline du taux de TVA d'une facture (recalcule TVA/TTC)
+function TvaCell({ taux, onSave }: { taux: number; onSave: (t: number) => void }) {
+  const [v, setV] = useState(String(taux))
+  useEffect(() => { setV(String(taux)) }, [taux])
+  function commit() {
+    const n = Number(v)
+    if (isNaN(n) || n < 0 || n > 100) { setV(String(taux)); return }
+    if (n !== taux) onSave(n)
+  }
+  return (
+    <span style={{ display: 'inline-flex', alignItems: 'center', gap: '3px' }} title="Modifier le taux de TVA">
+      <span style={{ fontSize: '9px', color: '#8a8478', textTransform: 'uppercase', letterSpacing: '0.5px' }}>TVA</span>
+      <input type="number" value={v} min={0} max={100} step={0.1}
+        onChange={e => setV(e.target.value)}
+        onBlur={commit}
+        onKeyDown={e => { if (e.key === 'Enter') (e.target as HTMLInputElement).blur() }}
+        onClick={e => e.stopPropagation()}
+        style={{ width: '44px', padding: '1px 4px', fontSize: '10px', textAlign: 'right', border: '1px solid #d8d2c8', borderRadius: '4px', fontFamily: 'JetBrains Mono,monospace', color: '#16130e' }} />
+      <span style={{ fontSize: '9px', color: '#8a8478' }}>%</span>
+    </span>
   )
 }
