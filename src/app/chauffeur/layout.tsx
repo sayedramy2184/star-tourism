@@ -27,7 +27,7 @@ export default function ChauffeurLayout({ children }: { children: React.ReactNod
     <div style={{ minHeight: '100dvh', background: '#16130e', display: 'flex', justifyContent: 'center' }}>
       <div style={{
         width: '100%', maxWidth: '480px', minHeight: '100dvh',
-        background: '#ede9e2', position: 'relative',
+        background: '#f4f5f7', position: 'relative',
         boxShadow: '0 0 40px rgba(0,0,0,0.25)',
       }}>
         {children}

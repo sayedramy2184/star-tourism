@@ -124,9 +124,9 @@ export default function AffecterSousTraitantModal({ prestationId, dossierId, pri
 
       {open && (
         <div style={{ position:'fixed', inset:0, background:'rgba(0,0,0,0.5)', zIndex:200, display:'flex', alignItems:'center', justifyContent:'center' }}>
-          <div style={{ background:'#fff', width:'560px', maxWidth:'96vw', maxHeight:'90vh', overflowY:'auto', boxShadow:'0 32px 80px rgba(0,0,0,0.3)', border:'1.5px solid #b8b0a4' }}>
+          <div style={{ background:'#fff', width:'560px', maxWidth:'96vw', maxHeight:'90vh', overflowY:'auto', boxShadow:'0 32px 80px rgba(0,0,0,0.3)', border:'1px solid #e4e6ea', borderRadius:'12px' }}>
 
-            <div style={{ background:'#16130e', padding:'16px 24px', display:'flex', alignItems:'center', justifyContent:'space-between' }}>
+            <div style={{ background:'#16130e', padding:'16px 24px', borderRadius:'12px 12px 0 0', display:'flex', alignItems:'center', justifyContent:'space-between' }}>
               <span style={{ fontFamily:'Cormorant Garamond,serif', fontSize:'19px', fontWeight:500, color:'#fff', letterSpacing:'1px' }}>
                 Affecter un sous-traitant
               </span>
@@ -138,7 +138,7 @@ export default function AffecterSousTraitantModal({ prestationId, dossierId, pri
             <div style={{ padding:'20px 24px' }}>
 
               {/* Sélection sous-traitant */}
-              <div style={{ fontSize:'9px', fontWeight:700, letterSpacing:'2.5px', textTransform:'uppercase', color:'#9a7a28', marginBottom:'10px', paddingBottom:'6px', borderBottom:'1px solid #b8b0a4' }}>
+              <div style={{ fontSize:'9px', fontWeight:700, letterSpacing:'2.5px', textTransform:'uppercase', color:'#9a7a28', marginBottom:'10px', paddingBottom:'6px', borderBottom:'1px solid #e4e6ea' }}>
                 Société sous-traitante
               </div>
               <div style={{ display:'flex', flexDirection:'column', gap:'6px', marginBottom:'16px' }}>
@@ -160,7 +160,7 @@ export default function AffecterSousTraitantModal({ prestationId, dossierId, pri
               </div>
 
               {/* Détails chauffeur envoyé */}
-              <div style={{ fontSize:'9px', fontWeight:700, letterSpacing:'2.5px', textTransform:'uppercase', color:'#9a7a28', marginBottom:'10px', paddingBottom:'6px', borderBottom:'1px solid #b8b0a4' }}>
+              <div style={{ fontSize:'9px', fontWeight:700, letterSpacing:'2.5px', textTransform:'uppercase', color:'#9a7a28', marginBottom:'10px', paddingBottom:'6px', borderBottom:'1px solid #e4e6ea' }}>
                 Chauffeur envoyé par le sous-traitant
               </div>
               <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:'10px', marginBottom:'16px' }}>
@@ -177,7 +177,7 @@ export default function AffecterSousTraitantModal({ prestationId, dossierId, pri
               </div>
 
               {/* Véhicule envoyé */}
-              <div style={{ fontSize:'9px', fontWeight:700, letterSpacing:'2.5px', textTransform:'uppercase', color:'#9a7a28', marginBottom:'10px', paddingBottom:'6px', borderBottom:'1px solid #b8b0a4' }}>
+              <div style={{ fontSize:'9px', fontWeight:700, letterSpacing:'2.5px', textTransform:'uppercase', color:'#9a7a28', marginBottom:'10px', paddingBottom:'6px', borderBottom:'1px solid #e4e6ea' }}>
                 Véhicule du sous-traitant
               </div>
               <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr 1fr', gap:'10px', marginBottom:'16px' }}>
@@ -199,7 +199,7 @@ export default function AffecterSousTraitantModal({ prestationId, dossierId, pri
               </div>
 
               {/* Coût et marge */}
-              <div style={{ fontSize:'9px', fontWeight:700, letterSpacing:'2.5px', textTransform:'uppercase', color:'#9a7a28', marginBottom:'10px', paddingBottom:'6px', borderBottom:'1px solid #b8b0a4' }}>
+              <div style={{ fontSize:'9px', fontWeight:700, letterSpacing:'2.5px', textTransform:'uppercase', color:'#9a7a28', marginBottom:'10px', paddingBottom:'6px', borderBottom:'1px solid #e4e6ea' }}>
                 Tarification
               </div>
               <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr 1fr', gap:'10px', marginBottom:'16px' }}>
@@ -211,7 +211,7 @@ export default function AffecterSousTraitantModal({ prestationId, dossierId, pri
                 <div>
                   <label className="form-label">
                     Coût / jour HT *
-                    {nbJours > 1 && <span style={{ color:'#8a8478', fontSize:'9px', marginLeft:'4px' }}>× {nbJours} j</span>}
+                    {nbJours > 1 && <span style={{ color:'#63605a', fontSize:'9px', marginLeft:'4px' }}>× {nbJours} j</span>}
                   </label>
                   <input type="number" className="input" value={coutHT || ''}
                     onChange={e => setCoutHT(parseFloat(e.target.value) || 0)}
@@ -228,7 +228,7 @@ export default function AffecterSousTraitantModal({ prestationId, dossierId, pri
                   <input readOnly className="input" value={coutHT > 0 ? `${fmt(marge)} (${margePct}%)` : '—'}
                     style={{
                       background:'#f5f2ed', cursor:'default', fontFamily:'JetBrains Mono,monospace',
-                      color: marge > 0 ? '#1e5e3a' : marge < 0 ? '#9e2a2a' : '#8a8478',
+                      color: marge > 0 ? '#1e5e3a' : marge < 0 ? '#9e2a2a' : '#63605a',
                       fontWeight: 600,
                     }} />
                 </div>
@@ -241,7 +241,7 @@ export default function AffecterSousTraitantModal({ prestationId, dossierId, pri
                 </div>
               )}
 
-              <div style={{ display:'flex', justifyContent:'space-between', paddingTop:'16px', borderTop:'1.5px solid #b8b0a4' }}>
+              <div style={{ display:'flex', justifyContent:'space-between', paddingTop:'16px', borderTop:'1px solid #e4e6ea' }}>
                 <div>
                   {sousTraitantActuel && (
                     <button className="btn-ghost" onClick={handleRetirer} disabled={saving}

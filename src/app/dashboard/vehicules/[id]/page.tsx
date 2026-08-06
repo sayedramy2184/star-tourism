@@ -18,7 +18,7 @@ const STATUTS: Record<string, { label: string; color: string; bg: string }> = {
   disponible:  { label: 'Disponible',  color: '#1e5e3a', bg: '#eaf4ee' },
   en_mission:  { label: 'En mission',  color: '#1e3f70', bg: '#e8eef8' },
   maintenance: { label: 'Maintenance', color: '#7a5c10', bg: '#fdf3dc' },
-  inactif:     { label: 'Inactif',     color: '#8a8478', bg: '#f5f2ed' },
+  inactif:     { label: 'Inactif',     color: '#63605a', bg: '#f5f2ed' },
 }
 
 const MODES: Record<string, { label: string; color: string; bg: string }> = {
@@ -96,7 +96,7 @@ export default async function VehiculeDetailPage({ params }: { params: { id: str
     <div>
       <div style={{ marginBottom:'20px' }}>
         <Link href="/dashboard/vehicules"
-          style={{ display:'inline-flex', alignItems:'center', gap:'6px', fontSize:'12px', color:'#8a8478', textDecoration:'none' }}>
+          style={{ display:'inline-flex', alignItems:'center', gap:'6px', fontSize:'12px', color:'#63605a', textDecoration:'none' }}>
           <ArrowLeft size={13} /> Retour aux véhicules
         </Link>
       </div>
@@ -108,7 +108,7 @@ export default async function VehiculeDetailPage({ params }: { params: { id: str
 
           {/* Fiche véhicule */}
           <div className="card" style={{ marginBottom:'16px' }}>
-            <div style={{ background:'#16130e', padding:'12px 22px', display:'flex', alignItems:'center', justifyContent:'space-between' }}>
+            <div style={{ background:'#16130e', padding:'12px 22px', borderRadius:'12px 12px 0 0', display:'flex', alignItems:'center', justifyContent:'space-between' }}>
               <span style={{ fontFamily:'JetBrains Mono,monospace', fontSize:'12px', letterSpacing:'2px', color:'#9a7a28' }}>
                 {v.immatriculation}
               </span>
@@ -156,7 +156,7 @@ export default async function VehiculeDetailPage({ params }: { params: { id: str
                   { label:'Chauffeur',      val: v.chauffeur ? `${v.chauffeur.prenom} ${v.chauffeur.nom}` : 'Non affecté', alert: null },
                 ].map((m, i) => (
                   <div key={m.label} style={{ padding:'12px 16px', borderRight: i < 3 ? '1px solid #d8d2c8' : 'none' }}>
-                    <div style={{ fontSize:'8px', fontWeight:600, letterSpacing:'2px', textTransform:'uppercase', color:'#8a8478', marginBottom:'4px' }}>{m.label}</div>
+                    <div style={{ fontSize:'8px', fontWeight:600, letterSpacing:'2px', textTransform:'uppercase', color:'#63605a', marginBottom:'4px' }}>{m.label}</div>
                     <div style={{ fontFamily: i === 2 ? 'JetBrains Mono,monospace' : 'inherit', fontSize:'12px', fontWeight:500,
                       color: m.alert ? (m.alert.level === 'danger' ? '#9e2a2a' : m.alert.level === 'warn' ? '#7a5c10' : '#16130e') : '#16130e' }}>
                       {m.alert && (m.alert.level === 'danger' || m.alert.level === 'warn') && <AlertTriangle size={11} style={{ marginRight:'4px', display:'inline' }} />}
@@ -197,7 +197,7 @@ export default async function VehiculeDetailPage({ params }: { params: { id: str
                     alert: v.date_sortie_parc && differenceInDays(parseISO(v.date_sortie_parc), new Date()) < 0 ? { level:'danger', label:'Sorti du parc', color:'#9e2a2a' } : null },
                 ].map((m: any) => (
                   <div key={m.label}>
-                    <div style={{ fontSize:'8px', fontWeight:600, letterSpacing:'2px', textTransform:'uppercase', color:'#8a8478', marginBottom:'4px' }}>{m.label}</div>
+                    <div style={{ fontSize:'8px', fontWeight:600, letterSpacing:'2px', textTransform:'uppercase', color:'#63605a', marginBottom:'4px' }}>{m.label}</div>
                     <div style={{ fontFamily: m.mono ? 'JetBrains Mono,monospace' : 'inherit', fontSize:'12px', fontWeight:500, color: m.alert ? m.alert.color : '#16130e' }}>
                       {m.alert && <AlertTriangle size={11} style={{ marginRight:'4px', display:'inline', verticalAlign:'-1px' }} />}
                       {m.val}
@@ -211,7 +211,7 @@ export default async function VehiculeDetailPage({ params }: { params: { id: str
           {/* Historique */}
           <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom:'12px' }}>
             <span className="section-title">Historique des missions</span>
-            <span style={{ fontFamily:'JetBrains Mono,monospace', fontSize:'11px', color:'#8a8478' }}>
+            <span style={{ fontFamily:'JetBrains Mono,monospace', fontSize:'11px', color:'#63605a' }}>
               {nbMissions} mission{nbMissions > 1 ? 's' : ''}
             </span>
           </div>
@@ -219,17 +219,17 @@ export default async function VehiculeDetailPage({ params }: { params: { id: str
           {/* Liste mobile (cartes) */}
           <div className="only-mobile" style={{ display:'flex', flexDirection:'column', gap:'10px' }}>
             {nbMissions === 0 ? (
-              <div style={{ padding:'30px', textAlign:'center', color:'#8a8478', fontSize:'12px' }}>Aucune mission pour ce véhicule</div>
+              <div style={{ padding:'30px', textAlign:'center', color:'#63605a', fontSize:'12px' }}>Aucune mission pour ce véhicule</div>
             ) : (
               <>
                 {prestations?.map((p: any) => (
-                  <div key={`mp-${p.id}`} style={{ background:'#fff', border:'1.5px solid #b8b0a4', boxShadow:'0 1px 4px rgba(0,0,0,0.06)', padding:'12px' }}>
+                  <div key={`mp-${p.id}`} style={{ background:'#fff', border:'1px solid #e4e6ea', borderRadius:'12px', boxShadow:'0 1px 4px rgba(0,0,0,0.06)', padding:'12px' }}>
                     <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', gap:'8px' }}>
                       <div style={{ display:'flex', alignItems:'center', gap:'8px', minWidth:0 }}>
                         <span className={p.type === 'mad' ? 'pill-mad' : 'pill-transfer'}>{p.type === 'mad' ? 'MAD' : 'Transfert'}</span>
                         <span className="mono" style={{ fontSize:'11px' }}>{format(new Date(p.date_debut),'dd/MM/yy',{locale:fr})}</span>
                       </div>
-                      <span style={{ fontSize:'10px', fontWeight:700, color: p.statut === 'termine' ? '#8a8478' : p.statut === 'confirme' ? '#1e5e3a' : '#1e3f70' }}>{p.statut}</span>
+                      <span style={{ fontSize:'10px', fontWeight:700, color: p.statut === 'termine' ? '#63605a' : p.statut === 'confirme' ? '#1e5e3a' : '#1e3f70' }}>{p.statut}</span>
                     </div>
                     <div style={{ fontWeight:600, fontSize:'13px', marginTop:'6px' }}>{p.dossier?.client?.nom ?? '—'}</div>
                     <div className="mono" style={{ fontSize:'9px', color:'#9a7a28' }}>{p.dossier?.numero}</div>
@@ -243,13 +243,13 @@ export default async function VehiculeDetailPage({ params }: { params: { id: str
                   </div>
                 ))}
                 {jours?.map((j: any) => (
-                  <div key={`mj-${j.id}`} style={{ background:'#fff', border:'1.5px solid #b8b0a4', boxShadow:'0 1px 4px rgba(0,0,0,0.06)', padding:'12px' }}>
+                  <div key={`mj-${j.id}`} style={{ background:'#fff', border:'1px solid #e4e6ea', borderRadius:'12px', boxShadow:'0 1px 4px rgba(0,0,0,0.06)', padding:'12px' }}>
                     <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', gap:'8px' }}>
                       <div style={{ display:'flex', alignItems:'center', gap:'8px', minWidth:0 }}>
                         <span className="pill-mad">MAD</span>
                         <span className="mono" style={{ fontSize:'11px' }}>{j.jour_semaine} {format(new Date(j.date),'dd/MM/yy',{locale:fr})}</span>
                       </div>
-                      <span style={{ fontSize:'10px', fontWeight:700, color: j.statut === 'termine' ? '#8a8478' : '#1e3f70' }}>{j.statut}</span>
+                      <span style={{ fontSize:'10px', fontWeight:700, color: j.statut === 'termine' ? '#63605a' : '#1e3f70' }}>{j.statut}</span>
                     </div>
                     <div style={{ fontWeight:600, fontSize:'13px', marginTop:'6px' }}>{j.prestation?.dossier?.client?.nom ?? '—'}</div>
                     <div className="mono" style={{ fontSize:'9px', color:'#9a7a28' }}>{j.prestation?.dossier?.numero}</div>
@@ -269,7 +269,7 @@ export default async function VehiculeDetailPage({ params }: { params: { id: str
               <thead className="table-head">
                 <tr>
                   {['Date','Type','Client / Dossier','Itinéraire','Chauffeur','Montant HT','Statut'].map((h,i) => (
-                    <th key={h} className="th" style={i%2===1?{background:'rgba(0,0,0,0.1)'}:{}}>{h}</th>
+                    <th key={h} className="th">{h}</th>
                   ))}
                 </tr>
               </thead>
@@ -289,7 +289,7 @@ export default async function VehiculeDetailPage({ params }: { params: { id: str
                     <td className="td">
                       <div style={{ fontSize:'11px', color:'#5a564e' }}>
                         {p.adresse_depart && <div>{p.adresse_depart}</div>}
-                        {p.adresse_arrivee && <div style={{ color:'#8a8478' }}>→ {p.adresse_arrivee}</div>}
+                        {p.adresse_arrivee && <div style={{ color:'#63605a' }}>→ {p.adresse_arrivee}</div>}
                         {!p.adresse_depart && !p.adresse_arrivee && '—'}
                       </div>
                     </td>
@@ -302,7 +302,7 @@ export default async function VehiculeDetailPage({ params }: { params: { id: str
                       </span>
                     </td>
                     <td className="td">
-                      <span style={{ fontSize:'10px', fontWeight:700, color: p.statut === 'termine' ? '#8a8478' : p.statut === 'confirme' ? '#1e5e3a' : '#1e3f70' }}>
+                      <span style={{ fontSize:'10px', fontWeight:700, color: p.statut === 'termine' ? '#63605a' : p.statut === 'confirme' ? '#1e5e3a' : '#1e3f70' }}>
                         {p.statut}
                       </span>
                     </td>
@@ -321,7 +321,7 @@ export default async function VehiculeDetailPage({ params }: { params: { id: str
                       <div style={{ fontWeight:600, fontSize:'12px' }}>{j.prestation?.dossier?.client?.nom ?? '—'}</div>
                       <div style={{ fontFamily:'JetBrains Mono,monospace', fontSize:'9px', color:'#9a7a28' }}>{j.prestation?.dossier?.numero}</div>
                     </td>
-                    <td className="td"><span style={{ fontSize:'11px', color:'#8a8478' }}>Journée complète</span></td>
+                    <td className="td"><span style={{ fontSize:'11px', color:'#63605a' }}>Journée complète</span></td>
                     <td className="td" style={{ fontSize:'12px' }}>
                       {j.chauffeur ? `${j.chauffeur.prenom} ${j.chauffeur.nom}` : '—'}
                     </td>
@@ -331,7 +331,7 @@ export default async function VehiculeDetailPage({ params }: { params: { id: str
                       </span>
                     </td>
                     <td className="td">
-                      <span style={{ fontSize:'10px', fontWeight:700, color: j.statut === 'termine' ? '#8a8478' : '#1e3f70' }}>
+                      <span style={{ fontSize:'10px', fontWeight:700, color: j.statut === 'termine' ? '#63605a' : '#1e3f70' }}>
                         {j.statut}
                       </span>
                     </td>
@@ -339,7 +339,7 @@ export default async function VehiculeDetailPage({ params }: { params: { id: str
                 ))}
 
                 {nbMissions === 0 && (
-                  <tr><td colSpan={7} style={{ padding:'50px', textAlign:'center', color:'#8a8478', fontSize:'12px' }}>
+                  <tr><td colSpan={7} style={{ padding:'50px', textAlign:'center', color:'#63605a', fontSize:'12px' }}>
                     Aucune mission pour ce véhicule
                   </td></tr>
                 )}

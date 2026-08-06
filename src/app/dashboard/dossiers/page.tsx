@@ -44,7 +44,7 @@ function PassagersLine({ passagers }: { passagers?: any[] }) {
   if (!noms.length) return null
   return (
     <div style={{ display:'flex', alignItems:'flex-start', gap:'4px', marginTop:'5px', fontSize:'11px', color:'#5a564e', lineHeight:1.35 }}>
-      <Users size={11} style={{ color:'#8a8478', flexShrink:0, marginTop:'2px' }} />
+      <Users size={11} style={{ color:'#63605a', flexShrink:0, marginTop:'2px' }} />
       <span>{noms.join(', ')}</span>
     </div>
   )
@@ -134,16 +134,16 @@ export default function DossiersPage() {
       {/* Liste mobile (cartes) */}
       <div className="only-mobile" style={{ display:'flex', flexDirection:'column', gap:'10px' }}>
         {loadingData ? (
-          <div style={{ padding:'40px', textAlign:'center', color:'#8a8478', fontSize:'12px' }}>Chargement…</div>
+          <div style={{ padding:'40px', textAlign:'center', color:'#63605a', fontSize:'12px' }}>Chargement…</div>
         ) : sp.total === 0 ? (
-          <div style={{ padding:'40px', textAlign:'center', color:'#8a8478', fontSize:'12px' }}>
+          <div style={{ padding:'40px', textAlign:'center', color:'#63605a', fontSize:'12px' }}>
             {dossiers.length === 0 ? 'Aucun dossier — créez le premier !' : 'Aucun résultat.'}
           </div>
         ) : sp.pageItems.map((d: any) => {
           const types = d.prestations?.filter((p: any) => p.statut !== 'annule').reduce((acc: any, p: any) => { acc[p.type] = (acc[p.type] ?? 0) + 1; return acc }, {}) ?? {}
           return (
-            <div key={d.id} style={{ background:'#fff', border:'1.5px solid #b8b0a4', boxShadow:'0 1px 4px rgba(0,0,0,0.06)' }}>
-              <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', padding:'10px 12px', borderBottom:'1px solid #ede9e2' }}>
+            <div key={d.id} style={{ background:'#fff', border:'1px solid #e4e6ea', borderRadius:'12px', boxShadow:'0 1px 4px rgba(0,0,0,0.06)' }}>
+              <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', padding:'10px 12px', borderBottom:'1px solid #f4f5f7' }}>
                 <span style={{ display:'inline-flex', alignItems:'center', gap:'6px', flexWrap:'wrap' }}><span className="mono" style={{ fontSize:'11px', color:'#9a7a28' }}>{d.numero}</span><AgenceBadge d={d} /></span>
                 <StatutDossierSelector key={d.id + d.statut} dossierId={d.id} statut={d.statut} onStatutChange={(ns) => setDossiers(prev => prev.map(x => x.id === d.id ? {...x, statut: ns} : x))} />
               </div>
@@ -174,7 +174,7 @@ export default function DossiersPage() {
             <tr>
               {['N° Dossier','Client','Période','Durée','Prestations','Montant HT','Statut',''].map((h,i) => (
                 <th key={i} className="th"
-                  style={i%2===1 ? { background:'rgba(0,0,0,0.1)' } : {}}>
+>
                   {h}
                 </th>
               ))}
@@ -182,7 +182,7 @@ export default function DossiersPage() {
           </thead>
           <tbody>
             {loadingData ? (
-              <tr><td colSpan={8} style={{ padding:'60px', textAlign:'center', color:'#8a8478', fontSize:'12px' }}>Chargement…</td></tr>
+              <tr><td colSpan={8} style={{ padding:'60px', textAlign:'center', color:'#63605a', fontSize:'12px' }}>Chargement…</td></tr>
             ) : sp.total > 0 ? sp.pageItems.map((d: any) => {
               const types = d.prestations?.filter((p: any) => p.statut !== 'annule').reduce((acc: any, p: any) => {
                 acc[p.type] = (acc[p.type] ?? 0) + 1; return acc
@@ -204,7 +204,7 @@ export default function DossiersPage() {
                     </span>
                   </td>
                   <td className="td">
-                    <span style={{ background:'#f5f2ed', border:'1.5px solid #b8b0a4', padding:'2px 8px', fontFamily:'monospace', fontSize:'10px', color:'#5a564e' }}>
+                    <span style={{ display:'inline-block', whiteSpace:'nowrap', background:'#f5f2ed', border:'1px solid #e4e6ea', borderRadius:'12px', padding:'2px 8px', fontFamily:'monospace', fontSize:'10px', color:'#5a564e' }}>
                       {d.nb_jours} j
                     </span>
                   </td>
@@ -230,7 +230,7 @@ export default function DossiersPage() {
               )
             }) : (
               <tr>
-                <td colSpan={8} style={{ padding:'60px', textAlign:'center', color:'#8a8478', fontSize:'12px' }}>
+                <td colSpan={8} style={{ padding:'60px', textAlign:'center', color:'#63605a', fontSize:'12px' }}>
                   {dossiers.length === 0 ? 'Aucun dossier — créez le premier !' : 'Aucun résultat.'}
                 </td>
               </tr>

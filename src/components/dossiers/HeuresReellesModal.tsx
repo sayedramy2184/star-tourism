@@ -232,10 +232,10 @@ export default function HeuresReellesModal({ prestationId, jours, tarifJournalie
 
       {open && (
         <div style={{ position:'fixed', inset:0, background:'rgba(22,19,14,0.55)', zIndex:200, display:'flex', alignItems:'center', justifyContent:'center', backdropFilter:'blur(3px)' }}>
-          <div style={{ background:'#fff', border:'1.5px solid #b8b0a4', width:'760px', maxWidth:'97vw', maxHeight:'92vh', overflowY:'auto', boxShadow:'0 24px 60px rgba(0,0,0,0.2)' }}>
+          <div style={{ background:'#fff', border:'1px solid #e4e6ea', borderRadius:'12px', width:'760px', maxWidth:'97vw', maxHeight:'92vh', overflowY:'auto', boxShadow:'0 24px 60px rgba(0,0,0,0.2)' }}>
 
             {/* Header */}
-            <div style={{ background:'#16130e', padding:'16px 24px', display:'flex', alignItems:'center', justifyContent:'space-between', position:'sticky', top:0, zIndex:10 }}>
+            <div style={{ background:'#16130e', padding:'16px 24px', borderRadius:'12px 12px 0 0', display:'flex', alignItems:'center', justifyContent:'space-between', position:'sticky', top:0, zIndex:10 }}>
               <div>
                 <span style={{ fontFamily:'Cormorant Garamond,serif', fontSize:'19px', fontWeight:500, color:'#fff', letterSpacing:'1px' }}>
                   Saisie des heures réelles
@@ -253,7 +253,7 @@ export default function HeuresReellesModal({ prestationId, jours, tarifJournalie
 
               {/* Sélection forfait global */}
               {forfaits.length > 0 && (
-                <div style={{ marginBottom:'20px', padding:'14px 16px', background:'#f5f2ed', border:'1.5px solid #b8b0a4' }}>
+                <div style={{ marginBottom:'20px', padding:'14px 16px', background:'#f5f2ed', border:'1px solid #e4e6ea', borderRadius:'12px' }}>
                   <div style={{ fontSize:'9px', fontWeight:700, letterSpacing:'2.5px', textTransform:'uppercase', color:'#9a7a28', marginBottom:'10px' }}>
                     Appliquer un forfait à tous les jours
                   </div>
@@ -263,14 +263,14 @@ export default function HeuresReellesModal({ prestationId, jours, tarifJournalie
                         onClick={() => jours.forEach(j => applyForfait(j.id, f.id))}
                         style={{
                           padding:'8px 14px', fontSize:'11px', fontWeight:600, cursor:'pointer',
-                          background:'#fff', border:'1.5px solid #b8b0a4', color:'#2e2b25',
+                          background:'#fff', border:'1px solid #e4e6ea', borderRadius:'12px', color:'#2e2b25',
                           display:'flex', flexDirection:'column', alignItems:'flex-start', gap:'2px',
                           transition:'all 0.14s', textAlign:'left',
                         }}
                         onMouseEnter={e => { e.currentTarget.style.borderColor='#9a7a28'; e.currentTarget.style.background='#fdf6e3' }}
-                        onMouseLeave={e => { e.currentTarget.style.borderColor='#b8b0a4'; e.currentTarget.style.background='#fff' }}>
+                        onMouseLeave={e => { e.currentTarget.style.borderColor='#e4e6ea'; e.currentTarget.style.background='#fff' }}>
                         <span style={{ fontWeight:700, color:'#16130e' }}>{f.nom}</span>
-                        <span style={{ fontSize:'10px', color:'#8a8478' }}>
+                        <span style={{ fontSize:'10px', color:'#63605a' }}>
                           {fmt(f.tarif_ht)} · {f.heures_incluses}h incluses
                           {f.avec_heures_sup && ` · sup: ${fmt(f.tarif_heure_sup)}/h`}
                         </span>
@@ -290,7 +290,7 @@ export default function HeuresReellesModal({ prestationId, jours, tarifJournalie
 
                   return (
                     <div key={j.id} style={{
-                      border:`1.5px solid ${hasSup ? '#9a7a28' : hasData ? '#1e5e3a' : '#b8b0a4'}`,
+                      border:`1.5px solid ${hasSup ? '#9a7a28' : hasData ? '#1e5e3a' : '#e4e6ea'}`,
                       background: hasSup ? '#fff8e8' : '#fff',
                       overflow:'hidden',
                     }}>
@@ -303,7 +303,7 @@ export default function HeuresReellesModal({ prestationId, jours, tarifJournalie
                             {j.jour_semaine} {format(parseISO(j.date),'dd/MM',{locale:fr})}
                           </div>
                           {j.chauffeur && (
-                            <div style={{ fontSize:'9px', color:'#8a8478', marginTop:'2px' }}>
+                            <div style={{ fontSize:'9px', color:'#63605a', marginTop:'2px' }}>
                               {j.chauffeur.prenom} {j.chauffeur.nom}
                             </div>
                           )}
@@ -311,11 +311,11 @@ export default function HeuresReellesModal({ prestationId, jours, tarifJournalie
 
                         {/* Forfait */}
                         <div>
-                          <div style={{ fontSize:'8px', fontWeight:600, letterSpacing:'1.5px', textTransform:'uppercase', color:'#8a8478', marginBottom:'4px' }}>Forfait</div>
+                          <div style={{ fontSize:'8px', fontWeight:600, letterSpacing:'1.5px', textTransform:'uppercase', color:'#63605a', marginBottom:'4px' }}>Forfait</div>
                           <select
                             value={state?.forfait_id ?? ''}
                             onChange={e => applyForfait(j.id, e.target.value)}
-                            style={{ background:'#fff', border:'1.5px solid #b8b0a4', padding:'5px 8px', fontSize:'11px', color:'#16130e', outline:'none', width:'100%' }}>
+                            style={{ background:'#fff', border:'1px solid #e4e6ea', borderRadius:'12px', padding:'5px 8px', fontSize:'11px', color:'#16130e', outline:'none', width:'100%' }}>
                             <option value="">— Saisie libre —</option>
                             {forfaits.map(f => (
                               <option key={f.id} value={f.id}>{f.nom} ({fmt(f.tarif_ht)})</option>
@@ -325,25 +325,25 @@ export default function HeuresReellesModal({ prestationId, jours, tarifJournalie
 
                         {/* Heure début réelle */}
                         <div>
-                          <div style={{ fontSize:'8px', fontWeight:600, letterSpacing:'1.5px', textTransform:'uppercase', color:'#8a8478', marginBottom:'4px' }}>Heure début</div>
+                          <div style={{ fontSize:'8px', fontWeight:600, letterSpacing:'1.5px', textTransform:'uppercase', color:'#63605a', marginBottom:'4px' }}>Heure début</div>
                           <input type="time"
                             value={state?.heure_debut ?? ''}
                             onChange={e => updateHeures(j.id, 'heure_debut', e.target.value)}
-                            style={{ background:'#fff', border:'1.5px solid #b8b0a4', padding:'5px 8px', fontSize:'11px', fontFamily:'JetBrains Mono,monospace', outline:'none', width:'100%' }} />
+                            style={{ background:'#fff', border:'1px solid #e4e6ea', borderRadius:'12px', padding:'5px 8px', fontSize:'11px', fontFamily:'JetBrains Mono,monospace', outline:'none', width:'100%' }} />
                         </div>
 
                         {/* Heure fin réelle */}
                         <div>
-                          <div style={{ fontSize:'8px', fontWeight:600, letterSpacing:'1.5px', textTransform:'uppercase', color:'#8a8478', marginBottom:'4px' }}>Heure fin</div>
+                          <div style={{ fontSize:'8px', fontWeight:600, letterSpacing:'1.5px', textTransform:'uppercase', color:'#63605a', marginBottom:'4px' }}>Heure fin</div>
                           <input type="time"
                             value={state?.heure_fin ?? ''}
                             onChange={e => updateHeures(j.id, 'heure_fin', e.target.value)}
-                            style={{ background:'#fff', border:'1.5px solid #b8b0a4', padding:'5px 8px', fontSize:'11px', fontFamily:'JetBrains Mono,monospace', outline:'none', width:'100%' }} />
+                            style={{ background:'#fff', border:'1px solid #e4e6ea', borderRadius:'12px', padding:'5px 8px', fontSize:'11px', fontFamily:'JetBrains Mono,monospace', outline:'none', width:'100%' }} />
                         </div>
 
                         {/* Taux heure sup */}
                         <div>
-                          <div style={{ fontSize:'8px', fontWeight:600, letterSpacing:'1.5px', textTransform:'uppercase', color:'#8a8478', marginBottom:'4px' }}>
+                          <div style={{ fontSize:'8px', fontWeight:600, letterSpacing:'1.5px', textTransform:'uppercase', color:'#63605a', marginBottom:'4px' }}>
                             Taux sup (€/h)
                           </div>
                           <input type="number"
@@ -363,13 +363,13 @@ export default function HeuresReellesModal({ prestationId, jours, tarifJournalie
                               })
                             }}
                             disabled={!state?.avec_heures_sup}
-                            style={{ background: state?.avec_heures_sup ? '#fff' : '#f5f2ed', border:'1.5px solid #b8b0a4', padding:'5px 8px', fontSize:'11px', fontFamily:'JetBrains Mono,monospace', outline:'none', width:'100%', cursor: state?.avec_heures_sup ? 'auto' : 'not-allowed' }}
+                            style={{ background: state?.avec_heures_sup ? '#fff' : '#f5f2ed', border:'1px solid #e4e6ea', borderRadius:'12px', padding:'5px 8px', fontSize:'11px', fontFamily:'JetBrains Mono,monospace', outline:'none', width:'100%', cursor: state?.avec_heures_sup ? 'auto' : 'not-allowed' }}
                           />
                         </div>
 
                         {/* Calcul */}
                         <div>
-                          <div style={{ fontSize:'8px', fontWeight:600, letterSpacing:'1.5px', textTransform:'uppercase', color:'#8a8478', marginBottom:'4px' }}>Résultat</div>
+                          <div style={{ fontSize:'8px', fontWeight:600, letterSpacing:'1.5px', textTransform:'uppercase', color:'#63605a', marginBottom:'4px' }}>Résultat</div>
                           {hasData ? (
                             <div>
                               <div style={{ fontFamily:'JetBrains Mono,monospace', fontSize:'11px', color:'#16130e', fontWeight:600 }}>
@@ -429,9 +429,9 @@ export default function HeuresReellesModal({ prestationId, jours, tarifJournalie
 
               {/* Récap total */}
               {Object.values(joursState).some(j => j.heure_debut && j.heure_fin) && (
-                <div style={{ marginTop:'16px', padding:'14px 16px', background:'#f5f2ed', border:'1.5px solid #b8b0a4', display:'flex', justifyContent:'flex-end', gap:'30px', alignItems:'center' }}>
+                <div style={{ marginTop:'16px', padding:'14px 16px', background:'#f5f2ed', border:'1px solid #e4e6ea', borderRadius:'12px', display:'flex', justifyContent:'flex-end', gap:'30px', alignItems:'center' }}>
                   <div style={{ textAlign:'right' }}>
-                    <div style={{ fontSize:'9px', fontWeight:600, letterSpacing:'2px', textTransform:'uppercase', color:'#8a8478', marginBottom:'3px' }}>Base forfaits</div>
+                    <div style={{ fontSize:'9px', fontWeight:600, letterSpacing:'2px', textTransform:'uppercase', color:'#63605a', marginBottom:'3px' }}>Base forfaits</div>
                     <div style={{ fontFamily:'JetBrains Mono,monospace', fontSize:'13px' }}>{fmt(totalBase)}</div>
                   </div>
                   {totalSup > 0 && (
@@ -448,7 +448,7 @@ export default function HeuresReellesModal({ prestationId, jours, tarifJournalie
               )}
 
               {/* Footer */}
-              <div style={{ display:'flex', justifyContent:'flex-end', gap:'8px', marginTop:'16px', paddingTop:'16px', borderTop:'1.5px solid #b8b0a4' }}>
+              <div style={{ display:'flex', justifyContent:'flex-end', gap:'8px', marginTop:'16px', paddingTop:'16px', borderTop:'1px solid #e4e6ea' }}>
                 <button className="btn-ghost" onClick={() => setOpen(false)}>Fermer</button>
                 <button className="btn-primary" disabled={saving === 'all'} onClick={saveAll}
                   style={{ padding:'8px 20px' }}>

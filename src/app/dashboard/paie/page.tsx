@@ -28,22 +28,22 @@ export default async function PaiePage() {
           { label: 'Restant dû', val: totalRestant <= 0 ? '✓ Soldé' : fmtEur(totalRestant), color: totalRestant > 0 ? '#9e2a2a' : '#1e5e3a' },
         ].map(s => (
           <div key={s.label} style={{ background: '#fff', border: '1px solid #e0d9cd', padding: '16px 18px' }}>
-            <div style={{ fontSize: '9px', letterSpacing: '2px', textTransform: 'uppercase', color: '#8a8478', marginBottom: '8px' }}>{s.label}</div>
+            <div style={{ fontSize: '9px', letterSpacing: '2px', textTransform: 'uppercase', color: '#63605a', marginBottom: '8px' }}>{s.label}</div>
             <div style={{ fontFamily: 'Cormorant Garamond,serif', fontSize: '24px', color: s.color }}>{s.val}</div>
           </div>
         ))}
       </div>
-      <div style={{ fontSize: '11px', color: '#8a8478', marginBottom: '20px' }}>
+      <div style={{ fontSize: '11px', color: '#63605a', marginBottom: '20px' }}>
         Salaire calculé sur les <strong>missions terminées</strong> (dates passées) : 200 €/jour MAD, 50 €/transfert, ajustables par jour et par transfert. Ouvre un chauffeur pour le détail et les versements.
       </div>
 
       {/* Liste mobile */}
       <div className="only-mobile" style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
         {chauffeurs.map(c => (
-          <Link key={c.id} href={`/dashboard/paie/${c.id}`} style={{ textDecoration: 'none', color: 'inherit', background: '#fff', border: '1.5px solid #b8b0a4', boxShadow: '0 1px 4px rgba(0,0,0,0.06)', padding: '12px' }}>
+          <Link key={c.id} href={`/dashboard/paie/${c.id}`} style={{ textDecoration: 'none', color: 'inherit', background: '#fff', border: '1px solid #e4e6ea', boxShadow: '0 1px 4px rgba(0,0,0,0.06)', padding: '12px' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
               <span style={{ fontWeight: 600, fontSize: '14px', color: '#16130e' }}>{c.prenom} {c.nom}</span>
-              <ChevronRight size={16} color="#b8b0a4" />
+              <ChevronRight size={16} color="#e4e6ea" />
             </div>
             <div style={{ display: 'flex', gap: '14px', marginTop: '8px', fontSize: '11px' }}>
               <span style={{ color: '#5a564e' }}>Acquis <strong style={{ fontFamily: 'JetBrains Mono,monospace' }}>{fmtEur(c.acquis)}</strong></span>
@@ -60,13 +60,13 @@ export default async function PaiePage() {
           <thead className="table-head">
             <tr>
               {['Chauffeur', 'Salaire acquis', 'Versé', 'Restant dû', ''].map((h, i) => (
-                <th key={i} className="th" style={i % 2 === 1 ? { background: 'rgba(0,0,0,0.1)' } : {}}>{h}</th>
+                <th key={i} className="th">{h}</th>
               ))}
             </tr>
           </thead>
           <tbody>
             {chauffeurs.length === 0 ? (
-              <tr><td colSpan={5} className="td" style={{ textAlign: 'center', padding: '50px', color: '#8a8478' }}>Aucun chauffeur.</td></tr>
+              <tr><td colSpan={5} className="td" style={{ textAlign: 'center', padding: '50px', color: '#63605a' }}>Aucun chauffeur.</td></tr>
             ) : chauffeurs.map(c => (
               <tr key={c.id} className="tr-body">
                 <td className="td" style={{ background: 'rgba(154,122,40,0.04)' }}>

@@ -34,12 +34,12 @@ function passagersNoms(f: Facture): string {
 const paye = (f: Facture) => (f.paiements ?? []).reduce((s, p) => s + (p.montant ?? 0), 0)
 
 const STATUTS: Record<string, { label: string; color: string; bg: string }> = {
-  brouillon: { label: 'Brouillon', color: '#8a8478', bg: '#f5f2ed' },
+  brouillon: { label: 'Brouillon', color: '#63605a', bg: '#f5f2ed' },
   emise:     { label: 'Émise',     color: '#1e3f70', bg: '#e8eef8' },
   envoyee:   { label: 'Envoyée',   color: '#4a2a6e', bg: '#efe8f8' },
   payee:     { label: 'Payée',     color: '#1e5e3a', bg: '#eaf4ee' },
   en_retard: { label: 'En retard', color: '#9e2a2a', bg: '#faeaea' },
-  annulee:   { label: 'Annulée',   color: '#8a8478', bg: '#f0eeeb' },
+  annulee:   { label: 'Annulée',   color: '#63605a', bg: '#f0eeeb' },
 }
 const STATUT_ORDER = ['brouillon', 'emise', 'envoyee', 'payee', 'en_retard', 'annulee']
 
@@ -150,7 +150,7 @@ export default function FacturationPage() {
           { label: 'En attente de paiement', val: fmt(enAttente), color: '#7a5c10' },
         ].map(s => (
           <div key={s.label} style={{ background: '#fff', border: '1px solid #e0d9cd', padding: '16px 18px' }}>
-            <div style={{ fontSize: '9px', letterSpacing: '2px', textTransform: 'uppercase', color: '#8a8478', marginBottom: '8px' }}>{s.label}</div>
+            <div style={{ fontSize: '9px', letterSpacing: '2px', textTransform: 'uppercase', color: '#63605a', marginBottom: '8px' }}>{s.label}</div>
             <div style={{ fontFamily: 'Cormorant Garamond,serif', fontSize: '24px', color: s.color }}>{s.val}</div>
           </div>
         ))}
@@ -183,13 +183,13 @@ export default function FacturationPage() {
       {/* Liste mobile (cartes) */}
       <div className="only-mobile" style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
         {loading ? (
-          <div style={{ padding: '40px', textAlign: 'center', color: '#8a8478', fontSize: '12px' }}>Chargement…</div>
+          <div style={{ padding: '40px', textAlign: 'center', color: '#63605a', fontSize: '12px' }}>Chargement…</div>
         ) : sp.total === 0 ? (
-          <div style={{ padding: '40px', textAlign: 'center', color: '#8a8478', fontSize: '12px' }}>{factures.length === 0 ? 'Aucune facture — générez-en une depuis un dossier.' : 'Aucun résultat.'}</div>
+          <div style={{ padding: '40px', textAlign: 'center', color: '#63605a', fontSize: '12px' }}>{factures.length === 0 ? 'Aucune facture — générez-en une depuis un dossier.' : 'Aucun résultat.'}</div>
         ) : sp.pageItems.map((f: any) => {
           const overdue = isOverdue(f); const st = STATUTS[overdue ? 'en_retard' : f.statut] ?? STATUTS.brouillon
           return (
-            <div key={f.id} style={{ background: '#fff', border: '1.5px solid #b8b0a4', boxShadow: '0 1px 4px rgba(0,0,0,0.06)', padding: '12px' }}>
+            <div key={f.id} style={{ background: '#fff', border: '1px solid #e4e6ea', boxShadow: '0 1px 4px rgba(0,0,0,0.06)', padding: '12px' }}>
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '8px' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '6px', minWidth: 0 }}>
                   <span style={{ fontFamily: 'JetBrains Mono,monospace', fontSize: '13px', color: '#9a7a28', fontWeight: 600 }}>{f.numero}</span>
@@ -201,7 +201,7 @@ export default function FacturationPage() {
               </div>
               <div style={{ fontWeight: 600, color: '#16130e', fontSize: '14px', marginTop: '6px' }}>{f.client?.nom ?? '—'}</div>
               {f.client?.type === 'agence' && passagersNoms(f) && (
-                <div style={{ fontSize: '11px', color: '#8a8478', marginTop: '2px' }}>Passagers : {passagersNoms(f)}</div>
+                <div style={{ fontSize: '11px', color: '#63605a', marginTop: '2px' }}>Passagers : {passagersNoms(f)}</div>
               )}
               <div style={{ display: 'flex', justifyContent: 'space-between', gap: '8px', marginTop: '6px', alignItems: 'flex-end' }}>
                 <div className="mono" style={{ fontSize: '10px', color: '#5a564e' }}>
@@ -216,7 +216,7 @@ export default function FacturationPage() {
                   )}
                 </div>
               </div>
-              <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap', marginTop: '10px', paddingTop: '10px', borderTop: '1px solid #ede9e2' }}>
+              <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap', marginTop: '10px', paddingTop: '10px', borderTop: '1px solid #f4f5f7' }}>
                 <a href={`/api/factures/${f.id}/pdf`} target="_blank" rel="noreferrer" className="btn-ghost" style={{ padding: '4px 10px', fontSize: '10px', textDecoration: 'none' }}><ExternalLink size={11} /> PDF FR</a>
                 <a href={`/api/factures/${f.id}/pdf?lang=en`} target="_blank" rel="noreferrer" className="btn-ghost" style={{ padding: '4px 10px', fontSize: '10px', textDecoration: 'none' }}><ExternalLink size={11} /> PDF EN</a>
                 {f.type !== 'avoir' && f.statut === 'brouillon' && <FactureFormModal editId={f.id} onDone={load} />}
@@ -237,15 +237,15 @@ export default function FacturationPage() {
           <thead className="table-head">
             <tr>
               {['N° Facture', 'Client', 'Dossier', 'Émission', 'Échéance', 'Montant TTC', 'Statut', ''].map((h, i) => (
-                <th key={i} className="th" style={i % 2 === 1 ? { background: 'rgba(0,0,0,0.1)' } : {}}>{h}</th>
+                <th key={i} className="th">{h}</th>
               ))}
             </tr>
           </thead>
           <tbody>
             {loading ? (
-              <tr><td colSpan={8} className="td" style={{ textAlign: 'center', padding: '40px', color: '#8a8478' }}>Chargement…</td></tr>
+              <tr><td colSpan={8} className="td" style={{ textAlign: 'center', padding: '40px', color: '#63605a' }}>Chargement…</td></tr>
             ) : sp.total === 0 ? (
-              <tr><td colSpan={8} className="td" style={{ textAlign: 'center', padding: '60px', color: '#8a8478' }}>
+              <tr><td colSpan={8} className="td" style={{ textAlign: 'center', padding: '60px', color: '#63605a' }}>
                 {factures.length === 0
                   ? 'Aucune facture — générez-en une depuis un dossier.'
                   : 'Aucun résultat.'}
@@ -264,7 +264,7 @@ export default function FacturationPage() {
                   <td className="td">
                     <div>{f.client?.nom ?? '—'}</div>
                     {f.client?.type === 'agence' && passagersNoms(f) && (
-                      <div style={{ fontSize: '10px', color: '#8a8478', marginTop: '2px' }}>
+                      <div style={{ fontSize: '10px', color: '#63605a', marginTop: '2px' }}>
                         Passagers : {passagersNoms(f)}
                       </div>
                     )}

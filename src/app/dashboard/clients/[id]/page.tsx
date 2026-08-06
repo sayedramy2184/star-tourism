@@ -14,10 +14,10 @@ function fmt(n: number) {
 function fmtDate(d: string) { return format(new Date(d), 'dd/MM/yyyy', { locale: fr }) }
 
 const DOSSIER_STATUTS: Record<string, { label: string; color: string; bg: string }> = {
-  brouillon:  { label: 'Brouillon',  color: '#8a8478', bg: '#f5f2ed' },
+  brouillon:  { label: 'Brouillon',  color: '#63605a', bg: '#f5f2ed' },
   en_attente: { label: 'En attente', color: '#7a5c10', bg: '#fdf3dc' },
   en_cours:   { label: 'En cours',   color: '#1e3f70', bg: '#e8eef8' },
-  termine:    { label: 'Terminé',    color: '#8a8478', bg: '#f5f2ed' },
+  termine:    { label: 'Terminé',    color: '#63605a', bg: '#f5f2ed' },
 }
 
 export default async function ClientDetailPage({ params }: { params: { id: string } }) {
@@ -42,7 +42,7 @@ export default async function ClientDetailPage({ params }: { params: { id: strin
   return (
     <div>
       <div style={{ marginBottom: '20px' }}>
-        <Link href="/dashboard/clients" style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', fontSize: '12px', color: '#8a8478', textDecoration: 'none' }}>
+        <Link href="/dashboard/clients" style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', fontSize: '12px', color: '#63605a', textDecoration: 'none' }}>
           <ArrowLeft size={13} /> Retour aux clients
         </Link>
       </div>
@@ -51,7 +51,7 @@ export default async function ClientDetailPage({ params }: { params: { id: strin
         {/* Colonne principale */}
         <div>
           <div className="card" style={{ marginBottom: '16px' }}>
-            <div style={{ background: '#16130e', padding: '12px 22px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <div style={{ background: '#16130e', padding: '12px 22px', borderRadius:'12px 12px 0 0', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
               <span style={{ fontFamily: 'JetBrains Mono,monospace', fontSize: '11px', color: '#9a7a28' }}>FICHE CLIENT</span>
               <ClientEditModal client={c as any} />
             </div>
@@ -66,7 +66,7 @@ export default async function ClientDetailPage({ params }: { params: { id: strin
                       </div>
                       <div>
                         <div style={{ fontFamily: 'Cormorant Garamond,serif', fontSize: '26px', fontWeight: 500, color: '#16130e', lineHeight: 1 }}>{c.nom}</div>
-                        <div style={{ fontSize: '11px', color: '#8a8478', marginTop: '4px', textTransform: 'uppercase', letterSpacing: '1px' }}>
+                        <div style={{ fontSize: '11px', color: '#63605a', marginTop: '4px', textTransform: 'uppercase', letterSpacing: '1px' }}>
                           {ti.label}{c.contact_nom ? ` · ${c.contact_nom}` : ''}{c.pays && c.pays !== 'France' ? ` · ${c.pays}` : ''}
                         </div>
                       </div>
@@ -99,18 +99,18 @@ export default async function ClientDetailPage({ params }: { params: { id: strin
           {/* Liste mobile (cartes) */}
           <div className="only-mobile" style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
             {D.length === 0 ? (
-              <div style={{ padding: '30px', textAlign: 'center', color: '#8a8478', fontSize: '12px' }}>Aucun dossier pour ce client</div>
+              <div style={{ padding: '30px', textAlign: 'center', color: '#63605a', fontSize: '12px' }}>Aucun dossier pour ce client</div>
             ) : D.map((d: any) => {
               const st = DOSSIER_STATUTS[d.statut] ?? DOSSIER_STATUTS.en_attente
               return (
-                <Link key={d.id} href={`/dashboard/dossiers/${d.id}`} style={{ display: 'block', background: '#fff', border: '1.5px solid #b8b0a4', boxShadow: '0 1px 4px rgba(0,0,0,0.06)', padding: '12px', textDecoration: 'none', color: 'inherit' }}>
+                <Link key={d.id} href={`/dashboard/dossiers/${d.id}`} style={{ display: 'block', background: '#fff', border: '1px solid #e4e6ea', boxShadow: '0 1px 4px rgba(0,0,0,0.06)', padding: '12px', textDecoration: 'none', color: 'inherit' }}>
                   <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '8px' }}>
                     <span style={{ fontFamily: 'JetBrains Mono,monospace', fontSize: '11px', color: '#9a7a28' }}>{d.numero}</span>
                     <span style={{ fontSize: '10px', fontWeight: 700, padding: '2px 8px', color: st.color, background: st.bg }}>{st.label}</span>
                   </div>
                   <div className="mono" style={{ fontSize: '11px', color: '#5a564e', marginTop: '6px' }}>{fmtDate(d.date_debut)} → {fmtDate(d.date_fin)}</div>
                   <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '6px', fontSize: '11px' }}>
-                    <span style={{ color: '#8a8478' }}>{d.prestations?.length ?? 0} prestation{(d.prestations?.length ?? 0) > 1 ? 's' : ''}</span>
+                    <span style={{ color: '#63605a' }}>{d.prestations?.length ?? 0} prestation{(d.prestations?.length ?? 0) > 1 ? 's' : ''}</span>
                     <span className="mono" style={{ fontWeight: 700 }}>{fmt(d.montant_ht)}</span>
                   </div>
                 </Link>
@@ -123,12 +123,12 @@ export default async function ClientDetailPage({ params }: { params: { id: strin
             <table style={{ width: '100%', borderCollapse: 'collapse' }}>
               <thead className="table-head">
                 <tr>{['N°', 'Période', 'Prestations', 'Montant HT', 'Statut', ''].map((h, i) => (
-                  <th key={i} className="th" style={i % 2 === 1 ? { background: 'rgba(0,0,0,0.1)' } : {}}>{h}</th>
+                  <th key={i} className="th">{h}</th>
                 ))}</tr>
               </thead>
               <tbody>
                 {D.length === 0 ? (
-                  <tr><td colSpan={6} className="td" style={{ textAlign: 'center', padding: '40px', color: '#8a8478' }}>Aucun dossier pour ce client</td></tr>
+                  <tr><td colSpan={6} className="td" style={{ textAlign: 'center', padding: '40px', color: '#63605a' }}>Aucun dossier pour ce client</td></tr>
                 ) : D.map((d: any) => {
                   const st = DOSSIER_STATUTS[d.statut] ?? DOSSIER_STATUTS.en_attente
                   return (
@@ -188,7 +188,7 @@ function Info({ icon, label, value, mono }: { icon: React.ReactNode; label: stri
     <div>
       <div className="form-label" style={{ marginBottom: '3px' }}>{label}</div>
       <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '13px', color: '#16130e', fontFamily: mono ? 'JetBrains Mono,monospace' : 'inherit' }}>
-        <span style={{ color: '#8a8478', flexShrink: 0 }}>{icon}</span> {value}
+        <span style={{ color: '#63605a', flexShrink: 0 }}>{icon}</span> {value}
       </div>
     </div>
   )

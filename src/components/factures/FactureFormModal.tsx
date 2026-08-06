@@ -94,14 +94,14 @@ export default function FactureFormModal({ onDone, editId }: { onDone?: () => vo
       {open && (
         <div style={{ position: 'fixed', inset: 0, background: 'rgba(22,19,14,0.55)', zIndex: 200, display: 'flex', alignItems: 'center', justifyContent: 'center', backdropFilter: 'blur(3px)', padding: '16px' }}
           onClick={e => e.target === e.currentTarget && setOpen(false)}>
-          <div style={{ background: '#fff', border: '1.5px solid #b8b0a4', width: '720px', maxWidth: '97vw', maxHeight: '92vh', overflowY: 'auto', boxShadow: '0 24px 60px rgba(0,0,0,0.2)' }}>
-            <div style={{ background: '#16130e', padding: '16px 24px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', position: 'sticky', top: 0, zIndex: 5 }}>
+          <div style={{ background: '#fff', border: '1px solid #e4e6ea', width: '720px', maxWidth: '97vw', maxHeight: '92vh', overflowY: 'auto', boxShadow: '0 24px 60px rgba(0,0,0,0.2)' }}>
+            <div style={{ background: '#16130e', padding: '16px 24px', borderRadius:'12px 12px 0 0', display: 'flex', alignItems: 'center', justifyContent: 'space-between', position: 'sticky', top: 0, zIndex: 5 }}>
               <span style={{ fontFamily: 'Cormorant Garamond,serif', fontSize: '19px', fontWeight: 500, color: '#fff', letterSpacing: '1px' }}>{isEdit ? 'Éditer la facture' : 'Nouvelle facture manuelle'}</span>
               <button onClick={() => setOpen(false)} style={{ background: 'none', border: 'none', color: 'rgba(255,255,255,0.4)', cursor: 'pointer' }}><X size={18} /></button>
             </div>
 
             {loading ? (
-              <div style={{ padding: '60px', textAlign: 'center', color: '#8a8478' }}>Chargement…</div>
+              <div style={{ padding: '60px', textAlign: 'center', color: '#63605a' }}>Chargement…</div>
             ) : (
             <div style={{ padding: '20px 24px' }}>
               <div className="form-grid-3" style={{ marginBottom: '16px' }}>
@@ -117,7 +117,7 @@ export default function FactureFormModal({ onDone, editId }: { onDone?: () => vo
               </div>
 
               <div style={{ fontSize: '9px', fontWeight: 700, letterSpacing: '2.5px', textTransform: 'uppercase', color: '#9a7a28', marginBottom: '8px' }}>Lignes de facturation</div>
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 80px 110px 110px 32px', gap: '6px', padding: '0 4px 4px', fontSize: '8px', fontWeight: 700, letterSpacing: '1px', textTransform: 'uppercase', color: '#8a8478' }}>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 80px 110px 110px 32px', gap: '6px', padding: '0 4px 4px', fontSize: '8px', fontWeight: 700, letterSpacing: '1px', textTransform: 'uppercase', color: '#63605a' }}>
                 <span>Désignation</span><span style={{ textAlign: 'right' }}>Qté</span><span style={{ textAlign: 'right' }}>P.U. HT</span><span style={{ textAlign: 'right' }}>Total</span><span />
               </div>
               {lignes.map((l, i) => (
@@ -156,7 +156,7 @@ export default function FactureFormModal({ onDone, editId }: { onDone?: () => vo
                 </div>
               </div>
 
-              <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '8px', marginTop: '16px', paddingTop: '16px', borderTop: '1.5px solid #b8b0a4' }}>
+              <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '8px', marginTop: '16px', paddingTop: '16px', borderTop: '1px solid #e4e6ea' }}>
                 <button className="btn-ghost" onClick={() => setOpen(false)}>Annuler</button>
                 <button className="btn-primary" onClick={submit} disabled={saving}>{saving ? 'Enregistrement…' : isEdit ? 'Enregistrer' : 'Créer la facture'}</button>
               </div>

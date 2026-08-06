@@ -73,8 +73,8 @@ export default function ModifierPrestationModal({ p }: { p: any }) {
 
       {open && (
         <div style={{ position: 'fixed', inset: 0, background: 'rgba(22,19,14,0.55)', zIndex: 200, display: 'flex', alignItems: 'center', justifyContent: 'center', backdropFilter: 'blur(3px)' }}>
-          <div style={{ background: '#fff', border: '1.5px solid #b8b0a4', width: '560px', maxWidth: '96vw', maxHeight: '90vh', overflowY: 'auto', boxShadow: '0 24px 60px rgba(0,0,0,0.2)' }}>
-            <div style={{ background: '#16130e', padding: '18px 24px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+          <div style={{ background: '#fff', border: '1px solid #e4e6ea', width: '560px', maxWidth: '96vw', maxHeight: '90vh', overflowY: 'auto', boxShadow: '0 24px 60px rgba(0,0,0,0.2)' }}>
+            <div style={{ background: '#16130e', padding: '18px 24px', borderRadius:'12px 12px 0 0', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
               <span style={{ fontFamily: 'Cormorant Garamond,serif', fontSize: '19px', fontWeight: 500, color: '#fff', letterSpacing: '1px' }}>
                 Modifier la prestation · {isMad ? 'Mise à disposition' : 'Transfert'}
               </span>
@@ -102,7 +102,7 @@ export default function ModifierPrestationModal({ p }: { p: any }) {
                     <div><label className="form-label">Date début *</label><input type="date" className="input" required value={dateDebutMad} onChange={e => setDateDebutMad(e.target.value)} /></div>
                     <div><label className="form-label">Date fin *</label><input type="date" className="input" required value={dateFinMad} min={dateDebutMad} onChange={e => setDateFinMad(e.target.value)} /></div>
                   </div>
-                  <div style={{ fontSize: '10px', color: '#8a8478', marginBottom: '12px' }}>
+                  <div style={{ fontSize: '10px', color: '#63605a', marginBottom: '12px' }}>
                     Prolonger ajoute les nouveaux jours (au tarif/jour) ; réduire retire les jours hors période. Les jours conservés gardent leur chauffeur/véhicule/heures.
                   </div>
 
@@ -113,7 +113,7 @@ export default function ModifierPrestationModal({ p }: { p: any }) {
                       <label className="form-label">Horaires journaliers</label>
                       <div style={{ display: 'flex', gap: '6px', alignItems: 'center' }}>
                         <input type="time" className="input" value={heureDebJ} onChange={e => setHeureDebJ(e.target.value)} />
-                        <span style={{ color: '#8a8478', flexShrink: 0 }}>→</span>
+                        <span style={{ color: '#63605a', flexShrink: 0 }}>→</span>
                         <input type="time" className="input" value={heureFinJ} onChange={e => setHeureFinJ(e.target.value)} />
                       </div>
                     </div>
@@ -121,7 +121,7 @@ export default function ModifierPrestationModal({ p }: { p: any }) {
                   <div style={{ marginBottom: '12px' }}>
                     <label className="form-label">Tarif / jour HT (€)</label>
                     <input type="number" className="input" value={tarifJour || ''} onChange={e => setTarifJour(parseFloat(e.target.value) || 0)} min={0} step={0.01} />
-                    <div style={{ fontSize: '10px', color: '#8a8478', marginTop: '4px' }}>S'applique à tous les jours de la période et recalcule le montant.</div>
+                    <div style={{ fontSize: '10px', color: '#63605a', marginTop: '4px' }}>S'applique à tous les jours de la période et recalcule le montant.</div>
                   </div>
                 </>
               )}
@@ -137,7 +137,7 @@ export default function ModifierPrestationModal({ p }: { p: any }) {
                 <textarea className="textarea" value={notes} onChange={e => setNotes(e.target.value)} placeholder="Instructions, précisions…" style={{ minHeight: '60px' }} />
               </div>
 
-              <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '8px', marginTop: '20px', paddingTop: '16px', borderTop: '1.5px solid #b8b0a4' }}>
+              <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '8px', marginTop: '20px', paddingTop: '16px', borderTop: '1px solid #e4e6ea' }}>
                 <button type="button" className="btn-ghost" onClick={() => setOpen(false)}>Annuler</button>
                 <button type="submit" className="btn-primary" disabled={saving}>{saving ? 'Enregistrement…' : 'Enregistrer'}</button>
               </div>
@@ -151,7 +151,7 @@ export default function ModifierPrestationModal({ p }: { p: any }) {
 
 function FormSep({ label }: { label: string }) {
   return (
-    <div style={{ fontSize: '9px', fontWeight: 700, letterSpacing: '2.5px', textTransform: 'uppercase', color: '#9a7a28', marginBottom: '10px', marginTop: '4px', paddingBottom: '6px', borderBottom: '1px solid #b8b0a4' }}>
+    <div style={{ fontSize: '9px', fontWeight: 700, letterSpacing: '2.5px', textTransform: 'uppercase', color: '#9a7a28', marginBottom: '10px', marginTop: '4px', paddingBottom: '6px', borderBottom: '1px solid #e4e6ea' }}>
       {label}
     </div>
   )

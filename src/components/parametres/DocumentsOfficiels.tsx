@@ -66,7 +66,7 @@ export default function DocumentsOfficiels() {
         </p>
 
         {loading ? (
-          <div style={{ padding: '20px', textAlign: 'center', color: '#8a8478', fontSize: '12px' }}>Chargement…</div>
+          <div style={{ padding: '20px', textAlign: 'center', color: '#63605a', fontSize: '12px' }}>Chargement…</div>
         ) : (
           <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
             {ROWS.map(row => {
@@ -74,7 +74,7 @@ export default function DocumentsOfficiels() {
               const doc = docs[row.key]
               return (
                 <div key={row.key} style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '12px 14px', background: doc ? '#eaf4ee' : '#f5f2ed', border: `1.5px solid ${doc ? 'rgba(30,94,58,0.25)' : '#d8d2c8'}` }}>
-                  <Icon size={20} style={{ color: doc ? '#1e5e3a' : '#8a8478', flexShrink: 0 }} />
+                  <Icon size={20} style={{ color: doc ? '#1e5e3a' : '#63605a', flexShrink: 0 }} />
                   <div style={{ flex: 1, minWidth: 0 }}>
                     <div style={{ fontSize: '13px', fontWeight: 600, color: '#16130e' }}>{row.label}</div>
                     {doc ? (
@@ -85,7 +85,7 @@ export default function DocumentsOfficiels() {
                         </a>
                       </div>
                     ) : (
-                      <div style={{ fontSize: '11px', color: '#8a8478', marginTop: '2px' }}>{row.hint}</div>
+                      <div style={{ fontSize: '11px', color: '#63605a', marginTop: '2px' }}>{row.hint}</div>
                     )}
                   </div>
                   <input

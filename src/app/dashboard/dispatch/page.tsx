@@ -82,7 +82,7 @@ export default function DispatchPage() {
         <span className="section-title">Dispatch</span>
         <div style={{ display: 'flex', gap: '8px', alignItems: 'center', flexWrap: 'wrap' }}>
           <input type="date" className="input" value={from} onChange={e => setFrom(e.target.value)} style={{ width: 'auto' }} />
-          <span style={{ color: '#8a8478' }}>→</span>
+          <span style={{ color: '#63605a' }}>→</span>
           <input type="date" className="input" value={to} min={from} onChange={e => setTo(e.target.value)} style={{ width: 'auto' }} />
           <Link href="/dashboard/dossiers/nouveau" className="btn-primary" style={{ textDecoration: 'none' }}>+ Dossier</Link>
         </div>
@@ -113,25 +113,25 @@ export default function DispatchPage() {
       {/* Liste mobile (cartes) */}
       <div className="only-mobile" style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
         {loading ? (
-          <div style={{ padding: '40px', textAlign: 'center', color: '#8a8478', fontSize: '12px' }}>Chargement…</div>
+          <div style={{ padding: '40px', textAlign: 'center', color: '#63605a', fontSize: '12px' }}>Chargement…</div>
         ) : sp.total === 0 ? (
-          <div style={{ padding: '40px', textAlign: 'center', color: '#8a8478', fontSize: '12px' }}>Aucune mission sur cette période</div>
+          <div style={{ padding: '40px', textAlign: 'center', color: '#63605a', fontSize: '12px' }}>Aucune mission sur cette période</div>
         ) : sp.pageItems.map((m: any) => <MissionCard key={m.id} m={m} onOpen={() => router.push(`/dashboard/dossiers/${one(m.dossier)?.id}`)} />)}
       </div>
 
       {/* Tableau missions (desktop) */}
       <div className="table-container only-desktop">
-        <table style={{ width: '100%', borderCollapse: 'collapse', minWidth: '900px' }}>
+        <table style={{ width: '100%', borderCollapse: 'collapse', minWidth: '680px' }}>
           <thead className="table-head">
             <tr>{['Mission', 'Type', 'Date · Heure', 'Client', 'Itinéraire', 'Véhicule', 'Chauffeur / Partenaire', 'Statut'].map((h, i) => (
-              <th key={i} className="th" style={i % 2 === 1 ? { background: 'rgba(0,0,0,0.1)' } : {}}>{h}</th>
+              <th key={i} className="th">{h}</th>
             ))}</tr>
           </thead>
           <tbody>
             {loading ? (
-              <tr><td colSpan={8} className="td" style={{ textAlign: 'center', padding: '50px', color: '#8a8478' }}>Chargement…</td></tr>
+              <tr><td colSpan={8} className="td" style={{ textAlign: 'center', padding: '50px', color: '#63605a' }}>Chargement…</td></tr>
             ) : sp.total === 0 ? (
-              <tr><td colSpan={8} className="td" style={{ textAlign: 'center', padding: '60px', color: '#8a8478' }}>Aucune mission sur cette période</td></tr>
+              <tr><td colSpan={8} className="td" style={{ textAlign: 'center', padding: '60px', color: '#63605a' }}>Aucune mission sur cette période</td></tr>
             ) : sp.pageItems.map((m: any) => <MissionRow key={m.id} m={m} onOpen={() => router.push(`/dashboard/dossiers/${one(m.dossier)?.id}`)} />)}
           </tbody>
         </table>
@@ -156,7 +156,7 @@ function MissionRow({ m, onOpen }: { m: any; onOpen: () => void }) {
     const jours = m.jours ?? []; const aff = jours.filter((j: any) => j.chauffeur_id || j.sous_traitant_id).length
     affLabel = <span style={{ color: aff === jours.length && jours.length > 0 ? '#1e5e3a' : '#7a5c10' }}>MAD · {aff}/{jours.length} affectés</span>
   }
-  else if (ch) affLabel = <><span style={{ fontSize: '9px', fontWeight: 700, letterSpacing: '1px', color: '#8a8478' }}>INTERNE</span><div style={{ fontWeight: 600 }}>{ch.prenom} {ch.nom}</div></>
+  else if (ch) affLabel = <><span style={{ fontSize: '9px', fontWeight: 700, letterSpacing: '1px', color: '#63605a' }}>INTERNE</span><div style={{ fontWeight: 600 }}>{ch.prenom} {ch.nom}</div></>
   else affLabel = <span style={{ color: '#9e2a2a', fontWeight: 600 }}>⚠ À affecter</span>
 
   return (
@@ -182,7 +182,7 @@ function MissionRow({ m, onOpen }: { m: any; onOpen: () => void }) {
               {assigned.slice(0, 3).map((p: any) => `${flag(p.nationalite)} ${p.nom}`).join(' · ')}{assigned.length > 3 ? ` +${assigned.length - 3}` : ''}
             </div>
           )
-          return <div style={{ fontSize: '10px', color: '#8a8478', marginTop: '2px' }}>👤 {m.nb_passagers ?? 1}{(m.nb_bagages ?? 0) > 0 ? ` · 🧳 ${m.nb_bagages}` : ''}</div>
+          return <div style={{ fontSize: '10px', color: '#63605a', marginTop: '2px' }}>👤 {m.nb_passagers ?? 1}{(m.nb_bagages ?? 0) > 0 ? ` · 🧳 ${m.nb_bagages}` : ''}</div>
         })()}
       </td>
       <td className="td" style={{ maxWidth: '300px' }}>
@@ -198,7 +198,7 @@ function MissionRow({ m, onOpen }: { m: any; onOpen: () => void }) {
         )}
       </td>
       <td className="td" style={{ whiteSpace: 'nowrap' }}>
-        {veh ? <div style={{ fontSize: '11px', fontWeight: 600 }}>{veh.marque} {veh.modele}</div> : m.st_vehicule_marque ? <div style={{ fontSize: '11px', color: '#4a2a6e' }}>{m.st_vehicule_marque}</div> : m.modele_souhaite ? <span style={{ fontSize: '11px', color: '#8a8478' }}>{m.modele_souhaite}</span> : <span style={{ color: '#c2bdb4' }}>—</span>}
+        {veh ? <div style={{ fontSize: '11px', fontWeight: 600 }}>{veh.marque} {veh.modele}</div> : m.st_vehicule_marque ? <div style={{ fontSize: '11px', color: '#4a2a6e' }}>{m.st_vehicule_marque}</div> : m.modele_souhaite ? <span style={{ fontSize: '11px', color: '#63605a' }}>{m.modele_souhaite}</span> : <span style={{ color: '#c2bdb4' }}>—</span>}
       </td>
       <td className="td" style={{ fontSize: '11px', whiteSpace: 'nowrap' }}>{affLabel}</td>
       <td className="td">
@@ -226,8 +226,8 @@ function MissionCard({ m, onOpen }: { m: any; onOpen: () => void }) {
   else aff = <span style={{ color: '#9e2a2a', fontWeight: 600 }}>⚠ À affecter</span>
 
   return (
-    <div onClick={onOpen} style={{ background: '#fff', border: '1.5px solid #b8b0a4', borderLeft: `3px solid ${typeCol}`, boxShadow: '0 1px 4px rgba(0,0,0,0.06)', cursor: 'pointer' }}>
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '9px 12px', borderBottom: '1px solid #ede9e2', gap: '8px' }}>
+    <div onClick={onOpen} style={{ background: '#fff', border: '1px solid #e4e6ea', borderLeft: `3px solid ${typeCol}`, boxShadow: '0 1px 4px rgba(0,0,0,0.06)', cursor: 'pointer' }}>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '9px 12px', borderBottom: '1px solid #f4f5f7', gap: '8px' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px', minWidth: 0 }}>
           <span style={{ fontSize: '9px', fontWeight: 700, color: typeCol }}>{isMad ? 'MAD' : 'TRANSF'}</span>
           <span style={{ fontFamily: 'JetBrains Mono,monospace', fontSize: '11px', color: '#9a7a28' }}>{dossier?.numero}</span>
@@ -275,7 +275,7 @@ function Kpi({ icon, label, value, color = '#16130e' }: { icon: React.ReactNode;
   return (
     <div style={{ background: '#fff', border: '1px solid #e0d9cd', padding: '12px 14px' }}>
       <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: '#9a7a28', marginBottom: '6px' }}>
-        {icon}<span style={{ fontSize: '9px', letterSpacing: '1.5px', textTransform: 'uppercase', color: '#8a8478' }}>{label}</span>
+        {icon}<span style={{ fontSize: '9px', letterSpacing: '1.5px', textTransform: 'uppercase', color: '#63605a' }}>{label}</span>
       </div>
       <div style={{ fontFamily: 'Cormorant Garamond,serif', fontSize: '24px', color, lineHeight: 1 }}>{value}</div>
     </div>

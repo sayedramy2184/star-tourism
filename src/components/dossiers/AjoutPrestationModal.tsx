@@ -120,10 +120,10 @@ export default function AjoutPrestationModal({ dossierId, dateDebutDossier, date
 
       {open && (
         <div style={{ position:'fixed', inset:0, background:'rgba(22,19,14,0.55)', zIndex:200, display:'flex', alignItems:'center', justifyContent:'center', backdropFilter:'blur(3px)' }}>
-          <div style={{ background:'#fff', border:'1.5px solid #b8b0a4', width:'600px', maxWidth:'96vw', maxHeight:'90vh', overflowY:'auto', boxShadow:'0 24px 60px rgba(0,0,0,0.2)' }}>
+          <div style={{ background:'#fff', border:'1px solid #e4e6ea', borderRadius:'12px', width:'600px', maxWidth:'96vw', maxHeight:'90vh', overflowY:'auto', boxShadow:'0 24px 60px rgba(0,0,0,0.2)' }}>
 
             {/* Header */}
-            <div style={{ background:'#16130e', padding:'18px 24px', display:'flex', alignItems:'center', justifyContent:'space-between' }}>
+            <div style={{ background:'#16130e', padding:'18px 24px', borderRadius:'12px 12px 0 0', display:'flex', alignItems:'center', justifyContent:'space-between' }}>
               <span style={{ fontFamily:'Cormorant Garamond,serif', fontSize:'19px', fontWeight:500, color:'#fff', letterSpacing:'1px' }}>Ajouter une prestation</span>
               <button onClick={() => setOpen(false)} style={{ background:'none', border:'none', color:'rgba(255,255,255,0.4)', cursor:'pointer', fontSize:'18px' }}><X size={18}/></button>
             </div>
@@ -132,11 +132,11 @@ export default function AjoutPrestationModal({ dossierId, dateDebutDossier, date
 
               {/* Type selector */}
               <div style={{ marginBottom:'16px' }}>
-                <div style={{ fontSize:'9px', fontWeight:700, letterSpacing:'2.5px', textTransform:'uppercase', color:'#9a7a28', marginBottom:'10px', paddingBottom:'6px', borderBottom:'1px solid #b8b0a4' }}>Type de prestation</div>
+                <div style={{ fontSize:'9px', fontWeight:700, letterSpacing:'2.5px', textTransform:'uppercase', color:'#9a7a28', marginBottom:'10px', paddingBottom:'6px', borderBottom:'1px solid #e4e6ea' }}>Type de prestation</div>
                 <div style={{ display:'flex', gap:'8px' }}>
                   {([['transfert','→ Transfert'],['mad','◷ Mise à dispo']] as const).map(([v,l]) => (
                     <button key={v} type="button" onClick={() => setType(v)}
-                      style={{ flex:1, padding:'10px', display:'flex', alignItems:'center', justifyContent:'center', gap:'6px', fontSize:'12px', fontWeight:700, cursor:'pointer', background: type===v ? '#16130e' : '#f5f2ed', border:`1.5px solid ${type===v ? '#16130e' : '#b8b0a4'}`, color: type===v ? '#fff' : '#5a564e', transition:'all 0.14s' }}>
+                      style={{ flex:1, padding:'10px', display:'flex', alignItems:'center', justifyContent:'center', gap:'6px', fontSize:'12px', fontWeight:700, cursor:'pointer', background: type===v ? '#16130e' : '#f5f2ed', border:`1.5px solid ${type===v ? '#16130e' : '#e4e6ea'}`, color: type===v ? '#fff' : '#5a564e', transition:'all 0.14s' }}>
                       {l}
                     </button>
                   ))}
@@ -152,7 +152,7 @@ export default function AjoutPrestationModal({ dossierId, dateDebutDossier, date
                     <div style={{ display:'flex', gap:'6px', marginBottom:'10px' }}>
                       {([['ville','🏙️','Ville'],['gare','🚉','Gare'],['aeroport','✈️','Aéroport']] as const).map(([v,icon,l]) => (
                         <button key={v} type="button" onClick={() => setSousType(v)}
-                          style={{ flex:1, padding:'8px', display:'flex', flexDirection:'column', alignItems:'center', gap:'3px', background: sousType===v ? '#fdf6e3' : '#fff', border:`1.5px solid ${sousType===v ? '#9a7a28' : '#b8b0a4'}`, cursor:'pointer' }}>
+                          style={{ flex:1, padding:'8px', display:'flex', flexDirection:'column', alignItems:'center', gap:'3px', background: sousType===v ? '#fdf6e3' : '#fff', border:`1.5px solid ${sousType===v ? '#9a7a28' : '#e4e6ea'}`, cursor:'pointer' }}>
                           <span style={{ fontSize:'18px' }}>{icon}</span>
                           <span style={{ fontSize:'10px', fontWeight:700, color: sousType===v ? '#9a7a28' : '#5a564e' }}>{l}</span>
                         </button>
@@ -162,7 +162,7 @@ export default function AjoutPrestationModal({ dossierId, dateDebutDossier, date
                       <div style={{ display:'flex', gap:'6px' }}>
                         {([['depuis', sousType==='aeroport'?'🛬':'🚉', `Depuis ${sousType==='aeroport'?"l'aéroport":'la gare'}`],['vers',sousType==='aeroport'?'🛫':'🚆',`Vers ${sousType==='aeroport'?"l'aéroport":'la gare'}`]] as const).map(([v,icon,l]) => (
                           <button key={v} type="button" onClick={() => setSens(v as any)}
-                            style={{ flex:1, padding:'8px 12px', display:'flex', alignItems:'center', gap:'8px', background: sens===v ? '#e8eef8' : '#fff', border:`1.5px solid ${sens===v ? '#1e3f70' : '#b8b0a4'}`, cursor:'pointer' }}>
+                            style={{ flex:1, padding:'8px 12px', display:'flex', alignItems:'center', gap:'8px', background: sens===v ? '#e8eef8' : '#fff', border:`1.5px solid ${sens===v ? '#1e3f70' : '#e4e6ea'}`, cursor:'pointer' }}>
                             <span style={{ fontSize:'16px' }}>{icon}</span>
                             <span style={{ fontSize:'11px', fontWeight:700, color: sens===v ? '#1e3f70' : '#5a564e' }}>{l}</span>
                           </button>
@@ -213,7 +213,7 @@ export default function AjoutPrestationModal({ dossierId, dateDebutDossier, date
                       <label className="form-label">Horaires journaliers</label>
                       <div style={{ display:'flex', gap:'6px', alignItems:'center' }}>
                         <input type="time" className="input" value={heureDebJ} onChange={e => setHeureDebJ(e.target.value)} />
-                        <span style={{ color:'#8a8478', flexShrink:0 }}>→</span>
+                        <span style={{ color:'#63605a', flexShrink:0 }}>→</span>
                         <input type="time" className="input" value={heureFinJ} onChange={e => setHeureFinJ(e.target.value)} />
                       </div>
                     </div>
@@ -224,13 +224,13 @@ export default function AjoutPrestationModal({ dossierId, dateDebutDossier, date
                     <>
                       <FormSep label="Chauffeurs par jour" />
                       <div style={{ display:'grid', gridTemplateColumns:'90px 1fr 60px', gap:'4px', padding:'4px 8px', background:'#faf9f7', marginBottom:'2px' }}>
-                        {['Date','Chauffeur','Tarif'].map(h => <div key={h} style={{ fontSize:'8px', fontWeight:700, letterSpacing:'1.5px', textTransform:'uppercase', color:'#8a8478' }}>{h}</div>)}
+                        {['Date','Chauffeur','Tarif'].map(h => <div key={h} style={{ fontSize:'8px', fontWeight:700, letterSpacing:'1.5px', textTransform:'uppercase', color:'#63605a' }}>{h}</div>)}
                       </div>
                       {jours.map((j, ji) => (
                         <div key={j.date} style={{ display:'grid', gridTemplateColumns:'90px 1fr 60px', gap:'4px', alignItems:'center', padding:'5px 8px', marginBottom:'2px', background: !j.chauffeur_id ? '#fff8e8' : '#f5f2ed', border:`1px solid ${!j.chauffeur_id ? 'rgba(154,122,40,0.3)' : '#d8d2c8'}` }}>
                           <span style={{ fontFamily:'JetBrains Mono,monospace', fontSize:'10px', color: !j.chauffeur_id ? '#9a7a28' : '#2e2b25' }}>{j.jour_semaine} {format(parseISO(j.date),'dd/MM')}</span>
                           <select value={j.chauffeur_id} onChange={e => setJours(prev => prev.map((x,i) => i===ji ? {...x, chauffeur_id:e.target.value} : x))}
-                            style={{ background:'#fff', border:`1px solid ${!j.chauffeur_id ? '#9a7a28' : '#b8b0a4'}`, padding:'4px 8px', fontSize:'11px', outline:'none', width:'100%' }}>
+                            style={{ background:'#fff', border:`1px solid ${!j.chauffeur_id ? '#9a7a28' : '#e4e6ea'}`, padding:'4px 8px', fontSize:'11px', outline:'none', width:'100%' }}>
                             <option value="">— Non affecté —</option>
                             {chauffeurs.map(c => <option key={c.id} value={c.id}>{c.prenom} {c.nom}</option>)}
                           </select>
@@ -247,7 +247,7 @@ export default function AjoutPrestationModal({ dossierId, dateDebutDossier, date
               <div style={{ display:'flex', gap:'4px', marginBottom:'10px' }}>
                 {([['flotte','Flotte'],['plus_tard','Plus tard']] as const).map(([v,l]) => (
                   <button key={v} type="button" onClick={() => setVehiculeMode(v)}
-                    style={{ padding:'6px 14px', fontSize:'10px', fontWeight:700, letterSpacing:'1px', textTransform:'uppercase', cursor:'pointer', background: vehiculeMode===v ? '#9a7a28' : 'transparent', border:`1.5px solid ${vehiculeMode===v ? '#9a7a28' : '#b8b0a4'}`, color: vehiculeMode===v ? '#fff' : '#5a564e', transition:'all 0.14s' }}>
+                    style={{ padding:'6px 14px', fontSize:'10px', fontWeight:700, letterSpacing:'1px', textTransform:'uppercase', cursor:'pointer', background: vehiculeMode===v ? '#9a7a28' : 'transparent', border:`1.5px solid ${vehiculeMode===v ? '#9a7a28' : '#e4e6ea'}`, color: vehiculeMode===v ? '#fff' : '#5a564e', transition:'all 0.14s' }}>
                     {l}
                   </button>
                 ))}
@@ -280,7 +280,7 @@ export default function AjoutPrestationModal({ dossierId, dateDebutDossier, date
                 </div>
               )}
 
-              <div style={{ display:'flex', justifyContent:'flex-end', gap:'8px', marginTop:'20px', paddingTop:'16px', borderTop:'1.5px solid #b8b0a4' }}>
+              <div style={{ display:'flex', justifyContent:'flex-end', gap:'8px', marginTop:'20px', paddingTop:'16px', borderTop:'1px solid #e4e6ea' }}>
                 <button type="button" className="btn-ghost" onClick={() => setOpen(false)}>Annuler</button>
                 <button type="submit" className="btn-primary" disabled={saving}>{saving ? 'Ajout…' : 'Ajouter la prestation'}</button>
               </div>
@@ -294,7 +294,7 @@ export default function AjoutPrestationModal({ dossierId, dateDebutDossier, date
 
 function FormSep({ label }: { label: string }) {
   return (
-    <div style={{ fontSize:'9px', fontWeight:700, letterSpacing:'2.5px', textTransform:'uppercase', color:'#9a7a28', marginBottom:'10px', marginTop:'4px', paddingBottom:'6px', borderBottom:'1px solid #b8b0a4' }}>
+    <div style={{ fontSize:'9px', fontWeight:700, letterSpacing:'2.5px', textTransform:'uppercase', color:'#9a7a28', marginBottom:'10px', marginTop:'4px', paddingBottom:'6px', borderBottom:'1px solid #e4e6ea' }}>
       {label}
     </div>
   )

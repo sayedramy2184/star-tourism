@@ -72,12 +72,12 @@ export default function ClientsPage() {
       {showForm && (
         <div style={{ position:'fixed', inset:0, background:'rgba(0,0,0,0.5)', zIndex:200, display:'flex', alignItems:'center', justifyContent:'center'}}>
           <div style={{ background:'#fff', width:'520px', maxWidth:'95vw', maxHeight:'90vh', overflowY:'auto', boxShadow:'0 24px 60px rgba(0,0,0,0.2)' }}>
-            <div style={{ background:'#16130e', padding:'18px 24px', display:'flex', alignItems:'center', justifyContent:'space-between' }}>
+            <div style={{ background:'#16130e', padding:'18px 24px', borderRadius:'12px 12px 0 0', display:'flex', alignItems:'center', justifyContent:'space-between' }}>
               <span style={{ fontFamily:'Cormorant Garamond,serif', fontSize:'19px', fontWeight:500, color:'#fff', letterSpacing:'1px' }}>Nouveau client</span>
               <button onClick={() => setShowForm(false)} style={{ background:'none', border:'none', color:'rgba(255,255,255,0.4)', cursor:'pointer', fontSize:'18px' }}>✕</button>
             </div>
             <form onSubmit={handleCreate} style={{ padding:'22px 24px' }}>
-              <div style={{ fontSize:'9px', fontWeight:700, letterSpacing:'2.5px', textTransform:'uppercase', color:'#9a7a28', marginBottom:'14px', paddingBottom:'6px', borderBottom:'1px solid #b8b0a4' }}>
+              <div style={{ fontSize:'9px', fontWeight:700, letterSpacing:'2.5px', textTransform:'uppercase', color:'#9a7a28', marginBottom:'14px', paddingBottom:'6px', borderBottom:'1px solid #e4e6ea' }}>
                 Type & Identité
               </div>
               <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:'12px', marginBottom:'12px' }}>
@@ -130,7 +130,7 @@ export default function ClientsPage() {
                 <label className="form-label">Notes</label>
                 <textarea className="textarea" value={form.notes} onChange={e => setForm({...form, notes:e.target.value})} placeholder="Informations particulières, conditions tarifaires…" />
               </div>
-              <div style={{ display:'flex', justifyContent:'flex-end', gap:'8px', marginTop:'16px', paddingTop:'16px', borderTop:'1.5px solid #b8b0a4' }}>
+              <div style={{ display:'flex', justifyContent:'flex-end', gap:'8px', marginTop:'16px', paddingTop:'16px', borderTop:'1px solid #e4e6ea' }}>
                 <button type="button" className="btn-ghost" onClick={() => setShowForm(false)}>Annuler</button>
                 <button type="submit" className="btn-primary">Créer le client</button>
               </div>
@@ -142,13 +142,13 @@ export default function ClientsPage() {
       {/* Liste mobile (cartes) */}
       <div className="only-mobile" style={{ display:'flex', flexDirection:'column', gap:'10px' }}>
         {loading ? (
-          <div style={{ padding:'40px', textAlign:'center', color:'#8a8478', fontSize:'12px' }}>Chargement…</div>
+          <div style={{ padding:'40px', textAlign:'center', color:'#63605a', fontSize:'12px' }}>Chargement…</div>
         ) : sp.total === 0 ? (
-          <div style={{ padding:'40px', textAlign:'center', color:'#8a8478', fontSize:'12px' }}>{clients.length === 0 ? 'Aucun client — créez le premier !' : 'Aucun résultat.'}</div>
+          <div style={{ padding:'40px', textAlign:'center', color:'#63605a', fontSize:'12px' }}>{clients.length === 0 ? 'Aucun client — créez le premier !' : 'Aucun résultat.'}</div>
         ) : sp.pageItems.map((c: any) => {
           const typeStyle = c.type === 'agence' ? { background:'#fdf6e3', color:'#9a7a28' } : c.type === 'entreprise' ? { background:'#e8eef8', color:'#1e3f70' } : { background:'#eaf4ee', color:'#1e5e3a' }
           return (
-            <Link key={c.id} href={`/dashboard/clients/${c.id}`} style={{ display:'block', background:'#fff', border:'1.5px solid #b8b0a4', boxShadow:'0 1px 4px rgba(0,0,0,0.06)', padding:'12px', textDecoration:'none', color:'inherit' }}>
+            <Link key={c.id} href={`/dashboard/clients/${c.id}`} style={{ display:'block', background:'#fff', border:'1px solid #e4e6ea', borderRadius:'12px', boxShadow:'0 1px 4px rgba(0,0,0,0.06)', padding:'12px', textDecoration:'none', color:'inherit' }}>
               <div style={{ display:'flex', alignItems:'flex-start', justifyContent:'space-between', gap:'8px' }}>
                 <div style={{ minWidth:0 }}>
                   <div style={{ fontWeight:600, color:'#16130e', fontSize:'14px' }}>{c.nom}</div>
@@ -173,15 +173,15 @@ export default function ClientsPage() {
           <thead className="table-head">
             <tr>
               {['Type','Nom / Société','Contact','Email','Téléphone','Dossiers',''].map((h,i) => (
-                <th key={i} className="th" style={i%2===1?{background:'rgba(0,0,0,0.1)'}:{}}>{h}</th>
+                <th key={i} className="th">{h}</th>
               ))}
             </tr>
           </thead>
           <tbody>
             {loading ? (
-              <tr><td colSpan={7} className="td" style={{ textAlign:'center', padding:'40px', color:'#8a8478' }}>Chargement…</td></tr>
+              <tr><td colSpan={7} className="td" style={{ textAlign:'center', padding:'40px', color:'#63605a' }}>Chargement…</td></tr>
             ) : sp.total === 0 ? (
-              <tr><td colSpan={7} className="td" style={{ textAlign:'center', padding:'60px', color:'#8a8478' }}>{clients.length === 0 ? 'Aucun client — créez le premier !' : 'Aucun résultat.'}</td></tr>
+              <tr><td colSpan={7} className="td" style={{ textAlign:'center', padding:'60px', color:'#63605a' }}>{clients.length === 0 ? 'Aucun client — créez le premier !' : 'Aucun résultat.'}</td></tr>
             ) : sp.pageItems.map((c, i) => (
               <tr key={c.id} className="tr-body">
                 <td className="td" style={{ background:'rgba(154,122,40,0.04)' }}>
@@ -191,7 +191,7 @@ export default function ClientsPage() {
                 </td>
                 <td className="td">
                   <div style={{ fontWeight:600, color:'#16130e' }}>{c.nom}</div>
-                  {c.numero_tva && <div style={{ fontSize:'10px', color:'#8a8478', fontFamily:'JetBrains Mono,monospace' }}>{c.numero_tva}</div>}
+                  {c.numero_tva && <div style={{ fontSize:'10px', color:'#63605a', fontFamily:'JetBrains Mono,monospace' }}>{c.numero_tva}</div>}
                 </td>
                 <td className="td" style={{ color:'#5a564e' }}>{c.contact_nom ?? '—'}</td>
                 <td className="td" style={{ fontFamily:'JetBrains Mono,monospace', fontSize:'11px' }}>{c.email ?? '—'}</td>

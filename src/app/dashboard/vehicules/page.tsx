@@ -72,7 +72,7 @@ const STATUTS: Record<StatutVehicule, { label: string; color: string; bg: string
   disponible:  { label: 'Disponible',  color: '#1e5e3a', bg: '#eaf4ee' },
   en_mission:  { label: 'En mission',  color: '#1e3f70', bg: '#e8eef8' },
   maintenance: { label: 'Maintenance', color: '#7a5c10', bg: '#fdf3dc' },
-  inactif:     { label: 'Inactif',     color: '#8a8478', bg: '#f5f2ed' },
+  inactif:     { label: 'Inactif',     color: '#63605a', bg: '#f5f2ed' },
 }
 
 const CATEGORIES: Record<CategorieVehicule, string> = {
@@ -259,14 +259,14 @@ export default function VehiculesPage() {
       {/* Liste mobile (cartes) */}
       <div className="only-mobile" style={{ display:'flex', flexDirection:'column', gap:'10px' }}>
         {loading ? (
-          <div style={{ padding:'40px', textAlign:'center', color:'#8a8478', fontSize:'12px' }}>Chargement…</div>
+          <div style={{ padding:'40px', textAlign:'center', color:'#63605a', fontSize:'12px' }}>Chargement…</div>
         ) : sp.total === 0 ? (
-          <div style={{ padding:'40px', textAlign:'center', color:'#8a8478', fontSize:'12px' }}>{vehicules.length === 0 ? 'Aucun véhicule — ajoutez le premier !' : 'Aucun résultat'}</div>
+          <div style={{ padding:'40px', textAlign:'center', color:'#63605a', fontSize:'12px' }}>{vehicules.length === 0 ? 'Aucun véhicule — ajoutez le premier !' : 'Aucun résultat'}</div>
         ) : sp.pageItems.map((v: any) => {
           const stt = statutAffiche(v); const m = MODES[v.mode_acquisition] ?? MODES.propriete
           const ct = docAlert(v.ct_date); const ass = docAlert(v.assurance_date); const ca = contratAlert(v.contrat_fin)
           return (
-            <Link key={v.id} href={`/dashboard/vehicules/${v.id}`} style={{ display:'block', background:'#fff', border:'1.5px solid #b8b0a4', boxShadow:'0 1px 4px rgba(0,0,0,0.06)', padding:'12px', textDecoration:'none', color:'inherit' }}>
+            <Link key={v.id} href={`/dashboard/vehicules/${v.id}`} style={{ display:'block', background:'#fff', border:'1px solid #e4e6ea', borderRadius:'12px', boxShadow:'0 1px 4px rgba(0,0,0,0.06)', padding:'12px', textDecoration:'none', color:'inherit' }}>
               <div style={{ display:'flex', alignItems:'flex-start', justifyContent:'space-between', gap:'8px' }}>
                 <div style={{ minWidth:0 }}>
                   <div style={{ fontFamily:'Cormorant Garamond,serif', fontSize:'16px', fontWeight:500, color:'#16130e' }}>{v.marque} {v.modele}</div>
@@ -294,15 +294,15 @@ export default function VehiculesPage() {
           <thead className="table-head">
             <tr>
               {['Véhicule','Plaque','Catégorie','Statut','Contrôle tech.','Assurance','Parc / Location','Actions'].map((h,i) => (
-                <th key={h} className="th" style={i%2===1?{background:'rgba(0,0,0,0.1)'}:{}}>{h}</th>
+                <th key={h} className="th">{h}</th>
               ))}
             </tr>
           </thead>
           <tbody>
             {loading ? (
-              <tr><td colSpan={8} style={{ padding:'40px', textAlign:'center', color:'#8a8478' }}>Chargement…</td></tr>
+              <tr><td colSpan={8} style={{ padding:'40px', textAlign:'center', color:'#63605a' }}>Chargement…</td></tr>
             ) : sp.total === 0 ? (
-              <tr><td colSpan={8} style={{ padding:'60px', textAlign:'center', color:'#8a8478' }}>
+              <tr><td colSpan={8} style={{ padding:'60px', textAlign:'center', color:'#63605a' }}>
                 {vehicules.length === 0 ? 'Aucun véhicule — ajoutez le premier !' : 'Aucun résultat'}
               </td></tr>
             ) : sp.pageItems.map(v => {
@@ -315,7 +315,7 @@ export default function VehiculesPage() {
                     <div style={{ fontFamily:'Cormorant Garamond,serif', fontSize:'15px', fontWeight:500 }}>
                       {v.marque} {v.modele}
                     </div>
-                    {v.annee && <div style={{ fontSize:'10px', color:'#8a8478' }}>{v.annee} · {v.nb_places} places</div>}
+                    {v.annee && <div style={{ fontSize:'10px', color:'#63605a' }}>{v.annee} · {v.nb_places} places</div>}
                     {v.chauffeur && (
                       <div style={{ fontSize:'10px', color:'#5a564e', marginTop:'2px' }}>
                         👤 {v.chauffeur.prenom} {v.chauffeur.nom}
@@ -323,7 +323,7 @@ export default function VehiculesPage() {
                     )}
                   </td>
                   <td className="td">
-                    <span style={{ fontFamily:'JetBrains Mono,monospace', fontSize:'12px', letterSpacing:'1.5px', background:'#f5f2ed', border:'1px solid #b8b0a4', padding:'3px 8px' }}>
+                    <span style={{ fontFamily:'JetBrains Mono,monospace', fontSize:'12px', letterSpacing:'1.5px', background:'#f5f2ed', border:'1px solid #e4e6ea', padding:'3px 8px' }}>
                       {v.immatriculation}
                     </span>
                   </td>
@@ -385,7 +385,7 @@ export default function VehiculesPage() {
       {showForm && (
         <div style={{ position:'fixed', inset:0, background:'rgba(0,0,0,0.5)', zIndex:200, display:'flex', alignItems:'center', justifyContent:'center'}}>
           <div style={{ background:'#fff', width:'560px', maxWidth:'95vw', maxHeight:'92vh', overflowY:'auto', boxShadow:'0 24px 60px rgba(0,0,0,0.2)' }}>
-            <div style={{ background:'#16130e', padding:'18px 24px', display:'flex', alignItems:'center', justifyContent:'space-between' }}>
+            <div style={{ background:'#16130e', padding:'18px 24px', borderRadius:'12px 12px 0 0', display:'flex', alignItems:'center', justifyContent:'space-between' }}>
               <span style={{ fontFamily:'Cormorant Garamond,serif', fontSize:'19px', fontWeight:500, color:'#fff', letterSpacing:'1px' }}>
                 Ajouter un véhicule
               </span>
@@ -403,7 +403,7 @@ export default function VehiculesPage() {
                       {(categories.find((c: any) => c.nom === form.categorie)?.modeles ?? []).map((m: string) => <option key={m} value={m} />)}
                     </datalist>
                     {form.categorie && (categories.find((c: any) => c.nom === form.categorie)?.modeles?.length ?? 0) > 0 && (
-                      <div style={{ fontSize:'10px', color:'#8a8478', marginTop:'3px' }}>Modèles de « {form.categorie} » proposés</div>
+                      <div style={{ fontSize:'10px', color:'#63605a', marginTop:'3px' }}>Modèles de « {form.categorie} » proposés</div>
                     )}
                   </div>
                 </div>
@@ -459,7 +459,7 @@ export default function VehiculesPage() {
                       <button key={val} type="button" onClick={() => setForm({ ...form, mode_acquisition: val })}
                         style={{ padding:'8px 6px', fontSize:'10px', fontWeight:700, textTransform:'uppercase', letterSpacing:'0.5px', cursor:'pointer',
                           background: form.mode_acquisition === val ? m.bg : '#fff',
-                          border: `1.5px solid ${form.mode_acquisition === val ? m.color : '#b8b0a4'}`,
+                          border: `1.5px solid ${form.mode_acquisition === val ? m.color : '#e4e6ea'}`,
                           color: form.mode_acquisition === val ? m.color : '#5a564e' }}>
                         {m.short}
                       </button>
@@ -507,7 +507,7 @@ export default function VehiculesPage() {
                 </div>
               </VFormSection>
 
-              <div style={{ display:'flex', justifyContent:'flex-end', gap:'8px', paddingTop:'16px', borderTop:'1.5px solid #b8b0a4' }}>
+              <div style={{ display:'flex', justifyContent:'flex-end', gap:'8px', paddingTop:'16px', borderTop:'1px solid #e4e6ea' }}>
                 <button type="button" className="btn-ghost" onClick={() => setShowForm(false)}>Annuler</button>
                 <button type="submit" className="btn-primary" disabled={saving}>
                   {saving ? 'Ajout…' : 'Ajouter le véhicule'}
@@ -534,7 +534,7 @@ function AlertCell({ status, date }: { status: ReturnType<typeof docAlert>; date
 function VFormSection({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <div style={{ marginBottom:'16px' }}>
-      <div style={{ fontSize:'9px', fontWeight:700, letterSpacing:'2.5px', textTransform:'uppercase', color:'#9a7a28', marginBottom:'12px', paddingBottom:'6px', borderBottom:'1px solid #b8b0a4' }}>
+      <div style={{ fontSize:'9px', fontWeight:700, letterSpacing:'2.5px', textTransform:'uppercase', color:'#9a7a28', marginBottom:'12px', paddingBottom:'6px', borderBottom:'1px solid #e4e6ea' }}>
         {label}
       </div>
       {children}

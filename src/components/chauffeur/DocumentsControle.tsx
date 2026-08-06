@@ -188,7 +188,7 @@ export default function DocumentsControle({ jours, transferts, chauffeur }: {
 
           {/* ── Barre supérieure ── */}
           {!presenting && (
-            <div style={{ background: '#16130e', padding: 'max(env(safe-area-inset-top), 12px) 14px 12px', display: 'flex', alignItems: 'center', gap: '10px', flexShrink: 0 }}>
+            <div style={{ background: '#16130e', padding: 'max(env(safe-area-inset-top), 12px) 14px 12px', borderRadius:'12px 12px 0 0', display: 'flex', alignItems: 'center', gap: '10px', flexShrink: 0 }}>
               {view !== 'menu' ? (
                 <button onClick={() => setView(view === 'ordre' && missions.length > 1 ? 'pick' : 'menu')}
                   style={{ background: 'none', border: 'none', color: '#fff', display: 'flex', alignItems: 'center', gap: '4px', cursor: 'pointer', fontSize: '13px' }}>
@@ -208,7 +208,7 @@ export default function DocumentsControle({ jours, transferts, chauffeur }: {
           {/* ── Contenu ── */}
           <div style={{ flex: 1, overflow: 'auto', background: '#fff' }}>
             {loading && view === 'menu' ? (
-              <div style={{ padding: '60px', textAlign: 'center', color: '#8a8478' }}>Chargement…</div>
+              <div style={{ padding: '60px', textAlign: 'center', color: '#63605a' }}>Chargement…</div>
             ) : view === 'menu' ? (
               <Menu missions={missions} docs={docs} onOrdre={goOrdre}
                 onAttestation={() => setView('attestation')} onLicence={() => setView('licence')} />
@@ -242,7 +242,7 @@ function Menu({ missions, docs, onOrdre, onAttestation, onLicence }: any) {
       <span style={{ color: disabled ? '#c2bdb4' : '#9a7a28', flexShrink: 0 }}>{icon}</span>
       <span style={{ flex: 1 }}>
         <span style={{ display: 'block', fontSize: '16px', fontWeight: 600, color: '#16130e' }}>{title}</span>
-        <span style={{ display: 'block', fontSize: '12px', color: '#8a8478', marginTop: '2px' }}>{sub}</span>
+        <span style={{ display: 'block', fontSize: '12px', color: '#63605a', marginTop: '2px' }}>{sub}</span>
       </span>
     </button>
   )
@@ -276,7 +276,7 @@ function MissionPicker({ missions, onPick }: { missions: Mission[]; onPick: (id:
             {m.kind}{m.heureDebut ? ` · ${m.heureDebut}` : ''}
           </div>
           <div style={{ fontSize: '15px', color: '#16130e', marginTop: '2px' }}>{m.clientNom}</div>
-          <div style={{ fontSize: '11px', color: '#8a8478', fontFamily: 'JetBrains Mono,monospace' }}>{m.dossierNum}</div>
+          <div style={{ fontSize: '11px', color: '#63605a', fontFamily: 'JetBrains Mono,monospace' }}>{m.dossierNum}</div>
         </button>
       ))}
     </div>
@@ -316,7 +316,7 @@ function DocFrame({ docRef, presenting, onPresent, onExit, fileUrl, children }: 
 function FileViewer({ doc, label }: { doc: { url: string; kind: 'pdf' | 'image' } | null; label: string }) {
   if (!doc) {
     return (
-      <div style={{ padding: '60px 24px', textAlign: 'center', color: '#8a8478' }}>
+      <div style={{ padding: '60px 24px', textAlign: 'center', color: '#63605a' }}>
         <AlertCircle size={28} style={{ color: '#c2bdb4', marginBottom: '10px' }} />
         <div>Document non disponible. Demandez à votre société de le fournir.</div>
       </div>

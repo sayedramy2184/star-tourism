@@ -68,7 +68,7 @@ export default function CategoriesVehicules() {
         </p>
 
         {loading ? (
-          <div style={{ padding: '30px', textAlign: 'center', color: '#8a8478', fontSize: '12px' }}>Chargement…</div>
+          <div style={{ padding: '30px', textAlign: 'center', color: '#63605a', fontSize: '12px' }}>Chargement…</div>
         ) : (
           <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
             {cats.map(cat => (
@@ -101,7 +101,7 @@ export default function CategoriesVehicules() {
         )}
 
         {/* Ajouter une catégorie */}
-        <div style={{ display: 'flex', gap: '8px', marginTop: '16px', paddingTop: '14px', borderTop: '1.5px solid #b8b0a4' }}>
+        <div style={{ display: 'flex', gap: '8px', marginTop: '16px', paddingTop: '14px', borderTop: '1px solid #e4e6ea' }}>
           <input value={newCat} onChange={e => setNewCat(e.target.value)}
             onKeyDown={e => { if (e.key === 'Enter') addCategorie() }}
             placeholder="Nouvelle catégorie (ex. Berline électrique)"
@@ -124,6 +124,6 @@ function ModeleInput({ onAdd }: { onAdd: (m: string) => void }) {
       onKeyDown={e => { if (e.key === 'Enter') { onAdd(v); setV('') } }}
       onBlur={() => { if (v.trim()) { onAdd(v); setV('') } }}
       placeholder="+ modèle"
-      style={{ width: '110px', background: '#fff', border: '1px dashed #b8b0a4', borderRadius: '999px', padding: '4px 10px', fontSize: '11px', outline: 'none', color: '#16130e' }} />
+      style={{ width: '110px', background: '#fff', border: '1px dashed #e4e6ea', borderRadius: '999px', padding: '4px 10px', fontSize: '11px', outline: 'none', color: '#16130e' }} />
   )
 }

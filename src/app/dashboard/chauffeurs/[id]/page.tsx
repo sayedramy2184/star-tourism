@@ -119,7 +119,7 @@ export default async function ChauffeurDetailPage({ params }: { params: { id: st
     <div>
       <div style={{ marginBottom:'20px' }}>
         <Link href="/dashboard/chauffeurs"
-          style={{ display:'inline-flex', alignItems:'center', gap:'6px', fontSize:'12px', color:'#8a8478', textDecoration:'none' }}>
+          style={{ display:'inline-flex', alignItems:'center', gap:'6px', fontSize:'12px', color:'#63605a', textDecoration:'none' }}>
           <ArrowLeft size={13} /> Retour aux chauffeurs
         </Link>
       </div>
@@ -131,7 +131,7 @@ export default async function ChauffeurDetailPage({ params }: { params: { id: st
 
           {/* Fiche chauffeur */}
           <div className="card" style={{ marginBottom:'16px' }}>
-            <div style={{ background:'#16130e', padding:'12px 22px', display:'flex', alignItems:'center', justifyContent:'space-between' }}>
+            <div style={{ background:'#16130e', padding:'12px 22px', borderRadius:'12px 12px 0 0', display:'flex', alignItems:'center', justifyContent:'space-between' }}>
               <span style={{ fontFamily:'JetBrains Mono,monospace', fontSize:'11px', color:'#9a7a28' }}>FICHE CHAUFFEUR</span>
               <ChauffeurEditModal chauffeur={c} />
             </div>
@@ -169,14 +169,14 @@ export default async function ChauffeurDetailPage({ params }: { params: { id: st
                 <div>
                   <div className="form-label">Téléphone</div>
                   <div style={{ display:'flex', alignItems:'center', gap:'6px', fontSize:'13px', fontWeight:500 }}>
-                    <Phone size={12} style={{ color:'#8a8478' }} /> {c.telephone}
+                    <Phone size={12} style={{ color:'#63605a' }} /> {c.telephone}
                   </div>
                 </div>
                 {c.email && (
                   <div>
                     <div className="form-label">Email</div>
                     <div style={{ display:'flex', alignItems:'center', gap:'6px', fontSize:'13px' }}>
-                      <Mail size={12} style={{ color:'#8a8478' }} /> {c.email}
+                      <Mail size={12} style={{ color:'#63605a' }} /> {c.email}
                     </div>
                   </div>
                 )}
@@ -316,8 +316,8 @@ export default async function ChauffeurDetailPage({ params }: { params: { id: st
 
 function PaieStat({ label, val, color }: { label: string; val: string; color: string }) {
   return (
-    <div style={{ background: '#faf9f7', border: '1px solid #ede9e2', padding: '10px 8px', textAlign: 'center' }}>
-      <div style={{ fontSize: '8px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '1px', color: '#8a8478', marginBottom: '4px' }}>{label}</div>
+    <div style={{ background: '#faf9f7', border: '1px solid #f4f5f7', padding: '10px 8px', textAlign: 'center' }}>
+      <div style={{ fontSize: '8px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '1px', color: '#63605a', marginBottom: '4px' }}>{label}</div>
       <div style={{ fontFamily: 'JetBrains Mono,monospace', fontSize: '13px', fontWeight: 700, color }}>{val}</div>
     </div>
   )
@@ -328,9 +328,9 @@ function DocCard({ label, numero, status }: { label: string; numero: string | nu
     <div style={{
       padding:'12px 14px',
       background: status.level === 'danger' ? '#faeaea' : status.level === 'warn' ? '#fdf3dc' : '#f5f2ed',
-      border: `1.5px solid ${status.level === 'danger' ? '#9e2a2a33' : status.level === 'warn' ? '#7a5c1033' : '#b8b0a4'}`,
+      border: `1.5px solid ${status.level === 'danger' ? '#9e2a2a33' : status.level === 'warn' ? '#7a5c1033' : '#e4e6ea'}`,
     }}>
-      <div style={{ fontSize:'9px', fontWeight:600, letterSpacing:'2px', textTransform:'uppercase', color:'#8a8478', marginBottom:'5px' }}>
+      <div style={{ fontSize:'9px', fontWeight:600, letterSpacing:'2px', textTransform:'uppercase', color:'#63605a', marginBottom:'5px' }}>
         {label}
       </div>
       {numero && (

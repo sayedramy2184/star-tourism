@@ -72,9 +72,9 @@ export default function RapportsPage() {
       </div>
 
       {loading ? (
-        <div style={{ padding: '80px', textAlign: 'center', color: '#8a8478' }}>Chargement…</div>
+        <div style={{ padding: '80px', textAlign: 'center', color: '#63605a' }}>Chargement…</div>
       ) : !data ? (
-        <div style={{ padding: '80px', textAlign: 'center', color: '#8a8478' }}>Aucune donnée</div>
+        <div style={{ padding: '80px', textAlign: 'center', color: '#63605a' }}>Aucune donnée</div>
       ) : (
         <>
           {/* KPIs */}
@@ -93,7 +93,7 @@ export default function RapportsPage() {
               <div style={{ display: 'flex', alignItems: 'flex-end', gap: '8px', minHeight: '160px', minWidth: `${data.serieMois.length * 34}px` }}>
                 {data.serieMois.map((m: any) => (
                   <div key={m.mois} style={{ flex: 1, minWidth: '26px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '6px' }}>
-                    <div style={{ fontSize: '8px', color: '#8a8478', fontFamily: 'JetBrains Mono,monospace' }}>{m.ca > 0 ? Math.round(m.ca / 1000) + 'k' : ''}</div>
+                    <div style={{ fontSize: '8px', color: '#63605a', fontFamily: 'JetBrains Mono,monospace' }}>{m.ca > 0 ? Math.round(m.ca / 1000) + 'k' : ''}</div>
                     <div title={eur2(m.ca)}
                       style={{ width: '100%', height: `${Math.round((m.ca / maxMois) * 130)}px`, minHeight: m.ca > 0 ? '3px' : '0', background: 'linear-gradient(to top, #9a7a28, #c9a84c)', transition: 'height .2s' }} />
                     <div style={{ fontSize: '8px', color: '#5a564e', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
@@ -113,13 +113,13 @@ export default function RapportsPage() {
                 <div className="card-header"><span className="card-header-title"><Building2 size={13} style={{ display: 'inline', marginRight: 6, verticalAlign: '-2px' }} />Top clients</span></div>
                 <div style={{ padding: '4px 0' }}>
                   {data.topClients.length === 0 ? (
-                    <div style={{ padding: '30px', textAlign: 'center', color: '#8a8478', fontSize: '12px' }}>Aucun dossier sur la période</div>
+                    <div style={{ padding: '30px', textAlign: 'center', color: '#63605a', fontSize: '12px' }}>Aucun dossier sur la période</div>
                   ) : data.topClients.map((c: any, i: number) => (
-                    <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '9px 16px', borderBottom: '1px solid #ede9e2' }}>
+                    <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '9px 16px', borderBottom: '1px solid #f4f5f7' }}>
                       <span style={{ fontFamily: 'JetBrains Mono,monospace', fontSize: '11px', color: '#c2bdb4', width: '18px' }}>{i + 1}</span>
                       <div style={{ flex: 1, minWidth: 0 }}>
                         <div style={{ fontSize: '13px', fontWeight: 600, color: '#16130e', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{c.nom}</div>
-                        <div style={{ fontSize: '10px', color: '#8a8478' }}>{c.dossiers} dossier{c.dossiers > 1 ? 's' : ''}</div>
+                        <div style={{ fontSize: '10px', color: '#63605a' }}>{c.dossiers} dossier{c.dossiers > 1 ? 's' : ''}</div>
                       </div>
                       <span style={{ fontFamily: 'JetBrains Mono,monospace', fontSize: '12px', color: '#9a7a28', fontWeight: 600 }}>{eur(c.ca)}</span>
                     </div>
@@ -143,12 +143,12 @@ export default function RapportsPage() {
                 <div className="card-header"><span className="card-header-title"><Users size={13} style={{ display: 'inline', marginRight: 6, verticalAlign: '-2px' }} />Activité chauffeurs</span></div>
                 <div style={{ padding: '4px 0' }}>
                   {data.activiteChauffeurs.length === 0 ? (
-                    <div style={{ padding: '30px', textAlign: 'center', color: '#8a8478', fontSize: '12px' }}>Aucune mission affectée</div>
+                    <div style={{ padding: '30px', textAlign: 'center', color: '#63605a', fontSize: '12px' }}>Aucune mission affectée</div>
                   ) : data.activiteChauffeurs.slice(0, 10).map((c: any, i: number) => (
-                    <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '8px 16px', borderBottom: '1px solid #ede9e2' }}>
+                    <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '8px 16px', borderBottom: '1px solid #f4f5f7' }}>
                       <span style={{ fontSize: '13px', color: '#16130e', flex: 1 }}>{c.nom}</span>
                       <span style={{ fontFamily: 'JetBrains Mono,monospace', fontSize: '12px', color: '#1e3f70', fontWeight: 600 }}>{c.missions}</span>
-                      <span style={{ fontSize: '10px', color: '#8a8478' }}>mission{c.missions > 1 ? 's' : ''}</span>
+                      <span style={{ fontSize: '10px', color: '#63605a' }}>mission{c.missions > 1 ? 's' : ''}</span>
                     </div>
                   ))}
                 </div>
@@ -166,10 +166,10 @@ function Kpi({ icon, label, value, sub, color = '#16130e' }: { icon: React.React
     <div style={{ background: '#fff', border: '1px solid #e0d9cd', padding: '16px 18px' }}>
       <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: '#9a7a28', marginBottom: '10px' }}>
         {icon}
-        <span style={{ fontSize: '9px', letterSpacing: '2px', textTransform: 'uppercase', color: '#8a8478' }}>{label}</span>
+        <span style={{ fontSize: '9px', letterSpacing: '2px', textTransform: 'uppercase', color: '#63605a' }}>{label}</span>
       </div>
       <div style={{ fontFamily: 'Cormorant Garamond,serif', fontSize: '26px', color, lineHeight: 1 }}>{value}</div>
-      <div style={{ fontSize: '10px', color: '#8a8478', marginTop: '6px' }}>{sub}</div>
+      <div style={{ fontSize: '10px', color: '#63605a', marginTop: '6px' }}>{sub}</div>
     </div>
   )
 }
@@ -186,10 +186,10 @@ function Repartition({ mad, transfert }: { mad: number; transfert: number }) {
       </div>
       <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '12px' }}>
         <span style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-          <span style={{ width: '10px', height: '10px', background: '#1e3f70' }} /> Transferts <b>{transfert}</b> <span style={{ color: '#8a8478' }}>({pTr}%)</span>
+          <span style={{ width: '10px', height: '10px', background: '#1e3f70' }} /> Transferts <b>{transfert}</b> <span style={{ color: '#63605a' }}>({pTr}%)</span>
         </span>
         <span style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-          <span style={{ width: '10px', height: '10px', background: '#a6432a' }} /> MAD <b>{mad}</b> <span style={{ color: '#8a8478' }}>({pMad}%)</span>
+          <span style={{ width: '10px', height: '10px', background: '#a6432a' }} /> MAD <b>{mad}</b> <span style={{ color: '#63605a' }}>({pMad}%)</span>
         </span>
       </div>
     </div>

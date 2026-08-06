@@ -42,7 +42,8 @@ export async function GET(req: NextRequest) {
         vehicule:vehicules(id, marque, modele, immatriculation),
         dossier:dossiers(
           id, numero,
-          client:clients(id, nom)
+          client:clients(id, nom, type),
+          passagers(nom)
         )
       )
     `)
@@ -62,7 +63,8 @@ export async function GET(req: NextRequest) {
       sous_traitant:sous_traitants(id, societe),
       dossier:dossiers(
         id, numero,
-        client:clients(id, nom)
+        client:clients(id, nom, type),
+        passagers(nom)
       )
     `)
     .eq('type', 'transfert')

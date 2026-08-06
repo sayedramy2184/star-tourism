@@ -29,7 +29,7 @@ function fmt(n: number) {
 
 function Section({ label }: { label: string }) {
   return (
-    <div style={{ fontSize:'9px', fontWeight:700, letterSpacing:'2.5px', textTransform:'uppercase', color:'#9a7a28', marginBottom:'12px', paddingBottom:'6px', borderBottom:'1px solid #b8b0a4', marginTop:'8px' }}>
+    <div style={{ fontSize:'9px', fontWeight:700, letterSpacing:'2.5px', textTransform:'uppercase', color:'#9a7a28', marginBottom:'12px', paddingBottom:'6px', borderBottom:'1px solid #e4e6ea', marginTop:'8px' }}>
       {label}
     </div>
   )
@@ -106,7 +106,7 @@ export default function ParametresPage() {
       </div>
 
       {/* Tabs */}
-      <div style={{ display:'flex', gap:'0', marginBottom:'24px', borderBottom:'1.5px solid #b8b0a4' }}>
+      <div style={{ display:'flex', gap:'0', marginBottom:'24px', borderBottom:'1px solid #e4e6ea' }}>
         {TABS.map(t => (
           <button key={t.val} onClick={() => setTab(t.val)}
             style={{
@@ -165,7 +165,7 @@ export default function ParametresPage() {
                 <input type="url" className="input" value={societe.site_web ?? ''} onChange={e => setSociete({...societe, site_web:e.target.value})} placeholder="https://elitedrive.fr" /></div>
             </div>
 
-            <div style={{ display:'flex', justifyContent:'flex-end', paddingTop:'16px', borderTop:'1.5px solid #b8b0a4' }}>
+            <div style={{ display:'flex', justifyContent:'flex-end', paddingTop:'16px', borderTop:'1px solid #e4e6ea' }}>
               <button className="btn-primary" onClick={saveSociete} disabled={saving}>
                 <Save size={13}/> {saving ? 'Sauvegarde…' : 'Sauvegarder'}
               </button>
@@ -205,7 +205,7 @@ export default function ParametresPage() {
             <div><label className="form-label">Mentions légales (pied de facture)</label>
               <textarea className="textarea" value={societe.mentions_legales ?? ''} onChange={e => setSociete({...societe, mentions_legales:e.target.value})} placeholder="En cas de retard de paiement, une pénalité de 3 fois le taux légal sera appliquée..." style={{ minHeight:'80px' }} /></div>
 
-            <div style={{ display:'flex', justifyContent:'flex-end', paddingTop:'16px', borderTop:'1.5px solid #b8b0a4', marginTop:'16px' }}>
+            <div style={{ display:'flex', justifyContent:'flex-end', paddingTop:'16px', borderTop:'1px solid #e4e6ea', marginTop:'16px' }}>
               <button className="btn-primary" onClick={saveSociete} disabled={saving}>
                 <Save size={13}/> {saving ? 'Sauvegarde…' : 'Sauvegarder'}
               </button>
@@ -268,7 +268,7 @@ export default function ParametresPage() {
                     <input type="text" className="input" value={editForfait.notes ?? ''} onChange={e => setEditForfait({...editForfait, notes:e.target.value})} placeholder="Description, conditions particulières…" />
                   </div>
                 </div>
-                <div style={{ display:'flex', justifyContent:'flex-end', gap:'8px', paddingTop:'12px', borderTop:'1.5px solid #b8b0a4' }}>
+                <div style={{ display:'flex', justifyContent:'flex-end', gap:'8px', paddingTop:'12px', borderTop:'1px solid #e4e6ea' }}>
                   <button className="btn-ghost" onClick={() => { setShowForfaitForm(false); setEditForfait(null) }}>Annuler</button>
                   <button className="btn-primary" onClick={saveForfait} disabled={saving}>
                     {saving ? 'Sauvegarde…' : editForfait.id ? 'Modifier' : 'Créer le forfait'}
@@ -284,13 +284,13 @@ export default function ParametresPage() {
               <thead className="table-head">
                 <tr>
                   {['Nom','Heures incluses','Tarif HT','Type','Heure sup','Notes','Actions'].map((h,i) => (
-                    <th key={h} className="th" style={i%2===1?{background:'rgba(0,0,0,0.1)'}:{}}>{h}</th>
+                    <th key={h} className="th">{h}</th>
                   ))}
                 </tr>
               </thead>
               <tbody>
                 {forfaits.length === 0 ? (
-                  <tr><td colSpan={7} style={{ padding:'40px', textAlign:'center', color:'#8a8478', fontSize:'12px' }}>
+                  <tr><td colSpan={7} style={{ padding:'40px', textAlign:'center', color:'#63605a', fontSize:'12px' }}>
                     Aucun forfait — créez le premier !
                   </td></tr>
                 ) : forfaits.map(f => (
@@ -312,7 +312,7 @@ export default function ParametresPage() {
                         ? <span style={{ fontFamily:'JetBrains Mono,monospace', fontSize:'12px' }}>{fmt(f.tarif_heure_sup)}/h</span>
                         : <span style={{ color:'#c2bdb4', fontSize:'11px' }}>—</span>}
                     </td>
-                    <td className="td" style={{ color:'#8a8478', fontStyle:'italic', fontSize:'11px' }}>{f.notes ?? '—'}</td>
+                    <td className="td" style={{ color:'#63605a', fontStyle:'italic', fontSize:'11px' }}>{f.notes ?? '—'}</td>
                     <td className="td" onClick={e => e.stopPropagation()}>
                       <div style={{ display:'flex', gap:'6px' }}>
                         <button className="btn-ghost" style={{ padding:'4px 10px', fontSize:'10px' }}

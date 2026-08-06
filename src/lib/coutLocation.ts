@@ -42,7 +42,7 @@ export function contratStatut(
   const t = today.toISOString().slice(0, 10)
   const fin = v.contrat_fin ?? v.date_sortie_parc ?? null
   if (v.contrat_debut && v.contrat_debut > t) return { key: 'a_venir', label: 'À venir',          color: '#7a5c10', bg: '#fdf3dc' }
-  if (fin && fin < t)                          return { key: 'termine', label: 'Contrat terminé',  color: '#8a8478', bg: '#f0eeeb' }
+  if (fin && fin < t)                          return { key: 'termine', label: 'Contrat terminé',  color: '#63605a', bg: '#f0eeeb' }
   return { key: 'actif', label: 'Sous contrat', color: '#1e5e3a', bg: '#eaf4ee' }
 }
 

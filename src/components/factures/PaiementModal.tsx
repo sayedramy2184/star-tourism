@@ -57,8 +57,8 @@ export default function PaiementModal({ factureId, numero, montantTtc, dejaPaye,
       {open && (
         <div style={{ position: 'fixed', inset: 0, background: 'rgba(22,19,14,0.55)', zIndex: 200, display: 'flex', alignItems: 'center', justifyContent: 'center', backdropFilter: 'blur(3px)', padding: '16px' }}
           onClick={e => e.target === e.currentTarget && setOpen(false)}>
-          <div style={{ background: '#fff', border: '1.5px solid #b8b0a4', width: '480px', maxWidth: '96vw', maxHeight: '92vh', overflowY: 'auto', boxShadow: '0 24px 60px rgba(0,0,0,0.2)' }}>
-            <div style={{ background: '#16130e', padding: '16px 24px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+          <div style={{ background: '#fff', border: '1px solid #e4e6ea', width: '480px', maxWidth: '96vw', maxHeight: '92vh', overflowY: 'auto', boxShadow: '0 24px 60px rgba(0,0,0,0.2)' }}>
+            <div style={{ background: '#16130e', padding: '16px 24px', borderRadius:'12px 12px 0 0', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
               <span style={{ fontFamily: 'Cormorant Garamond,serif', fontSize: '18px', fontWeight: 500, color: '#fff', letterSpacing: '1px' }}>Paiement — {numero}</span>
               <button onClick={() => setOpen(false)} style={{ background: 'none', border: 'none', color: 'rgba(255,255,255,0.4)', cursor: 'pointer' }}><X size={18} /></button>
             </div>
@@ -67,7 +67,7 @@ export default function PaiementModal({ factureId, numero, montantTtc, dejaPaye,
               <div style={{ display: 'flex', gap: '10px', marginBottom: '18px' }}>
                 {[['Montant TTC', eur(montantTtc), '#16130e'], ['Déjà réglé', eur(dejaPaye), '#1e5e3a'], ['Reste dû', eur(solde), solde > 0 ? '#7a5c10' : '#1e5e3a']].map(([l, v, col]) => (
                   <div key={l} style={{ flex: 1, background: '#f5f2ed', border: '1px solid #d8d2c8', padding: '10px 12px' }}>
-                    <div style={{ fontSize: '8px', letterSpacing: '1.5px', textTransform: 'uppercase', color: '#8a8478', marginBottom: '4px' }}>{l}</div>
+                    <div style={{ fontSize: '8px', letterSpacing: '1.5px', textTransform: 'uppercase', color: '#63605a', marginBottom: '4px' }}>{l}</div>
                     <div style={{ fontFamily: 'JetBrains Mono,monospace', fontSize: '13px', color: col as string, fontWeight: 600 }}>{v}</div>
                   </div>
                 ))}
@@ -88,7 +88,7 @@ export default function PaiementModal({ factureId, numero, montantTtc, dejaPaye,
                 <div style={{ marginTop: '8px' }}>
                   <div className="form-label" style={{ marginBottom: '6px' }}>Historique</div>
                   {paies.map(p => (
-                    <div key={p.id} style={{ display: 'flex', justifyContent: 'space-between', fontSize: '11px', padding: '5px 0', borderBottom: '1px solid #ede9e2' }}>
+                    <div key={p.id} style={{ display: 'flex', justifyContent: 'space-between', fontSize: '11px', padding: '5px 0', borderBottom: '1px solid #f4f5f7' }}>
                       <span style={{ color: '#5a564e' }}>{p.date_paiement} · {p.moyen}{p.reference ? ` · ${p.reference}` : ''}</span>
                       <span style={{ fontFamily: 'JetBrains Mono,monospace', color: '#1e5e3a' }}>{eur(p.montant)}</span>
                     </div>
@@ -96,7 +96,7 @@ export default function PaiementModal({ factureId, numero, montantTtc, dejaPaye,
                 </div>
               )}
 
-              <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '8px', marginTop: '16px', paddingTop: '16px', borderTop: '1.5px solid #b8b0a4' }}>
+              <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '8px', marginTop: '16px', paddingTop: '16px', borderTop: '1px solid #e4e6ea' }}>
                 <button className="btn-ghost" onClick={() => setOpen(false)}>Fermer</button>
                 <button className="btn-primary" onClick={submit} disabled={saving}>{saving ? 'Enregistrement…' : 'Enregistrer le paiement'}</button>
               </div>

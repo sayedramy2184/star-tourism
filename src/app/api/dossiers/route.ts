@@ -1,8 +1,10 @@
 import { createClient } from '@/lib/supabase/server'
+import { createAdminClient } from '@/lib/supabase/admin'
 import { NextRequest, NextResponse } from 'next/server'
 import { z } from 'zod'
 import { format, eachDayOfInterval, parseISO } from 'date-fns'
 import { fr } from 'date-fns/locale'
+import { majDossiersTermines } from '@/lib/majDossiersTermines'
 
 // ── Validation schemas ────────────────────────
 
@@ -71,6 +73,10 @@ const DossierSchema = z.object({
 export async function GET(req: NextRequest) {
   const supabase = createClient()
   const { searchParams } = new URL(req.url)
+
+  // Clôture date-aware des dossiers dont toutes les prestations sont passées
+  // (le trigger SQL ne voit pas le « terminé » virtuel calculé sur la date).
+  try { await majDossiersTermines(createAdminClient()) } catch (e) { console.error('majDossiersTermines:', e) }
 
   const statut     = searchParams.get('statut')
   const client_id  = searchParams.get('client_id')

@@ -52,7 +52,7 @@ export default function TarifsClient({ clientId }: { clientId: string }) {
     <div className="card">
       <div className="card-header" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
         <span className="card-header-title"><Tag size={13} style={{ display: 'inline', marginRight: 6, verticalAlign: '-2px' }} />Tarifs dédiés</span>
-        <button className="btn-ghost" style={{ padding: '4px 10px', fontSize: '10px', color: 'rgba(255,255,255,0.6)', borderColor: 'rgba(255,255,255,0.2)' }} onClick={() => setShowForm(s => !s)}>
+        <button className="btn-ghost" style={{ padding: '4px 10px', fontSize: '10px' }} onClick={() => setShowForm(s => !s)}>
           <Plus size={11} /> Ajouter
         </button>
       </div>
@@ -86,9 +86,9 @@ export default function TarifsClient({ clientId }: { clientId: string }) {
         )}
 
         {loading ? (
-          <div style={{ padding: '20px', textAlign: 'center', color: '#8a8478', fontSize: '12px' }}>Chargement…</div>
+          <div style={{ padding: '20px', textAlign: 'center', color: '#63605a', fontSize: '12px' }}>Chargement…</div>
         ) : tarifs.length === 0 ? (
-          <div style={{ padding: '16px', textAlign: 'center', color: '#8a8478', fontSize: '12px' }}>Aucun tarif dédié</div>
+          <div style={{ padding: '16px', textAlign: 'center', color: '#63605a', fontSize: '12px' }}>Aucun tarif dédié</div>
         ) : (
           <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
             {tarifs.map(t => (
@@ -96,7 +96,7 @@ export default function TarifsClient({ clientId }: { clientId: string }) {
                 <span style={{ fontSize: '8px', fontWeight: 700, letterSpacing: '0.5px', textTransform: 'uppercase', padding: '2px 6px', color: t.type === 'mad' ? '#a6432a' : '#1e3f70', background: t.type === 'mad' ? '#f8ece7' : '#e8eef8' }}>{t.type === 'mad' ? 'MAD' : 'TRANSF'}</span>
                 <div style={{ flex: 1, minWidth: 0 }}>
                   <div style={{ fontSize: '12px', fontWeight: 600, color: '#16130e' }}>{t.libelle}</div>
-                  {t.categorie && <div style={{ fontSize: '10px', color: '#8a8478' }}>{CATS[t.categorie] ?? t.categorie}</div>}
+                  {t.categorie && <div style={{ fontSize: '10px', color: '#63605a' }}>{CATS[t.categorie] ?? t.categorie}</div>}
                 </div>
                 <span style={{ fontFamily: 'JetBrains Mono,monospace', fontSize: '12px', color: '#9a7a28', fontWeight: 600 }}>{eur(t.prix_ht)}{t.type === 'mad' ? '/j' : ''}</span>
                 <button onClick={() => remove(t.id)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#9e2a2a' }}><Trash2 size={13} /></button>

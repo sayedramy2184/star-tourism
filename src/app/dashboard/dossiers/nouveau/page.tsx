@@ -450,14 +450,14 @@ export default function NouveauDossierPage() {
             </button>
           </div>
           <div style={{ padding:'16px' }}>
-            <p style={{ fontSize:'11px', color:'#8a8478', marginBottom: passagers.length > 0 ? '12px' : 0, lineHeight:1.5 }}>
+            <p style={{ fontSize:'11px', color:'#63605a', marginBottom: passagers.length > 0 ? '12px' : 0, lineHeight:1.5 }}>
               Nom des <strong>voyageurs réels</strong> transportés — utile quand le dossier est réservé par une agence.
               Facultatif : vous pourrez aussi les ajouter/modifier après création.
             </p>
             {passagers.length > 0 && (
               <div style={{ display:'flex', flexDirection:'column', gap:'8px' }}>
                 {passagers.map((pax) => (
-                  <div key={pax.id} style={{ display:'flex', flexWrap:'wrap', gap:'8px', alignItems:'flex-end', background:'#f5f2ed', border:'1.5px solid #b8b0a4', padding:'10px' }}>
+                  <div key={pax.id} style={{ display:'flex', flexWrap:'wrap', gap:'8px', alignItems:'flex-end', background:'#f5f2ed', border:'1px solid #e4e6ea', borderRadius:'12px', padding:'10px' }}>
                     <span style={{ fontSize:'18px', paddingBottom:'6px' }}>{flag(pax.nationalite) || '👤'}</span>
                     <div style={{ flex:'2 1 150px', minWidth:'130px' }}>
                       <label className="form-label">Nom du passager *</label>
@@ -484,7 +484,7 @@ export default function NouveauDossierPage() {
                 {(() => {
                   const totBag = passagers.reduce((s, p) => s + (p.nb_bagages || 0), 0)
                   return (
-                    <div style={{ display:'flex', justifyContent:'flex-end', gap:'14px', fontSize:'11px', color:'#8a8478', paddingTop:'2px' }}>
+                    <div style={{ display:'flex', justifyContent:'flex-end', gap:'14px', fontSize:'11px', color:'#63605a', paddingTop:'2px' }}>
                       <span>{passagers.length} passager{passagers.length > 1 ? 's' : ''}</span>
                       <span><Briefcase size={11} style={{ display:'inline', verticalAlign:'-1px' }} /> {totBag} bagage{totBag > 1 ? 's' : ''}</span>
                     </div>
@@ -573,10 +573,10 @@ function PrestationBlock({ p, idx, chauffeurs, vehicules, forfaits, clientTarifs
 }) {
   const tarifsMatch = (clientTarifs ?? []).filter((t: any) => t.type === p.type)
   return (
-    <div style={{ background:'#f5f2ed', border:'1.5px solid #b8b0a4', overflow:'hidden' }}>
+    <div style={{ background:'#f5f2ed', border:'1px solid #e4e6ea', borderRadius:'12px', overflow:'hidden' }}>
 
       {/* ── Header avec sélecteur de type visuel ── */}
-      <div style={{ background:'#16130e', padding:'12px 16px', display:'flex', alignItems:'center', gap:'12px' }}>
+      <div style={{ background:'#16130e', padding:'12px 16px', borderRadius:'12px 12px 0 0', display:'flex', alignItems:'center', gap:'12px' }}>
         <span style={{ color:'rgba(255,255,255,0.25)', fontSize:'14px', cursor:'grab' }}>⠿</span>
 
         {/* Type selector — boutons radio visuels */}
@@ -641,7 +641,7 @@ function PrestationBlock({ p, idx, chauffeurs, vehicules, forfaits, clientTarifs
               <input type="number" className="input" min={0} value={p.nb_passagers} onChange={e => onUpdate({ nb_passagers: Number(e.target.value) })} /></div>
             <div style={{ width:'110px' }}><label className="form-label">Bagages</label>
               <input type="number" className="input" min={0} value={p.nb_bagages} onChange={e => onUpdate({ nb_bagages: Number(e.target.value) })} /></div>
-            <span style={{ fontSize:'10px', color:'#8a8478', paddingBottom:'10px' }}>Nombre total pour cette voiture. Les passagers nommés se saisissent en section 2, puis s'affectent à chaque voiture depuis le dossier.</span>
+            <span style={{ fontSize:'10px', color:'#63605a', paddingBottom:'10px' }}>Nombre total pour cette voiture. Les passagers nommés se saisissent en section 2, puis s'affectent à chaque voiture depuis le dossier.</span>
           </div>
 
           {/* ── TRANSFERT ── */}
@@ -661,7 +661,7 @@ function PrestationBlock({ p, idx, chauffeurs, vehicules, forfaits, clientTarifs
                       style={{
                         flex:1, padding:'10px 8px', display:'flex', flexDirection:'column', alignItems:'center', gap:'4px',
                         background: p.transfert_sous_type === st.val ? '#fdf6e3' : '#ffffff',
-                        border: `1.5px solid ${p.transfert_sous_type === st.val ? '#9a7a28' : '#b8b0a4'}`,
+                        border: `1.5px solid ${p.transfert_sous_type === st.val ? '#9a7a28' : '#e4e6ea'}`,
                         cursor:'pointer', transition:'all 0.14s',
                       }}>
                       <span style={{ fontSize:'20px' }}>{st.icon}</span>
@@ -684,7 +684,7 @@ function PrestationBlock({ p, idx, chauffeurs, vehicules, forfaits, clientTarifs
                         style={{
                           flex:1, padding:'9px 12px', display:'flex', alignItems:'center', justifyContent:'center', gap:'8px',
                           background: p.transfert_sens === 'depuis' ? '#e8eef8' : '#ffffff',
-                          border: `1.5px solid ${p.transfert_sens === 'depuis' ? '#1e3f70' : '#b8b0a4'}`,
+                          border: `1.5px solid ${p.transfert_sens === 'depuis' ? '#1e3f70' : '#e4e6ea'}`,
                           cursor:'pointer', transition:'all 0.14s',
                         }}>
                         <span style={{ fontSize:'16px' }}>
@@ -694,7 +694,7 @@ function PrestationBlock({ p, idx, chauffeurs, vehicules, forfaits, clientTarifs
                           <div style={{ fontSize:'11px', fontWeight:700, color: p.transfert_sens === 'depuis' ? '#1e3f70' : '#5a564e' }}>
                             Depuis {p.transfert_sous_type === 'aeroport' ? "l'aéroport" : 'la gare'}
                           </div>
-                          <div style={{ fontSize:'9px', color:'#8a8478' }}>
+                          <div style={{ fontSize:'9px', color:'#63605a' }}>
                             {p.transfert_sous_type === 'aeroport' ? 'Aéroport → Destination' : 'Gare → Destination'}
                           </div>
                         </div>
@@ -704,7 +704,7 @@ function PrestationBlock({ p, idx, chauffeurs, vehicules, forfaits, clientTarifs
                         style={{
                           flex:1, padding:'9px 12px', display:'flex', alignItems:'center', justifyContent:'center', gap:'8px',
                           background: p.transfert_sens === 'vers' ? '#e8eef8' : '#ffffff',
-                          border: `1.5px solid ${p.transfert_sens === 'vers' ? '#1e3f70' : '#b8b0a4'}`,
+                          border: `1.5px solid ${p.transfert_sens === 'vers' ? '#1e3f70' : '#e4e6ea'}`,
                           cursor:'pointer', transition:'all 0.14s',
                         }}>
                         <span style={{ fontSize:'16px' }}>
@@ -714,7 +714,7 @@ function PrestationBlock({ p, idx, chauffeurs, vehicules, forfaits, clientTarifs
                           <div style={{ fontSize:'11px', fontWeight:700, color: p.transfert_sens === 'vers' ? '#1e3f70' : '#5a564e' }}>
                             Vers {p.transfert_sous_type === 'aeroport' ? "l'aéroport" : 'la gare'}
                           </div>
-                          <div style={{ fontSize:'9px', color:'#8a8478' }}>
+                          <div style={{ fontSize:'9px', color:'#63605a' }}>
                             {p.transfert_sous_type === 'aeroport' ? 'Départ → Aéroport' : 'Départ → Gare'}
                           </div>
                         </div>
@@ -871,7 +871,7 @@ function PrestationBlock({ p, idx, chauffeurs, vehicules, forfaits, clientTarifs
 
               {/* Sélecteur de forfait */}
               {forfaits.length > 0 && (
-                <div style={{ marginBottom:'12px', padding:'12px 14px', background:'#f5f2ed', border:'1.5px solid #b8b0a4' }}>
+                <div style={{ marginBottom:'12px', padding:'12px 14px', background:'#f5f2ed', border:'1px solid #e4e6ea', borderRadius:'12px' }}>
                   <div style={{ fontSize:'9px', fontWeight:700, letterSpacing:'2.5px', textTransform:'uppercase', color:'#9a7a28', marginBottom:'10px' }}>
                     Appliquer un forfait prédéfini
                   </div>
@@ -882,13 +882,13 @@ function PrestationBlock({ p, idx, chauffeurs, vehicules, forfaits, clientTarifs
                         style={{
                           padding:'7px 12px', fontSize:'11px', fontWeight:600, cursor:'pointer',
                           background: p.tarif_journalier_ht === f.tarif_ht ? '#fdf6e3' : '#fff',
-                          border: `1.5px solid ${p.tarif_journalier_ht === f.tarif_ht ? '#9a7a28' : '#b8b0a4'}`,
+                          border: `1.5px solid ${p.tarif_journalier_ht === f.tarif_ht ? '#9a7a28' : '#e4e6ea'}`,
                           color: p.tarif_journalier_ht === f.tarif_ht ? '#9a7a28' : '#5a564e',
                           display:'flex', flexDirection:'column', alignItems:'flex-start', gap:'2px',
                           transition:'all 0.14s',
                         }}>
                         <span style={{ fontWeight:700, color: p.tarif_journalier_ht === f.tarif_ht ? '#9a7a28' : '#16130e' }}>{f.nom}</span>
-                        <span style={{ fontSize:'9px', color:'#8a8478' }}>
+                        <span style={{ fontSize:'9px', color:'#63605a' }}>
                           {f.tarif_ht.toLocaleString('fr-FR')} € · {f.heures_incluses}h
                           {f.avec_heures_sup ? ` · sup ${f.tarif_heure_sup}€/h` : ' · fixe'}
                         </span>
@@ -911,7 +911,7 @@ function PrestationBlock({ p, idx, chauffeurs, vehicules, forfaits, clientTarifs
                   <div style={{ display:'flex', gap:'8px', alignItems:'center' }}>
                     <input type="time" className="input" value={p.heure_debut_journee}
                       onChange={e => onUpdate({ heure_debut_journee: e.target.value })} />
-                    <span style={{ color:'#8a8478', flexShrink:0 }}>→</span>
+                    <span style={{ color:'#63605a', flexShrink:0 }}>→</span>
                     <input type="time" className="input" value={p.heure_fin_journee}
                       onChange={e => onUpdate({ heure_fin_journee: e.target.value })} />
                   </div>
@@ -930,7 +930,7 @@ function PrestationBlock({ p, idx, chauffeurs, vehicules, forfaits, clientTarifs
               <FormSep label="Chauffeurs par jour" />
               <div style={{ display:'grid', gridTemplateColumns:'90px 1fr 1fr 80px', gap:'6px', padding:'4px 8px', background:'#faf9f7', marginBottom:'2px' }}>
                 {['Date','Chauffeur','Note','Tarif HT'].map(h => (
-                  <div key={h} style={{ fontSize:'8px', fontWeight:600, letterSpacing:'1.5px', textTransform:'uppercase', color:'#8a8478' }}>{h}</div>
+                  <div key={h} style={{ fontSize:'8px', fontWeight:600, letterSpacing:'1.5px', textTransform:'uppercase', color:'#63605a' }}>{h}</div>
                 ))}
               </div>
               {p.jours.map((j, ji) => {
@@ -946,21 +946,21 @@ function PrestationBlock({ p, idx, chauffeurs, vehicules, forfaits, clientTarifs
                       {j.jour_semaine} {format(parseISO(j.date),'dd/MM')}
                     </span>
                     <select value={j.chauffeur_id} onChange={e => onUpdateJour(ji, { chauffeur_id: e.target.value })}
-                      style={{ background:'#fff', border:`1px solid ${missing ? '#7a5c10' : '#b8b0a4'}`, padding:'5px 8px', fontSize:'11px', color:'#16130e', outline:'none', width:'100%' }}>
+                      style={{ background:'#fff', border:`1px solid ${missing ? '#7a5c10' : '#e4e6ea'}`, padding:'5px 8px', fontSize:'11px', color:'#16130e', outline:'none', width:'100%' }}>
                       <option value="">— Non affecté —</option>
                       {chauffeurs.map(c => <option key={c.id} value={c.id}>{c.prenom} {c.nom}</option>)}
                     </select>
                     <input type="text" value={j.note} onChange={e => onUpdateJour(ji, { note: e.target.value })}
                       placeholder="Note…"
-                      style={{ background:'#fff', border:'1px solid #b8b0a4', padding:'5px 8px', fontSize:'11px', outline:'none', width:'100%' }} />
+                      style={{ background:'#fff', border:'1px solid #e4e6ea', padding:'5px 8px', fontSize:'11px', outline:'none', width:'100%' }} />
                     <span style={{ fontFamily:'JetBrains Mono,monospace', fontSize:'11px', color:'#9a7a28', textAlign:'right' }}>
                       {j.tarif_ht.toLocaleString('fr-FR')} €
                     </span>
                   </div>
                 )
               })}
-              <div style={{ display:'flex', justifyContent:'space-between', padding:'8px 8px 0', borderTop:'1.5px solid #b8b0a4', marginTop:'4px' }}>
-                <span style={{ fontSize:'9px', fontWeight:600, letterSpacing:'1.5px', textTransform:'uppercase', color:'#8a8478' }}>
+              <div style={{ display:'flex', justifyContent:'space-between', padding:'8px 8px 0', borderTop:'1px solid #e4e6ea', marginTop:'4px' }}>
+                <span style={{ fontSize:'9px', fontWeight:600, letterSpacing:'1.5px', textTransform:'uppercase', color:'#63605a' }}>
                   Sous-total · {p.jours.length} j
                 </span>
                 <span style={{ fontFamily:'JetBrains Mono,monospace', fontSize:'12px', color:'#16130e' }}>
@@ -1008,7 +1008,7 @@ function TypeBtn({ active, icon, label, onClick }: { active: boolean; icon: stri
 
 function FormSep({ label }: { label: string }) {
   return (
-    <div style={{ fontSize:'9px', fontWeight:700, letterSpacing:'2.5px', textTransform:'uppercase', color:'#9a7a28', marginBottom:'10px', marginTop:'4px', paddingBottom:'6px', borderBottom:'1px solid #b8b0a4' }}>
+    <div style={{ fontSize:'9px', fontWeight:700, letterSpacing:'2.5px', textTransform:'uppercase', color:'#9a7a28', marginBottom:'10px', marginTop:'4px', paddingBottom:'6px', borderBottom:'1px solid #e4e6ea' }}>
       {label}
     </div>
   )
@@ -1067,19 +1067,19 @@ function AddressField({ label, value, onChange, placeholder, icon }: {
       {showSugg && suggestions.length > 0 && (
         <div style={{
           position:'absolute', top:'100%', left:0, right:0, zIndex:50,
-          background:'#fff', border:'1.5px solid #b8b0a4', boxShadow:'0 4px 16px rgba(0,0,0,0.12)',
+          background:'#fff', border:'1px solid #e4e6ea', borderRadius:'12px', boxShadow:'0 4px 16px rgba(0,0,0,0.12)',
           maxHeight:'200px', overflowY:'auto',
         }}>
           {suggestions.map((s: any) => (
             <div key={s.place_id}
               onMouseDown={() => { onChange(s.description); setSuggestions([]); setShowSugg(false) }}
-              style={{ padding:'9px 12px', fontSize:'12px', cursor:'pointer', borderBottom:'1px solid #ede9e2', display:'flex', gap:'8px', alignItems:'center' }}
+              style={{ padding:'9px 12px', fontSize:'12px', cursor:'pointer', borderBottom:'1px solid #f4f5f7', display:'flex', gap:'8px', alignItems:'center' }}
               onMouseEnter={e => (e.currentTarget.style.background = '#fdf6e3')}
               onMouseLeave={e => (e.currentTarget.style.background = '#fff')}>
               <span style={{ fontSize:'11px' }}>📍</span>
               <div>
                 <div style={{ fontWeight:500, color:'#16130e' }}>{s.structured_formatting?.main_text ?? s.description}</div>
-                <div style={{ fontSize:'10px', color:'#8a8478' }}>{s.structured_formatting?.secondary_text}</div>
+                <div style={{ fontSize:'10px', color:'#63605a' }}>{s.structured_formatting?.secondary_text}</div>
               </div>
             </div>
           ))}
@@ -1113,7 +1113,7 @@ function VehiculeSelector({ p, vehicules, onUpdate }: { p: PrestationForm; vehic
       <label className="form-label">Catégorie de véhicule souhaitée</label>
       <VehiculeCategorieSelect categories={categories} value={p.modele_souhaite} onChange={v => onUpdate({ modele_souhaite: v })} selectClass="select" anyLabel="— Toutes catégories —" />
     </div>
-    <div style={{ border:'1.5px solid #b8b0a4', overflow:'hidden', marginBottom:'12px' }}>
+    <div style={{ border:'1px solid #e4e6ea', borderRadius:'12px', overflow:'hidden', marginBottom:'12px' }}>
       <div style={{ display:'flex', background:'#f5f2ed' }}>
         {([['flotte','Flotte'],['externe','Externe'],['plus_tard','Plus tard']] as const).map(([mode, lbl]) => (
           <button key={mode} type="button"

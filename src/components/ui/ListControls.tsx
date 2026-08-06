@@ -11,7 +11,7 @@ export function SearchBar({ value, onChange, placeholder, onExport }: {
   return (
     <div style={{ display: 'flex', gap: '8px', alignItems: 'center', flexWrap: 'wrap' }}>
       <div style={{ position: 'relative', flex: 1, minWidth: '180px' }}>
-        <Search size={14} style={{ position: 'absolute', left: '10px', top: '50%', transform: 'translateY(-50%)', color: '#8a8478', pointerEvents: 'none' }} />
+        <Search size={14} style={{ position: 'absolute', left: '10px', top: '50%', transform: 'translateY(-50%)', color: '#63605a', pointerEvents: 'none' }} />
         <input
           value={value}
           onChange={e => onChange(e.target.value)}
@@ -38,7 +38,7 @@ export function Pager({ page, pageCount, total, onPage }: {
   if (total === 0) return null
   return (
     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '10px', marginTop: '12px', flexWrap: 'wrap' }}>
-      <span style={{ fontSize: '11px', color: '#8a8478' }}>
+      <span style={{ fontSize: '11px', color: '#63605a' }}>
         {total} résultat{total > 1 ? 's' : ''}{pageCount > 1 ? ` · page ${page}/${pageCount}` : ''}
       </span>
       {pageCount > 1 && (

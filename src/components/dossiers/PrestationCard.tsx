@@ -37,8 +37,8 @@ function DropdownStatut({ anchorRef, current, onSelect }: {
   if (!pos) return null
 
   return (
-    <div style={{ position:'absolute', top:pos.top, left:pos.left, zIndex:9999, minWidth:'200px', background:'#fff', border:'1.5px solid #b8b0a4', boxShadow:'0 8px 28px rgba(0,0,0,0.18)' }}>
-      <div style={{ padding:'6px 14px 4px', fontSize:'8px', fontWeight:700, letterSpacing:'2px', textTransform:'uppercase', color:'#8a8478', borderBottom:'1px solid #f5f2ed' }}>
+    <div style={{ position:'absolute', top:pos.top, left:pos.left, zIndex:9999, minWidth:'200px', background:'#fff', border:'1px solid #e4e6ea', borderRadius:'12px', boxShadow:'0 8px 28px rgba(0,0,0,0.18)' }}>
+      <div style={{ padding:'6px 14px 4px', fontSize:'8px', fontWeight:700, letterSpacing:'2px', textTransform:'uppercase', color:'#63605a', borderBottom:'1px solid #f5f2ed' }}>
         Changer le statut
       </div>
       {STATUTS_MANUELS.map((s) => {
@@ -58,14 +58,14 @@ function DropdownStatut({ anchorRef, current, onSelect }: {
         )
       })}
       <div style={{ padding:'6px 14px 8px', background:'#f5f2ed', borderTop:'1px solid #d8d2c8' }}>
-        <div style={{ fontSize:'8px', fontWeight:700, letterSpacing:'2px', textTransform:'uppercase', color:'#8a8478', marginBottom:'5px' }}>Automatique (lecture seule)</div>
+        <div style={{ fontSize:'8px', fontWeight:700, letterSpacing:'2px', textTransform:'uppercase', color:'#63605a', marginBottom:'5px' }}>Automatique (lecture seule)</div>
         {(['en_cours'] as PrestationStatut[]).map(s => {
           const si = STATUT_MAP[s]
           return (
             <div key={s} style={{ display:'flex', alignItems:'center', gap:'6px', padding:'3px 0', fontSize:'10px', color:si.color, opacity:0.55 }}>
               <span style={{ width:'6px', height:'6px', borderRadius:'50%', background:si.dot, flexShrink:0 }} />
               {si.label}
-              <span style={{ fontSize:'9px', color:'#b8b0a4', marginLeft:'auto' }}>calculé selon l'heure</span>
+              <span style={{ fontSize:'9px', color:'#63605a', marginLeft:'auto' }}>calculé selon l'heure</span>
             </div>
           )
         })}
@@ -145,9 +145,9 @@ function StatutSelector({ prestation }: { prestation: any }) {
       <button
         onMouseDown={() => !saving && setOpen(o => !o)}
         disabled={saving}
-        style={{ background:'none', border:'1.5px solid #b8b0a4', padding:'3px 8px', fontSize:'11px', fontWeight:700, cursor:'pointer', color:'#5a564e', lineHeight:1 }}
+        style={{ background:'none', border:'1px solid #e4e6ea', borderRadius:'12px', padding:'3px 8px', fontSize:'11px', fontWeight:700, cursor:'pointer', color:'#5a564e', lineHeight:1 }}
         onMouseEnter={e => { e.currentTarget.style.borderColor='#9a7a28'; e.currentTarget.style.color='#9a7a28' }}
-        onMouseLeave={e => { e.currentTarget.style.borderColor='#b8b0a4'; e.currentTarget.style.color='#5a564e' }}
+        onMouseLeave={e => { e.currentTarget.style.borderColor='#e4e6ea'; e.currentTarget.style.color='#5a564e' }}
       >
         ▾
       </button>
@@ -413,10 +413,10 @@ export default function PrestationCard({ p, dossierId, passagers = [] }: { p: an
       )}
 
       {/* Header */}
-      <div style={{ display:'flex', alignItems:'stretch', borderBottom:'1.5px solid #b8b0a4' }}>
+      <div style={{ display:'flex', alignItems:'stretch', borderBottom:'1px solid #e4e6ea' }}>
         <div style={{ width:'5px', background:typeColor, flexShrink:0 }} />
         <div style={{ flex:1, padding:'10px 16px', display:'flex', alignItems:'center', gap:'14px', flexWrap:'wrap' }}>
-          <span style={{ fontFamily:'JetBrains Mono,monospace', fontSize:'10px', color:'#8a8478', background:'#f5f2ed', border:'1px solid #d8d2c8', padding:'2px 8px' }}>
+          <span style={{ fontFamily:'JetBrains Mono,monospace', fontSize:'10px', color:'#63605a', background:'#f5f2ed', border:'1px solid #d8d2c8', padding:'2px 8px' }}>
             P-0{p.ordre}
           </span>
           <span style={{ fontSize:'10px', fontWeight:700, letterSpacing:'1px', textTransform:'uppercase', color:typeColor }}>
@@ -428,7 +428,7 @@ export default function PrestationCard({ p, dossierId, passagers = [] }: { p: an
               : format(new Date(p.date_debut),'dd/MM/yyyy',{locale:fr})}
           </span>
           {p.nb_jours > 1 && (
-            <span style={{ background:'#f5f2ed', border:'1px solid #b8b0a4', padding:'2px 9px', fontFamily:'JetBrains Mono,monospace', fontSize:'10px', color:'#5a564e' }}>
+            <span style={{ background:'#f5f2ed', border:'1px solid #e4e6ea', padding:'2px 9px', fontFamily:'JetBrains Mono,monospace', fontSize:'10px', color:'#5a564e' }}>
               {p.nb_jours} jours
             </span>
           )}
@@ -455,23 +455,23 @@ export default function PrestationCard({ p, dossierId, passagers = [] }: { p: an
         <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fit,minmax(140px,1fr))', gap:'12px', marginBottom:'12px' }}>
           {p.type === 'transfert' && <>
             <div>
-              <div style={{ fontSize:'8px', fontWeight:600, letterSpacing:'2px', textTransform:'uppercase', color:'#8a8478', marginBottom:'3px' }}>Départ</div>
+              <div style={{ fontSize:'8px', fontWeight:600, letterSpacing:'2px', textTransform:'uppercase', color:'#63605a', marginBottom:'3px' }}>Départ</div>
               <div style={{ fontSize:'12px', fontWeight:500 }}>{p.adresse_depart ?? '—'}</div>
             </div>
             <div>
-              <div style={{ fontSize:'8px', fontWeight:600, letterSpacing:'2px', textTransform:'uppercase', color:'#8a8478', marginBottom:'3px' }}>Arrivée</div>
+              <div style={{ fontSize:'8px', fontWeight:600, letterSpacing:'2px', textTransform:'uppercase', color:'#63605a', marginBottom:'3px' }}>Arrivée</div>
               <div style={{ fontSize:'12px', fontWeight:500 }}>{p.adresse_arrivee ?? '—'}</div>
             </div>
             <div>
-              <div style={{ fontSize:'8px', fontWeight:600, letterSpacing:'2px', textTransform:'uppercase', color:'#8a8478', marginBottom:'3px' }}>Heure</div>
+              <div style={{ fontSize:'8px', fontWeight:600, letterSpacing:'2px', textTransform:'uppercase', color:'#63605a', marginBottom:'3px' }}>Heure</div>
               <div style={{ fontFamily:'JetBrains Mono,monospace', fontSize:'12px' }}>{p.heure_depart ?? '—'}</div>
             </div>
             <div>
-              <div style={{ fontSize:'8px', fontWeight:600, letterSpacing:'2px', textTransform:'uppercase', color:'#8a8478', marginBottom:'3px' }}>Chauffeur</div>
+              <div style={{ fontSize:'8px', fontWeight:600, letterSpacing:'2px', textTransform:'uppercase', color:'#63605a', marginBottom:'3px' }}>Chauffeur</div>
               <select
                 value={chauffeurTransfert}
                 onChange={e => affecterChauffeurTransfert(e.target.value)}
-                style={{ background: !chauffeurTransfert ? '#fff8e8' : '#fff', border:`1px solid ${!chauffeurTransfert ? '#9a7a28' : '#b8b0a4'}`, padding:'5px 8px', fontSize:'11px', color:'#16130e', outline:'none', width:'100%', cursor:'pointer' }}>
+                style={{ background: !chauffeurTransfert ? '#fff8e8' : '#fff', border:`1px solid ${!chauffeurTransfert ? '#9a7a28' : '#e4e6ea'}`, padding:'5px 8px', fontSize:'11px', color:'#16130e', outline:'none', width:'100%', cursor:'pointer' }}>
                 <option value="">— Non affecté —</option>
                 {chauffeurs.map((c: any) => {
                   const slots = (dispo.chauffeurs[p.date_debut] ?? []).filter((iv: any) => iv.id === c.id)
@@ -484,24 +484,24 @@ export default function PrestationCard({ p, dossierId, passagers = [] }: { p: an
           </>}
           {p.type === 'mad' && <>
             <div>
-              <div style={{ fontSize:'8px', fontWeight:600, letterSpacing:'2px', textTransform:'uppercase', color:'#8a8478', marginBottom:'3px' }}>Lieu</div>
+              <div style={{ fontSize:'8px', fontWeight:600, letterSpacing:'2px', textTransform:'uppercase', color:'#63605a', marginBottom:'3px' }}>Lieu</div>
               <div style={{ fontSize:'12px', fontWeight:500 }}>{p.adresse_depart ?? '—'}</div>
             </div>
             <div>
-              <div style={{ fontSize:'8px', fontWeight:600, letterSpacing:'2px', textTransform:'uppercase', color:'#8a8478', marginBottom:'3px' }}>Horaires</div>
+              <div style={{ fontSize:'8px', fontWeight:600, letterSpacing:'2px', textTransform:'uppercase', color:'#63605a', marginBottom:'3px' }}>Horaires</div>
               <div style={{ fontFamily:'JetBrains Mono,monospace', fontSize:'11px' }}>
                 {p.heure_debut_journee ?? '—'} → {p.heure_fin_journee ?? '—'}
               </div>
             </div>
           </>}
           <div>
-            <div style={{ fontSize:'8px', fontWeight:600, letterSpacing:'2px', textTransform:'uppercase', color:'#8a8478', marginBottom:'3px' }}>Tarif HT</div>
+            <div style={{ fontSize:'8px', fontWeight:600, letterSpacing:'2px', textTransform:'uppercase', color:'#63605a', marginBottom:'3px' }}>Tarif HT</div>
             <div style={{ fontFamily:'JetBrains Mono,monospace', fontSize:'12px', color:'#9a7a28' }}>
               {p.type === 'mad' ? `${fmt(p.tarif_journalier_ht ?? 0)}/j` : fmt(p.tarif_fixe_ht ?? p.montant_ht)}
             </div>
           </div>
           <div>
-            <div style={{ fontSize:'8px', fontWeight:600, letterSpacing:'2px', textTransform:'uppercase', color:'#8a8478', marginBottom:'3px' }}>Modèle souhaité</div>
+            <div style={{ fontSize:'8px', fontWeight:600, letterSpacing:'2px', textTransform:'uppercase', color:'#63605a', marginBottom:'3px' }}>Modèle souhaité</div>
             <div style={{ fontSize:'12px' }}>{p.modele_souhaite ?? '—'}</div>
           </div>
         </div>
@@ -514,8 +514,8 @@ export default function PrestationCard({ p, dossierId, passagers = [] }: { p: an
 
         {/* Passagers affectés à ce véhicule */}
         {passagers.length > 0 && (
-          <div style={{ marginBottom:'10px', padding:'8px 12px', background:'#faf9f7', border:'1px solid #ede9e2' }}>
-            <div style={{ fontSize:'8px', fontWeight:600, letterSpacing:'2px', textTransform:'uppercase', color:'#8a8478', marginBottom:'6px' }}>Passagers dans ce véhicule</div>
+          <div style={{ marginBottom:'10px', padding:'8px 12px', background:'#faf9f7', border:'1px solid #f4f5f7' }}>
+            <div style={{ fontSize:'8px', fontWeight:600, letterSpacing:'2px', textTransform:'uppercase', color:'#63605a', marginBottom:'6px' }}>Passagers dans ce véhicule</div>
             <div style={{ display:'flex', flexWrap:'wrap', gap:'6px' }}>
               {passagers.map((pax: any) => {
                 const on = paxIds.includes(pax.id)
@@ -532,7 +532,7 @@ export default function PrestationCard({ p, dossierId, passagers = [] }: { p: an
 
         {/* Véhicule */}
         <div style={{
-          background:'#f5f2ed', border:'1px solid #b8b0a4', padding:'10px 14px',
+          background:'#f5f2ed', border:'1px solid #e4e6ea', padding:'10px 14px',
           display:'flex', alignItems:'center', gap:'12px', marginBottom:'10px', flexWrap:'wrap',
           borderLeft: p.vehicule_ext ? '3px solid #4a2a6e' : stLocal.sous_traitant_id ? '3px solid #7a2a8a' : p.affectation_differee ? '3px solid #7a5c10' : '3px solid #1e5e3a',
         }}>
@@ -571,14 +571,14 @@ export default function PrestationCard({ p, dossierId, passagers = [] }: { p: an
           {stLocal.sous_traitant_id && (
             <div style={{ marginLeft:'auto', display:'flex', gap:'16px', alignItems:'flex-end' }}>
               <div style={{ display:'flex', flexDirection:'column', alignItems:'flex-end', gap:'2px' }}>
-                <span style={{ fontSize:'9px', color:'#8a8478', fontWeight:600, letterSpacing:'1px', textTransform:'uppercase' }}>Coût ST</span>
+                <span style={{ fontSize:'9px', color:'#63605a', fontWeight:600, letterSpacing:'1px', textTransform:'uppercase' }}>Coût ST</span>
                 <span style={{ fontFamily:'JetBrains Mono,monospace', fontSize:'12px', fontWeight:600, color:'#9e2a2a' }}>
                   {fmt(stLocal.st_cout_ht ?? 0)}
                 </span>
               </div>
               {stLocal.st_marge_ht !== null && (
                 <div style={{ display:'flex', flexDirection:'column', alignItems:'flex-end', gap:'2px' }}>
-                  <span style={{ fontSize:'9px', color:'#8a8478', fontWeight:600, letterSpacing:'1px', textTransform:'uppercase' }}>Marge</span>
+                  <span style={{ fontSize:'9px', color:'#63605a', fontWeight:600, letterSpacing:'1px', textTransform:'uppercase' }}>Marge</span>
                   <span style={{ fontFamily:'JetBrains Mono,monospace', fontSize:'12px', fontWeight:700, color: (stLocal.st_marge_ht ?? 0) > 0 ? '#1e5e3a' : '#9e2a2a' }}>
                     {fmt(stLocal.st_marge_ht ?? 0)}
                   </span>
@@ -588,7 +588,7 @@ export default function PrestationCard({ p, dossierId, passagers = [] }: { p: an
           )}
           {false && stLocal.st_marge_ht !== null && (
             <div style={{ marginLeft:'auto', display:'flex', flexDirection:'column', alignItems:'flex-end', gap:'2px' }}>
-              <span style={{ fontSize:'9px', color:'#8a8478', fontWeight:600, letterSpacing:'1px', textTransform:'uppercase' }}>Marge</span>
+              <span style={{ fontSize:'9px', color:'#63605a', fontWeight:600, letterSpacing:'1px', textTransform:'uppercase' }}>Marge</span>
               <span style={{ fontFamily:'JetBrains Mono,monospace', fontSize:'12px', fontWeight:700, color: (stLocal.st_marge_ht ?? 0) > 0 ? '#1e5e3a' : '#9e2a2a' }}>
                 {new Intl.NumberFormat('fr-FR', { style:'currency', currency:'EUR' }).format(stLocal.st_marge_ht ?? 0)}
               </span>
@@ -657,7 +657,7 @@ export default function PrestationCard({ p, dossierId, passagers = [] }: { p: an
             {joursOpen && (<>
             <div style={{ display:'grid', gridTemplateColumns:'84px 1fr 1fr 74px', gap:'6px', padding:'4px 8px', background:'#faf9f7', marginBottom:'2px' }}>
               {['Date','Affecté à','Véhicule','Tarif HT'].map(h => (
-                <div key={h} style={{ fontSize:'8px', fontWeight:600, letterSpacing:'1.5px', textTransform:'uppercase', color:'#8a8478' }}>{h}</div>
+                <div key={h} style={{ fontSize:'8px', fontWeight:600, letterSpacing:'1.5px', textTransform:'uppercase', color:'#63605a' }}>{h}</div>
               ))}
             </div>
             {jours.map((j: any) => {
@@ -687,7 +687,7 @@ export default function PrestationCard({ p, dossierId, passagers = [] }: { p: an
                       title={stJour ? 'Jour sous-traité' : ''}
                       style={{
                         background: stJour ? '#f0ebfa' : missing ? '#fff8e8' : '#fff',
-                        border: `1px solid ${stJour ? '#7a2a8a' : missing ? '#9a7a28' : '#b8b0a4'}`,
+                        border: `1px solid ${stJour ? '#7a2a8a' : missing ? '#9a7a28' : '#e4e6ea'}`,
                         padding:'4px 8px', fontSize:'11px', color:'#16130e',
                         outline:'none', width:'100%', cursor:'pointer',
                       }}>
@@ -715,7 +715,7 @@ export default function PrestationCard({ p, dossierId, passagers = [] }: { p: an
                       title={overridden ? 'Véhicule spécifique à ce jour' : 'Utilise le véhicule de la prestation'}
                       style={{
                         background: overridden ? '#eef4fb' : '#fff',
-                        border: `1px solid ${overridden ? '#1e3f70' : '#b8b0a4'}`,
+                        border: `1px solid ${overridden ? '#1e3f70' : '#e4e6ea'}`,
                         padding:'4px 8px', fontSize:'11px', color:'#16130e',
                         outline:'none', width:'100%', cursor:'pointer',
                       }}>
@@ -731,13 +731,13 @@ export default function PrestationCard({ p, dossierId, passagers = [] }: { p: an
                       {fmt(j.tarif_ht)}
                     </span>
                   </div>
-                  {j.note && <div style={{ fontSize:'10px', color:'#8a8478', fontStyle:'italic', marginTop:'3px' }}>{j.note}</div>}
+                  {j.note && <div style={{ fontSize:'10px', color:'#63605a', fontStyle:'italic', marginTop:'3px' }}>{j.note}</div>}
                 </div>
               )
             })}
             </>)}
-            <div style={{ display:'flex', justifyContent:'space-between', padding:'8px 8px 0', borderTop:'1.5px solid #b8b0a4', marginTop:'4px' }}>
-              <span style={{ fontSize:'9px', fontWeight:600, letterSpacing:'1.5px', textTransform:'uppercase', color:'#8a8478' }}>
+            <div style={{ display:'flex', justifyContent:'space-between', padding:'8px 8px 0', borderTop:'1px solid #e4e6ea', marginTop:'4px' }}>
+              <span style={{ fontSize:'9px', fontWeight:600, letterSpacing:'1.5px', textTransform:'uppercase', color:'#63605a' }}>
                 Sous-total · {jours.length} j
               </span>
               <span style={{ fontFamily:'JetBrains Mono,monospace', fontSize:'12px', color:'#16130e' }}>
