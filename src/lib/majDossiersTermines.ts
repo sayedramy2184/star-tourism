@@ -24,7 +24,9 @@ function prestationCloturee(
   p: { type: string; statut: string; date_debut: string | null; date_fin: string | null },
   today: string,
 ): boolean {
-  if (p.statut === 'annule') return true
+  // Statuts explicitement fermés (marqués à la main / par le dispatch)
+  if (p.statut === 'annule' || p.statut === 'termine') return true
+  // Sinon, close si la date est passée (terminé « virtuel »)
   if (p.type === 'mad') return !!p.date_fin && p.date_fin < today
   return !!p.date_debut && p.date_debut < today
 }
