@@ -10,6 +10,8 @@ import { fr } from 'date-fns/locale'
 import { useSearchPaginate } from '@/lib/useSearchPaginate'
 import { SearchBar, Pager } from '@/components/ui/ListControls'
 import { exportCsv } from '@/lib/exportCsv'
+import ChauffeurAvatar from '@/components/chauffeurs/ChauffeurAvatar'
+import { photoChauffeurUrl } from '@/lib/photoChauffeur'
 
 type Statut = 'disponible' | 'en_mission' | 'indisponible' | 'conge'
 
@@ -178,7 +180,7 @@ export default function ChauffeursPage() {
             <div key={c.id} style={{ background:'#fff', border:'1px solid #e4e6ea', borderRadius:'12px', boxShadow:'0 1px 4px rgba(0,0,0,0.06)' }}>
               <Link href={`/dashboard/chauffeurs/${c.id}`} style={{ display:'block', padding:'12px', textDecoration:'none', color:'inherit' }}>
                 <div style={{ display:'flex', alignItems:'center', gap:'10px' }}>
-                  <div style={{ width:'36px', height:'36px', borderRadius:'50%', flexShrink:0, background:st.bg, border:`1.5px solid ${st.color}`, display:'flex', alignItems:'center', justifyContent:'center', fontSize:'12px', fontWeight:700, color:st.color }}>{initials}</div>
+                  <ChauffeurAvatar photoUrl={photoChauffeurUrl(c.photo_path)} initials={initials} size={36} bg={st.bg} color={st.color} borderWidth={1.5} fontSize={12} />
                   <div style={{ flex:1, minWidth:0 }}>
                     <div style={{ fontWeight:600, color:'#16130e', fontSize:'14px' }}>{c.prenom} {c.nom}</div>
                     <div className="mono" style={{ fontSize:'11px', color:'#5a564e' }}>{c.telephone}</div>
@@ -227,15 +229,10 @@ export default function ChauffeursPage() {
                   {/* Nom */}
                   <td className="td" style={{ background:'rgba(154,122,40,0.04)' }}>
                     <div style={{ display:'flex', alignItems:'center', gap:'10px' }}>
-                      <div style={{
-                        width:'34px', height:'34px', borderRadius:'50%', flexShrink:0,
-                        background: c.statut === 'disponible' ? '#eaf4ee' : c.statut === 'en_mission' ? '#e8eef8' : '#f5f2ed',
-                        border: `1.5px solid ${st.color}`,
-                        display:'flex', alignItems:'center', justifyContent:'center',
-                        fontSize:'11px', fontWeight:700, color: st.color,
-                      }}>
-                        {initials}
-                      </div>
+                      <ChauffeurAvatar
+                        photoUrl={photoChauffeurUrl(c.photo_path)} initials={initials} size={34}
+                        bg={c.statut === 'disponible' ? '#eaf4ee' : c.statut === 'en_mission' ? '#e8eef8' : '#f5f2ed'}
+                        color={st.color} borderWidth={1.5} fontSize={11} />
                       <div>
                         <div style={{ fontWeight:600, color:'#16130e' }}>{c.prenom} {c.nom}</div>
                         {c.vtc_card_numero && (

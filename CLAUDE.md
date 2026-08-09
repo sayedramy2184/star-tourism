@@ -27,8 +27,12 @@ Repo GitHub : `sayedramy2184/star-tourism`. À réparer un jour via Vercel → S
 ## ⚠️ Migrations base de données
 Le projet **n'est pas lié à la CLI Supabase**. Les migrations `supabase/migrations/*.sql`
 s'appliquent **à la main** : copier-coller dans **Supabase → SQL Editor → Run**, dans l'ordre.
-Elles sont idempotentes. Dernière = **025**. Toujours vérifier que la prod est à jour
-(001→025) après avoir ajouté une migration.
+Elles sont idempotentes. Dernière = **026**. Toujours vérifier que la prod est à jour
+(001→026) après avoir ajouté une migration.
+026 = photo chauffeur : `chauffeurs.photo_path` + bucket storage PUBLIC `chauffeur-photos`.
+Upload via `/api/chauffeurs/[id]/photo` (admin client). URL publique via
+`src/lib/photoChauffeur.ts`. Affichage : `ChauffeurAvatar` (fiche + liste), upload dans
+`ChauffeurEditModal` (`PhotoUploader`).
 023 = `paiements_chauffeur` (versements paie chauffeur ; RLS `my_company_id()`).
 024 = `salaire_chauffeur_dossier` + `paiements_chauffeur.dossier_id` (versements par dossier).
 025 = rémunération PAR UNITÉ : `jours_mad.remuneration_ht` + `prestations.remuneration_ht`

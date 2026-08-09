@@ -5,6 +5,8 @@ import { useRouter } from 'next/navigation'
 import toast from 'react-hot-toast'
 import { Edit, X } from 'lucide-react'
 import { LANGUES, COMPETENCES } from '@/types'
+import PhotoUploader from '@/components/chauffeurs/PhotoUploader'
+import { photoChauffeurUrl } from '@/lib/photoChauffeur'
 
 const STATUTS: Record<string, { label: string; color: string; bg: string }> = {
   disponible:   { label: 'Disponible',   color: '#1e5e3a', bg: '#eaf4ee' },
@@ -83,6 +85,9 @@ export default function ChauffeurEditModal({ chauffeur }: { chauffeur: any }) {
               <button onClick={() => setOpen(false)} style={{ background: 'none', border: 'none', color: 'rgba(255,255,255,0.4)', cursor: 'pointer' }}><X size={18} /></button>
             </div>
             <form onSubmit={save} style={{ padding: '18px 24px 24px' }}>
+
+              <Sep label="Photo" />
+              <PhotoUploader chauffeurId={chauffeur.id} initialUrl={photoChauffeurUrl(chauffeur.photo_path)} />
 
               <Sep label="Identité" />
               <div className="form-grid-2" style={{ marginBottom: '10px' }}>

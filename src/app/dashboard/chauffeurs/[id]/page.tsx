@@ -10,6 +10,8 @@ import HistoriqueChauffeur, { type HistoItem } from '@/components/chauffeurs/His
 import { loadPaieChauffeurDetail } from '@/lib/paieData'
 import { fmtEur } from '@/lib/salaireChauffeur'
 import { Wallet } from 'lucide-react'
+import ChauffeurAvatar from '@/components/chauffeurs/ChauffeurAvatar'
+import { photoChauffeurUrl } from '@/lib/photoChauffeur'
 
 function docStatus(dateStr: string | null) {
   if (!dateStr) return { level: 'none', label: 'Non renseigné', color: '#c2bdb4' }
@@ -137,16 +139,8 @@ export default async function ChauffeurDetailPage({ params }: { params: { id: st
             </div>
             <div style={{ padding:'20px 22px' }}>
               <div style={{ display:'flex', alignItems:'flex-start', gap:'16px', marginBottom:'18px' }}>
-                {/* Avatar */}
-                <div style={{
-                  width:'56px', height:'56px', borderRadius:'50%', flexShrink:0,
-                  background: st.bg, border:`2px solid ${st.color}`,
-                  display:'flex', alignItems:'center', justifyContent:'center',
-                  fontSize:'18px', fontWeight:700, color: st.color,
-                  fontFamily:'Cormorant Garamond,serif',
-                }}>
-                  {initials}
-                </div>
+                {/* Avatar (photo si disponible) */}
+                <ChauffeurAvatar photoUrl={photoChauffeurUrl(c.photo_path)} initials={initials} size={56} bg={st.bg} color={st.color} borderWidth={2} fontSize={18} />
                 <div style={{ flex:1 }}>
                   <div style={{ fontFamily:'Cormorant Garamond,serif', fontSize:'26px', fontWeight:500, color:'#16130e', lineHeight:1 }}>
                     {c.prenom} {c.nom}
