@@ -310,53 +310,61 @@ function niceMax(v: number) {
 }
 function MonthlyBars({ data, series }: { data: any[]; series: { key: string; name: string; color: string }[] }) {
   const [hover, setHover] = useState<number | null>(null)
-  const H = 200
+  const H = 190, GUTTER = 40
   const max = niceMax(Math.max(1, ...data.flatMap((m: any) => series.map(s => m[s.key]))))
   const grid = [0, 0.25, 0.5, 0.75, 1]
+  const hm = hover !== null ? data[hover] : null
+
   return (
-    <div style={{ padding: '18px 18px 8px' }}>
-      <div style={{ position: 'relative', display: 'flex', gap: '2px', height: `${H}px`, overflowX: 'auto' }}>
-        {/* Repères horizontaux + libellés d'axe */}
-        <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none' }}>
-          {grid.map(g => (
-            <div key={g} style={{ position: 'absolute', left: 0, right: 0, bottom: `${22 + g * (H - 24)}px`, borderTop: `1px solid ${g === 0 ? '#d8d2c8' : '#efece6'}` }}>
-              <span style={{ position: 'absolute', left: 0, top: '-8px', fontSize: '8px', color: MUTED, fontFamily: MONO, background: '#fff', paddingRight: '4px' }}>{kEur(max * g)}</span>
+    <div style={{ padding: '14px 18px 12px' }}>
+      {/* Ligne d'info (survol) — évite tout tooltip flottant qui déborde */}
+      <div style={{ height: '24px', display: 'flex', alignItems: 'center', gap: '16px', marginBottom: '6px', paddingLeft: `${GUTTER}px` }}>
+        {hm ? (
+          <>
+            <span style={{ fontSize: '11px', fontWeight: 700, color: INK, textTransform: 'capitalize', minWidth: '90px' }}>{format(parseISO(hm.mois + '-01'), 'MMMM yyyy', { locale: fr })}</span>
+            {series.map(s => (
+              <span key={s.key} style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', fontSize: '11px', color: INK2 }}>
+                <span style={{ width: '9px', height: '9px', borderRadius: '2px', background: s.color }} />{s.name} <b style={{ fontFamily: MONO, color: INK }}>{eur(hm[s.key])}</b>
+              </span>
+            ))}
+            {series.length > 1 && <span style={{ fontSize: '11px', color: INK2 }}>Marge <b style={{ fontFamily: MONO, color: hm.marge >= 0 ? POS : NEG }}>{eur(hm.marge)}</b></span>}
+          </>
+        ) : (
+          <span style={{ fontSize: '10px', color: MUTED, fontStyle: 'italic' }}>Survolez un mois pour le détail</span>
+        )}
+      </div>
+
+      {/* Zone de tracé */}
+      <div style={{ position: 'relative', height: `${H}px`, paddingLeft: `${GUTTER}px` }}>
+        {/* Repères + axe (dans la gouttière gauche) */}
+        {grid.map(g => (
+          <div key={g} style={{ position: 'absolute', left: `${GUTTER}px`, right: 0, bottom: `${g * H}px`, borderTop: `1px solid ${g === 0 ? '#d8d2c8' : '#f0ede7'}`, pointerEvents: 'none' }}>
+            <span style={{ position: 'absolute', left: `-${GUTTER}px`, top: '-6px', width: `${GUTTER - 6}px`, textAlign: 'right', fontSize: '8px', color: MUTED, fontFamily: MONO }}>{kEur(max * g)}</span>
+          </div>
+        ))}
+        {/* Barres */}
+        <div style={{ display: 'flex', gap: '3px', height: `${H}px`, alignItems: 'flex-end' }}>
+          {data.map((m: any, i: number) => (
+            <div key={m.mois} onMouseEnter={() => setHover(i)} onMouseLeave={() => setHover(null)}
+              style={{ flex: 1, minWidth: 0, height: '100%', display: 'flex', alignItems: 'flex-end', justifyContent: 'center', gap: '3px', background: hover === i ? 'rgba(154,122,40,0.06)' : 'transparent', borderRadius: '4px', transition: 'background .12s' }}>
+              {series.map(s => (
+                <div key={s.key} title={`${s.name} ${eur2(m[s.key])}`}
+                  style={{ width: series.length > 1 ? '38%' : '58%', maxWidth: '18px', height: `${m[s.key] > 0 ? Math.max(3, (m[s.key] / max) * H) : 0}px`, background: s.color, borderRadius: '4px 4px 0 0', transition: 'opacity .15s', opacity: hover === null || hover === i ? 1 : 0.3 }} />
+              ))}
             </div>
           ))}
         </div>
-        {/* Colonnes */}
+      </div>
+
+      {/* Étiquettes des mois */}
+      <div style={{ display: 'flex', gap: '3px', paddingLeft: `${GUTTER}px`, marginTop: '6px' }}>
         {data.map((m: any, i: number) => (
-          <div key={m.mois} onMouseEnter={() => setHover(i)} onMouseLeave={() => setHover(null)}
-            style={{ flex: 1, minWidth: '28px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'flex-end', position: 'relative', cursor: 'default', background: hover === i ? 'rgba(154,122,40,0.05)' : 'transparent', borderRadius: '4px' }}>
-            <div style={{ display: 'flex', alignItems: 'flex-end', gap: '3px', height: `${H - 24}px` }}>
-              {series.map(s => (
-                <div key={s.key} title={`${s.name} ${eur2(m[s.key])}`}
-                  style={{ width: series.length > 1 ? '9px' : '16px', height: `${Math.max(m[s.key] > 0 ? 3 : 0, (m[s.key] / max) * (H - 24))}px`, background: s.color, borderRadius: '4px 4px 0 0', transition: 'opacity .15s', opacity: hover === null || hover === i ? 1 : 0.35 }} />
-              ))}
-            </div>
-            <div style={{ fontSize: '8px', color: MUTED, textTransform: 'uppercase', letterSpacing: '0.5px', marginTop: '6px', height: '16px' }}>{format(parseISO(m.mois + '-01'), 'MMM', { locale: fr })}</div>
-            {/* Tooltip */}
-            {hover === i && (
-              <div style={{ position: 'absolute', bottom: `${H - 18}px`, left: '50%', transform: 'translateX(-50%)', background: INK, color: '#fff', padding: '8px 11px', borderRadius: '8px', boxShadow: '0 8px 24px rgba(0,0,0,0.25)', zIndex: 10, whiteSpace: 'nowrap', pointerEvents: 'none' }}>
-                <div style={{ fontSize: '9px', color: 'rgba(255,255,255,0.55)', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '5px' }}>{format(parseISO(m.mois + '-01'), 'MMMM yyyy', { locale: fr })}</div>
-                {series.map(s => (
-                  <div key={s.key} style={{ display: 'flex', alignItems: 'center', gap: '7px', fontSize: '11px', marginTop: '2px' }}>
-                    <span style={{ width: '8px', height: '8px', borderRadius: '2px', background: s.color }} />
-                    <span style={{ color: 'rgba(255,255,255,0.7)' }}>{s.name}</span>
-                    <span style={{ fontFamily: MONO, fontWeight: 700, marginLeft: 'auto' }}>{eur(m[s.key])}</span>
-                  </div>
-                ))}
-                {series.length > 1 && (
-                  <div style={{ display: 'flex', gap: '7px', fontSize: '11px', marginTop: '5px', paddingTop: '5px', borderTop: '1px solid rgba(255,255,255,0.15)' }}>
-                    <span style={{ color: 'rgba(255,255,255,0.7)' }}>Marge</span>
-                    <span style={{ fontFamily: MONO, fontWeight: 700, marginLeft: 'auto', color: m.marge >= 0 ? '#7bd3a8' : '#e8998c' }}>{eur(m.marge)}</span>
-                  </div>
-                )}
-              </div>
-            )}
+          <div key={m.mois} style={{ flex: 1, minWidth: 0, textAlign: 'center', fontSize: '8px', color: hover === i ? INK : MUTED, fontWeight: hover === i ? 700 : 400, textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+            {format(parseISO(m.mois + '-01'), 'MMM', { locale: fr })}
           </div>
         ))}
       </div>
+
       {series.length > 1 && (
         <div style={{ display: 'flex', gap: '16px', justifyContent: 'center', marginTop: '12px' }}>
           {series.map(s => <span key={s.key} style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', fontSize: '10px', color: INK2 }}><span style={{ width: '11px', height: '11px', borderRadius: '3px', background: s.color }} /> {s.name}</span>)}
