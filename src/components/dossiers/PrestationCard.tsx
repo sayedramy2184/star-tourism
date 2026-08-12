@@ -231,6 +231,23 @@ export default function PrestationCard({ p, dossierId, passagers = [] }: { p: an
   const [valTarif, setValTarif] = useState('')
   const [valBusy, setValBusy] = useState(false)
 
+  // ── Récap chauffeur(s) affecté(s) — visible sans dérouler le détail journalier ──
+  const chById  = new Map<string, any>((chauffeurs ?? []).map((c: any) => [c.id, c]))
+  const embById = new Map<string, any>()
+  for (const j of jours) if (j.chauffeur) embById.set(j.chauffeur.id, j.chauffeur)
+  if (p.chauffeur) embById.set(p.chauffeur.id, p.chauffeur)
+  const getCh = (id: string) => chById.get(id) ?? embById.get(id)
+  const chauffeurRecap: { c: any; jours: number }[] = (() => {
+    if (p.type === 'transfert') {
+      const id = chauffeurTransfert || p.chauffeur_id
+      const c = id ? getCh(id) : null
+      return c ? [{ c, jours: 1 }] : []
+    }
+    const counts = new Map<string, number>()
+    for (const j of jours) { const id = joursState[j.id]; if (id) counts.set(id, (counts.get(id) ?? 0) + 1) }
+    return Array.from(counts.entries()).map(([id, n]) => ({ c: getCh(id) ?? { id, prenom: '', nom: '—' }, jours: n }))
+  })()
+
   async function validerPrestation() {
     const tarif = parseFloat(valTarif)
     if (!tarif || tarif <= 0) return toast.error('Indiquez le tarif HT')
@@ -527,6 +544,33 @@ export default function PrestationCard({ p, dossierId, passagers = [] }: { p: an
                 )
               })}
             </div>
+          </div>
+        )}
+
+        {/* Chauffeur(s) affecté(s) — récap visible sans dérouler le détail journalier */}
+        {chauffeurRecap.length > 0 && (
+          <div style={{ background:'#eef4f0', border:'1px solid rgba(30,94,58,0.18)', borderLeft:'3px solid #1e5e3a', padding:'8px 14px', marginBottom:'10px', display:'flex', alignItems:'center', gap:'10px', flexWrap:'wrap' }}>
+            <span style={{ fontSize:'9px', fontWeight:700, letterSpacing:'1.5px', textTransform:'uppercase', color:'#1e5e3a' }}>
+              Chauffeur{chauffeurRecap.length > 1 ? 's' : ''}
+            </span>
+            {chauffeurRecap.map(({ c, jours: n }, i) => (
+              <span key={c.id ?? i} style={{ display:'inline-flex', alignItems:'center', gap:'8px', background:'#fff', border:'1px solid #d3e3da', borderRadius:'999px', padding:'3px 4px 3px 10px' }}>
+                <span style={{ fontSize:'12px' }}>🧑‍✈️</span>
+                <span style={{ fontSize:'12px', fontWeight:600, color:'#16130e' }}>{`${c.prenom ?? ''} ${c.nom ?? ''}`.trim() || '—'}</span>
+                {c.telephone && (
+                  <a href={`tel:${c.telephone}`} onClick={e => e.stopPropagation()}
+                    style={{ display:'inline-flex', alignItems:'center', gap:'3px', fontSize:'11px', fontFamily:'JetBrains Mono,monospace', color:'#1e3f70', textDecoration:'none', background:'#eef2f8', borderRadius:'999px', padding:'2px 8px' }}>
+                    📞 {c.telephone}
+                  </a>
+                )}
+                {p.type === 'mad' && chauffeurRecap.length > 1 && (
+                  <span style={{ fontSize:'10px', color:'#63605a', marginRight:'4px' }}>· {n} j</span>
+                )}
+              </span>
+            ))}
+            {p.type === 'mad' && joursManquants > 0 && (
+              <span style={{ fontSize:'10px', color:'#7a5c10', fontWeight:600 }}>⚠ {joursManquants} j sans chauffeur</span>
+            )}
           </div>
         )}
 
