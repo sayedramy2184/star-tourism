@@ -549,7 +549,7 @@ function MadCard({ j, onSaved }: { j: any; onSaved: () => void }) {
   const prest = one(j.prestation); const dossier = one(prest?.dossier)
   const veh = one(j.vehicule) || one(j.vehicule_ext) || one(prest?.vehicule) || one(prest?.vehicule_ext)
   const pax = paxList(dossier, prest?.passager_ids)
-  const locked = !!dossier?.valide_at   // dossier validé par le dispatch → heures figées
+  const locked = dossier?.statut === 'termine'   // heures figées seulement une fois le dossier clôturé
   const [open, setOpen] = useState(false)
   const nbPax = (prest?.passager_ids?.length) || (dossier?.passagers?.length) || prest?.nb_passagers || 0
 
@@ -613,7 +613,7 @@ function HoursEntry({ j, locked, onSaved }: { j: any; locked: boolean; onSaved: 
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '9px' }}>
         <span style={{ fontSize: '9px', letterSpacing: '2px', textTransform: 'uppercase', color: GOLD, fontWeight: 800 }}>Mes heures réelles</span>
         {dispatchLocked
-          ? <span style={{ display: 'inline-flex', alignItems: 'center', gap: '4px', fontSize: '10px', fontWeight: 700, color: GREEN, background: '#eaf4ee', padding: '3px 9px', borderRadius: '999px' }}><ShieldCheck size={12} /> Validé</span>
+          ? <span style={{ display: 'inline-flex', alignItems: 'center', gap: '4px', fontSize: '10px', fontWeight: 700, color: MUTE, background: '#f2f0ec', padding: '3px 9px', borderRadius: '999px' }}><Lock size={12} /> Clôturé</span>
           : saisi
             ? <span style={{ display: 'inline-flex', alignItems: 'center', gap: '4px', fontSize: '10px', fontWeight: 700, color: GREEN, background: '#eaf4ee', padding: '3px 9px', borderRadius: '999px' }}><ShieldCheck size={12} /> Enregistré</span>
             : null}
@@ -695,7 +695,7 @@ function MissionDetail({ mission, kind, onClose, onSaved }: { mission: any; kind
   const prest = isMad ? one(mission.prestation) : mission
   const dossier = one(prest?.dossier ?? mission.dossier)
   const veh = one(mission.vehicule) || one(mission.vehicule_ext) || one(prest?.vehicule) || one(prest?.vehicule_ext)
-  const locked = !!dossier?.valide_at
+  const locked = dossier?.statut === 'termine'
   const passagers = dossier?.passagers ?? []
   const paxAffectes = paxList(dossier, isMad ? prest?.passager_ids : mission.passager_ids)
   const titrePax = paxTitre(paxAffectes) ?? dossier?.numero ?? 'Mission'
